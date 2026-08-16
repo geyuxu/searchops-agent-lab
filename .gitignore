@@ -1,0 +1,38 @@
+# --- 密钥：platform/.env 含 POSTGRES_PASSWORD / JWT_SECRET / COOKIE_SECRET / SEARCHOPS_APPROVAL_SECRET
+.env
+!.env.example
+
+# --- 依赖与构建产物
+node_modules/
+target/
+.next/
+dist/
+build/
+*.class
+*.jar
+
+# --- Python
+.venv/
+.venv-*/
+myenv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- 数据：raw 是 1.1GB ESCI parquet，processed 是可由 make data 重建的派生物
+platform/data/raw/
+platform/data/processed/
+platform/.runtime/
+
+# --- evalops 运行产物
+evalops/runs/
+evalops/reports/
+
+# --- 系统
+.DS_Store
+*.log
