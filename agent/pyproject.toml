@@ -1,0 +1,23 @@
+[project]
+name = "searchops-agent"
+version = "0.1.0"
+description = "SearchOps 提案 Agent：在治理边界内诊断检索质量并提出策略变更"
+requires-python = ">=3.10"
+dependencies = ["httpx>=0.27", "pydantic>=2.7", "numpy>=1.26"]
+
+[project.optional-dependencies]
+llm = ["langchain>=0.3", "langchain-anthropic>=0.3"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+searchops-agent = "searchops_agent.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["searchops_agent*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
