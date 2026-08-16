@@ -63,9 +63,32 @@ final class AiTestSupport {
 
     /** 适配器契约里的成功响应；provider 为 null 时整个字段缺席，用来测"provider 缺失"。 */
     static String rewriteResponse(String rewrittenQuery, String provider) {
+        return rewriteResponse(rewrittenQuery, provider, null);
+    }
+
+    /**
+     * 带模型标识的成功响应。
+     *
+     * <p>model 为 null 时整个 model 键缺席——这正是适配器侧的真实形状（/ai/* 路由以
+     * {@code response_model_exclude_none=True} 序列化，见 services/ai-adapter/app/models.py
+     * 里 ModelIdentity 的注释）。空串则会真的以 {@code "model":""} 出现在响应里：
+     * "这个 provider 没声明模型"与"声明了一个空值"必须能分开测，否则
+     * {@link lab.searchops.ModelIdentityTest} 里那条"空白等同缺失"就无从构造。
+     */
+    static String rewriteResponse(String rewrittenQuery, String provider, String model) {
+        return rewriteResponseWithRawModel(rewrittenQuery, provider,
+                model == null ? null : "\"%s\"".formatted(model));
+    }
+
+    /**
+     * model 字段直接写入原始 JSON 片段（含引号或字面量），用来构造 {@code "model":null}、
+     * {@code "model":{...}} 这类不守契约、但第三方适配器完全可能发出来的响应。
+     */
+    static String rewriteResponseWithRawModel(String rewrittenQuery, String provider, String rawModel) {
         var providerField = provider == null ? "" : ",\"provider\":\"%s\"".formatted(provider);
-        return "{\"rewritten_query\":\"%s\"%s,\"extracted_filters\":{},\"latency_ms\":12}"
-                .formatted(rewrittenQuery, providerField);
+        var modelField = rawModel == null ? "" : ",\"model\":%s".formatted(rawModel);
+        return "{\"rewritten_query\":\"%s\"%s%s,\"extracted_filters\":{},\"latency_ms\":12}"
+                .formatted(rewrittenQuery, providerField, modelField);
     }
 
     static JsonNode elasticsearchHits(String... productIds) {

@@ -61,6 +61,18 @@
         "responses": {"200": {"description": "P@10, R@10, MRR@10, NDCG@10 and zero-result flag", "content": {"application/json": {"schema": {"type": "object"}}}}}
       }
     },
+    "/evaluations/candidate": {
+      "post": {
+        "operationId": "evaluateCandidateStrategy",
+        "tags": ["dry-run"],
+        "description": "Whole-set offline evaluation of a strategy_config that has never been published. Same safety level as /strategies/preview and for the same reason: read-only. It creates no draft, submits/approves/publishes/rolls back nothing, and writes neither quality_metrics nor evaluation_runs — persist is forced off server-side regardless of what the body asks for, because quality_metrics is keyed by (query_id, strategy_version) and a candidate config has no version to key on. The request body is an EvaluationRequest, but strategy_config is mandatory here: omitting it is a 400 rather than a silent fallback to 'evaluate the currently published strategy', which would let a caller mistake the published strategy's score for its own proposal's.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"allOf": [{"$ref": "#/components/schemas/EvaluationRequest"}, {"type": "object", "required": ["strategy_config"]}]}}}},
+        "responses": {
+          "200": {"description": "Metrics for the candidate config, marked as belonging to no published version", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CandidateEvaluationResult"}}}},
+          "400": {"$ref": "#/components/responses/Error"}
+        }
+      }
+    },
     "/strategies/drafts": {
       "post": {
         "operationId": "createStrategyDraft",
@@ -184,6 +196,44 @@
         "type": "object",
         "required": ["query_id", "query", "judgments"],
         "properties": {"query_id": {"type": "integer"}, "query": {"type": "string", "minLength": 1}, "judgments": {"type": "object", "additionalProperties": {"type": "string", "enum": ["E", "S", "C", "I"]}}}
+      },
+      "EvaluationRequest": {
+        "type": "object",
+        "description": "Body of POST /evaluations/candidate (and of the service's own POST /api/v1/evaluations/run). Every property added after the first release is optional and defaults to the pre-existing behaviour, so the payload data/scripts/evaluate.py has always sent — exactly queries/k/persist — still reproduces the archived baselines unchanged. queries/k/persist are required because k and persist are Java primitives: under Jackson 3 a missing primitive is a deserialisation failure (400), not a silent false.",
+        "required": ["queries", "k", "persist"],
+        "properties": {
+          "queries": {"type": "array", "minItems": 1, "maxItems": 10000, "items": {"$ref": "#/components/schemas/EvaluationQuery"}},
+          "k": {"type": "integer", "minimum": 1, "maximum": 100, "description": "Cut-off for the reported metrics. Bean validation accepts 1..100, but both evaluation entry points reject any value other than 10 at runtime, so 10 is the only value that works today."},
+          "persist": {"type": "boolean", "description": "Write per-query rows to quality_metrics and one row to evaluation_runs. Silently forced to false whenever strategy_config is present; the response then carries persist_skipped=true."},
+          "use_ai": {"type": "boolean", "default": false, "description": "Optional. Run the AI query-rewrite path. Omit to keep the no-AI behaviour the archived baselines were produced under; the default must stay false for those numbers to remain comparable."},
+          "strategy_config": {"$ref": "#/components/schemas/StrategyConfig", "description": "Optional. Absent (or null) means 'evaluate the currently published strategy' — byte-for-byte the behaviour from before this property existed. Present means 'evaluate this unpublished candidate instead', which forces persist off and marks the response with strategy_version=-1 and strategy_source=\"candidate\". Absent and present-but-empty are deliberately different: an empty object is a real candidate evaluation against StrategyConfig's baseline defaults. Mandatory on /evaluations/candidate."},
+          "use_rerank": {"type": "boolean", "default": false, "description": "Optional. Run the candidate-set rerank path. Deliberately independent of use_ai: sharing one switch would make ΔNDCG@10 the combined effect of rewrite and rerank and leave 'is rerank itself worth it' unanswerable."},
+          "rerank_depth": {"type": "integer", "minimum": 1, "maximum": 200, "description": "Optional. Candidate depth N. Absent (or null) means the server-side default (lab.search.rerank.depth). The upper bound is the AI adapter's RerankRequest.candidates limit; past it the adapter returns 422."}
+        }
+      },
+      "CandidateEvaluationResult": {
+        "type": "object",
+        "description": "Response of POST /evaluations/candidate. Keys whose value would be null are omitted entirely rather than serialised as null (spring.jackson.default-property-inclusion=non_null), which is why every property added after the first release is absent from the archived runs under baselines/ and experiments/ and those files still parse unchanged. The same shape is returned by the service's own POST /api/v1/evaluations/run, except that a published-strategy run carries a real strategy_version and omits strategy_source.",
+        "required": ["run_id", "strategy_version", "strategy_source", "query_count", "precision10", "recall10", "mrr10", "ndcg10", "zero_result_rate", "queries", "use_ai", "generated_at"],
+        "properties": {
+          "run_id": {"type": "string", "format": "uuid"},
+          "strategy_version": {"const": -1, "description": "Sentinel: a candidate config has never been through create/submit/approve/publish, so it has no version. The same sentinel the candidate search path puts on SearchResponse.strategy_version."},
+          "strategy_source": {"const": "candidate", "description": "Present only for candidate evaluations; published-strategy runs omit the key."},
+          "persist_skipped": {"const": true, "description": "Present only when the body asked for persist=true and the server ignored it. Lets the caller see that nothing was written rather than assume it was."},
+          "query_count": {"type": "integer", "minimum": 0},
+          "precision10": {"type": "number"},
+          "recall10": {"type": "number"},
+          "mrr10": {"type": "number"},
+          "ndcg10": {"type": "number"},
+          "zero_result_rate": {"type": "number"},
+          "queries": {"type": "array", "items": {"type": "object", "required": ["query_id", "query", "precision10", "recall10", "mrr10", "ndcg10", "zero_result"]}},
+          "use_ai": {"type": "boolean", "description": "Echo of the request switch, so an archived artifact can state its own conditions."},
+          "use_rerank": {"const": true, "description": "Echoed only when rerank was on; omitted otherwise, which keeps pre-rerank artifacts byte-identical."},
+          "rerank_depth": {"type": "integer", "description": "The depth that actually took effect, not the possibly-absent requested one. Omitted when rerank was off."},
+          "ai_model": {"type": "string", "description": "Model identity *observed* on the rewrite path during this run — not an echo of a request parameter, because the request carries no model at all (the adapter process decides). Absent when nothing was observed, which includes the telling case of use_ai=true with every call degraded. If the adapter changed models mid-run, every identity seen is listed comma-separated rather than reduced to one: an unclean run must say so. Never a placeholder such as \"unknown\", which would be indistinguishable from a real model name in an archive."},
+          "rerank_model": {"type": "string", "description": "As ai_model, for the rerank path. This is the one that matters most for reproducibility: the held-out rerank result is entirely a property of the model that produced it."},
+          "generated_at": {"type": "string", "format": "date-time"}
+        }
       }
     }
   }

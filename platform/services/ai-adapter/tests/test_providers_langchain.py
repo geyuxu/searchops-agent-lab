@@ -457,7 +457,18 @@ def _discover_provider() -> tuple[type[Provider] | None, str, str]:
     Returns ``(class, dotted_path, diagnostic)``. The diagnostic is what a failing
     ``test_langchain_provider_module_exists`` prints, so it has to be specific enough to act on.
     """
-    modules = sorted(p.stem for p in PROVIDERS_DIR.glob("*.py") if "lang" in p.stem.lower())
+    # 优先按 EXPECTED_DOTTED_PATH 指名的模块找，找不到再退回扫描。
+    #
+    # 为什么必须指名：原实现对 providers/ 下所有名字含 "lang" 的模块做 sorted() 取第一个。
+    # langchain_rerank.py 加进来那天，排序结果变成 ['langchain_rerank', 'langchain_rewrite']，
+    # 于是**这份改写的契约测试开始测重排的 provider**——而且因为 langchain 当时没装进 venv，
+    # requires_provider 把这些用例全跳过了，谁也没看见。两个失效叠在一起，
+    # 结果就是本文件 docstring 明令禁止的那种形态：一份看起来在守契约、实际什么都没守的测试。
+    preferred = EXPECTED_DOTTED_PATH.split(":")[0].rsplit(".", 1)[-1]
+    candidates = sorted(p.stem for p in PROVIDERS_DIR.glob("*.py") if "lang" in p.stem.lower())
+    modules = ([preferred] if preferred in candidates else []) + [
+        stem for stem in candidates if stem != preferred
+    ]
     if not modules:
         present = sorted(p.name for p in PROVIDERS_DIR.glob("*.py"))
         return (

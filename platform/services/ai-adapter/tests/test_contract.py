@@ -12,12 +12,23 @@ client = TestClient(app)
 
 
 def test_checked_in_openapi_has_all_stable_operations():
+    """Path-level agreement only. Field-level drift is ``tests/test_contract_drift.py``.
+
+    The subset assertions below are one-directional on purpose: the app also serves ``/ready``,
+    which is an operational probe and deliberately outside the stable contract. What was missing
+    was the other direction -- a documented path with no route behind it -- and version alignment,
+    without which the file can claim to describe a release the process is not running.
+    """
     documented = json.loads((CONTRACT / "openapi" / "ai-adapter.openapi.json").read_text())
     generated = app.openapi()
     required = {"/ai/health", "/ai/query-rewrite", "/ai/rerank", "/ai/strategy-suggest"}
     assert required.issubset(documented["paths"])
     assert required.issubset(generated["paths"])
     assert documented["info"]["version"] == "1.0.0"
+    assert set(documented["paths"]) <= set(generated["paths"]), (
+        f"documented but not served: {sorted(set(documented['paths']) - set(generated['paths']))}"
+    )
+    assert documented["info"]["version"] == generated["info"]["version"]
 
 
 def test_query_rewrite_example_round_trips_contract():

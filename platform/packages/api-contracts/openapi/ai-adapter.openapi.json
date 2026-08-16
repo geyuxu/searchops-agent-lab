@@ -43,6 +43,10 @@
         "required": ["status", "provider", "llm_required"],
         "properties": { "status": { "const": "ok" }, "provider": { "type": "string" }, "llm_required": { "type": "boolean" } }
       },
+      "ModelIdentity": {
+        "type": "string",
+        "description": "Which *model* produced this response, as opposed to `provider`, which names the provider class. One provider class run with two different AI_MODEL values is two different runs that are otherwise indistinguishable in the metrics, so evaluation artifacts need this to be reproducible. Always optional and never null: the adapter serialises with response_model_exclude_none, so a provider that declares no model emits no key at all. An absent key therefore means 'no model identity was recorded', never 'some unknown model ran' — consumers must not substitute a placeholder such as \"unknown\", which would be indistinguishable from a real model name in an archived artifact."
+      },
       "QueryRewriteRequest": {
         "type": "object", "additionalProperties": false,
         "required": ["query", "locale", "filters", "request_id"],
@@ -51,7 +55,7 @@
       "QueryRewriteResponse": {
         "type": "object", "additionalProperties": false,
         "required": ["original_query", "rewritten_query", "extracted_filters", "confidence", "explanation", "provider", "latency_ms"],
-        "properties": { "original_query": { "type": "string" }, "rewritten_query": { "type": "string" }, "extracted_filters": { "type": "object" }, "confidence": { "type": "number", "minimum": 0, "maximum": 1 }, "explanation": { "type": "string" }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 } }
+        "properties": { "original_query": { "type": "string" }, "rewritten_query": { "type": "string" }, "extracted_filters": { "type": "object" }, "confidence": { "type": "number", "minimum": 0, "maximum": 1 }, "explanation": { "type": "string" }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 }, "model": { "$ref": "#/components/schemas/ModelIdentity" } }
       },
       "Candidate": {
         "type": "object", "additionalProperties": false, "required": ["product_id"],
@@ -64,7 +68,7 @@
       "RerankScore": { "type": "object", "additionalProperties": false, "required": ["product_id", "score"], "properties": { "product_id": { "type": "string" }, "score": { "type": "number" } } },
       "RerankResponse": {
         "type": "object", "additionalProperties": false, "required": ["ranked_product_ids", "scores", "explanation", "provider", "latency_ms"],
-        "properties": { "ranked_product_ids": { "type": "array", "items": { "type": "string" } }, "scores": { "type": "array", "items": { "$ref": "#/components/schemas/RerankScore" } }, "explanation": { "type": "string" }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 } }
+        "properties": { "ranked_product_ids": { "type": "array", "items": { "type": "string" } }, "scores": { "type": "array", "items": { "$ref": "#/components/schemas/RerankScore" } }, "explanation": { "type": "string" }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 }, "model": { "$ref": "#/components/schemas/ModelIdentity" } }
       },
       "StrategySuggestRequest": {
         "type": "object", "additionalProperties": false, "required": ["query_metrics", "current_strategy", "evidence", "request_id"],
@@ -73,7 +77,7 @@
       "ProposedChange": { "type": "object", "additionalProperties": false, "required": ["operation", "path", "value", "reason"], "properties": { "operation": { "type": "string" }, "path": { "type": "string" }, "value": {}, "reason": { "type": "string" } } },
       "StrategySuggestResponse": {
         "type": "object", "additionalProperties": false, "required": ["proposed_changes", "expected_impact", "evidence_refs", "confidence", "risk_level", "requires_approval", "provider", "latency_ms"],
-        "properties": { "proposed_changes": { "type": "array", "items": { "$ref": "#/components/schemas/ProposedChange" } }, "expected_impact": { "type": "string" }, "evidence_refs": { "type": "array", "items": { "type": "string" } }, "confidence": { "type": "number", "minimum": 0, "maximum": 1 }, "risk_level": { "enum": ["low", "medium", "high"] }, "requires_approval": { "const": true }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 } }
+        "properties": { "proposed_changes": { "type": "array", "items": { "$ref": "#/components/schemas/ProposedChange" } }, "expected_impact": { "type": "string" }, "evidence_refs": { "type": "array", "items": { "type": "string" } }, "confidence": { "type": "number", "minimum": 0, "maximum": 1 }, "risk_level": { "enum": ["low", "medium", "high"] }, "requires_approval": { "const": true }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 }, "model": { "$ref": "#/components/schemas/ModelIdentity" } }
       }
     }
   }

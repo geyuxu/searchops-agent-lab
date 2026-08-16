@@ -117,10 +117,26 @@ final class RerankTestSupport {
 
     /** 适配器契约里的成功响应；provider 为 null 时整个字段缺席。 */
     static String rerankResponse(String provider, List<String> rankedIds) {
+        return rerankResponse(provider, rankedIds, null);
+    }
+
+    /**
+     * 带模型标识的成功响应，语义与 {@link AiTestSupport#rewriteResponse(String, String, String)}
+     * 完全一致：model 为 null 时该键整体缺席，空串则真的出现在响应里。
+     */
+    static String rerankResponse(String provider, List<String> rankedIds, String model) {
+        return rerankResponseWithRawModel(provider, rankedIds,
+                model == null ? null : "\"%s\"".formatted(model));
+    }
+
+    /** model 字段直接写入原始 JSON 片段，用来构造 {@code "model":null} 这类不守契约的响应。 */
+    static String rerankResponseWithRawModel(String provider, List<String> rankedIds, String rawModel) {
         var ids = rankedIds.stream().map(id -> "\"%s\"".formatted(id))
                 .collect(Collectors.joining(","));
         var providerField = provider == null ? "" : ",\"provider\":\"%s\"".formatted(provider);
-        return "{\"ranked_product_ids\":[%s]%s,\"latency_ms\":42}".formatted(ids, providerField);
+        var modelField = rawModel == null ? "" : ",\"model\":%s".formatted(rawModel);
+        return "{\"ranked_product_ids\":[%s]%s%s,\"latency_ms\":42}"
+                .formatted(ids, providerField, modelField);
     }
 
     record Wiring(AiAdapterClient client, MockRestServiceServer rewriteServer,
