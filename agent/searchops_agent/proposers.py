@@ -41,10 +41,12 @@ LLM 唯一可能还有增量的地方是符号空间：`synonyms` 与 `rewrite_r
 
 from __future__ import annotations
 
+import html
 import json
 import logging
 import os
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Protocol
 
@@ -835,4 +837,530 @@ class LLMProposer:
         return proposals
 
 
-__all__ = ["Proposal", "Proposer", "RuleProposer", "LLMProposer"]
+# --- 符号启发式提案者（LLM 臂的同空间对照组） ----------------------------------
+#
+# 为什么要有这个类, 一句话: 上一轮 `RuleProposer` 只输出 `field_weights`, 而 `LLMProposer`
+# 的结构化输出 schema 里**根本没有** `field_weights`。两臂的动作空间不重叠, "LLM 输给规则"
+# 因此是个假命题——两边根本没在比同一件事。本类只输出 `synonyms` 与 `rewrite_rules`, 与
+# `_ProposedChange` 逐字段同构, 交给**同一个** `_Compiler`、**同一套**守卫, 再走同一个
+# `ProposalLoop`。只有这样,"LLM 相对一个朴素基线到底多做了什么"才第一次成为可测的问题。
+#
+# 设计原则: 只做**显而易见的机械操作**。这个类存在的目的不是赢, 是给 LLM 臂立一条地板线。
+# 上一轮 LLM 的全部产出是 30 条"剥前导标点"的整串改写
+# (`experiments/propose-llm-20260816T1344.json`); 如果一个正则基线也能产出同样的东西,
+# 那 LLM 在这条链路上的增量就是零, 而这正是需要被量出来的数字。
+
+
+_ASCII_FOLD_EXTRA: dict[str, str] = {
+    "’": "'", "‘": "'", "“": '"', "”": '"',
+    "–": "-", "—": "-", " ": " ",
+}
+"""`asciifolding` 里几个 NFKD 分解不掉、但本数据集真实出现的映射。
+
+索引分析器实测是 ``standard`` tokenizer + ``lowercase`` + ``asciifolding``
+(``GET /<index>/_settings`` 的 ``analysis.analyzer.searchops_text``)。NFKD 只能去掉组合
+附加符号 (``café`` → ``cafe``), 而 ``’`` (U+2019) 这类标点要靠 Lucene 的映射表。本数据集里
+``$60 ps4 that’s not …`` 就带 U+2019, 不映射的话"改写前后 token 是否相同"会误判。
+"""
+
+
+def _fold(text: str) -> str:
+    """近似 Lucene `ASCIIFoldingFilter`: 先查显式映射表, 再 NFKD 去组合符号。"""
+    mapped = "".join(_ASCII_FOLD_EXTRA.get(ch, ch) for ch in text)
+    return "".join(ch for ch in unicodedata.normalize("NFKD", mapped) if not unicodedata.combining(ch))
+
+
+def _analyzed_tokens(text: str) -> list[str]:
+    """本地近似索引分析器的分词结果, **只用于判定"这条改写在 token 层面动了没有"**。
+
+    为什么需要它: 引擎在分词阶段就把前导标点丢掉了, 所以"剥标点"这类改写很可能是恒等变换。
+    `_Compiler` 已有的恒等守卫是**字符串**层面的 (`rewrite` 归一化后等于 `match`), 抓不到
+    "字符串变了但 token 流没变"这一类。本函数把这类改写识别出来, 分流到"外观改写"提案里,
+    与"真的改变了 token 流"的提案分开评测——两者混在一条提案里, 事后就分不清是谁的功劳。
+
+    为什么不去问 Elasticsearch: 提案器必须是纯确定性的、可离线复现的, 一旦依赖服务端的
+    `_analyze`, 同一份证据在服务不可用时就产出不同的提案, 第 4 条要求 (确定性) 直接失效。
+    代价是这里只是**近似**, 所以它的结论只进 `rationale`/日志, 不参与任何丢弃决策。
+
+    近似的具体口径 (照 UAX#29 的 word break, 已逐条对着本索引的 `_analyze` 核对过):
+      * ``.`` 连接两侧的 alnum   —— ``3.5`` → 一个 token
+      * ``,`` 连接两侧的数字     —— ``1,000`` → 一个 token, 而 ``a,b`` 分开
+      * ``'`` 连接两侧的字母     —— ``we're`` → 一个 token, 而 ``90's`` → ``90`` + ``s``
+      * ``_`` 属于词内字符       —— ``c_d`` → 一个 token
+      * 其余非 alnum 一律是分隔符 —— ``&#34;`` → ``34``, ``.22`` → ``22``, ``9x5"`` → ``9x5``
+    """
+    # 先折叠再小写: NFKD 分解个别字符会产出大写 (``Ⅻ`` → ``XII``), 反过来做会漏掉它们。
+    s = _fold(str(text)).lower()
+    tokens: list[str] = []
+    i, n = 0, len(s)
+    while i < n:
+        if not (s[i].isalnum() or s[i] == "_"):
+            i += 1
+            continue
+        start = i
+        while i < n:
+            ch = s[i]
+            if ch.isalnum() or ch == "_":
+                i += 1
+                continue
+            # i > start 恒成立(起点必是 alnum), 所以 s[i-1] 一定存在。
+            prev, nxt = s[i - 1], (s[i + 1] if i + 1 < n else "")
+            if ch == "." and prev.isalnum() and nxt.isalnum():
+                i += 2
+                continue
+            if ch == "," and prev.isdigit() and nxt.isdigit():
+                i += 2
+                continue
+            if ch == "'" and prev.isalpha() and nxt.isalpha():
+                i += 2
+                continue
+            break
+        tokens.append(s[start:i])
+    return tokens
+
+
+_EDGE_PUNCT = re.compile(r"^[^0-9a-z]+|[^0-9a-z]+$")
+
+
+def _strip_edge_punct(query: str) -> str:
+    """逐个空白分片剥掉首尾的非字母数字字符, 空片丢弃。**这就是"朴素正则基线"本身。**
+
+    依据: 上一轮 LLM 的 30 条改写里, 有 24 条的实质内容恰好是这一个操作
+    (``'-headphones without mic'`` → ``'headphones without mic'`` 等)。要回答"LLM 比正则多做了
+    什么", 就必须先有这个正则。
+
+    刻意只剥**首尾**而不剥词内标点: 词内的 ``.``/``,``/``'`` 在 UAX#29 下是连接符
+    (``3.5``/``1,000``/``we're`` 都是单 token), 一律替换成空格反而会把一个 token 拆成两个,
+    那是引入改动而不是复制引擎已有的行为——朴素基线不该比引擎更激进。
+
+    顺带做了 asciifolding (``that’s`` → ``that's``): 索引侧本来就折, 所以这对 token 流是恒等的,
+    但能让产出的 rewrite 串是纯 ASCII, 人读产物时不会把 U+2019 误认成 U+0027。
+    """
+    parts = [_EDGE_PUNCT.sub("", chunk) for chunk in _fold(str(query)).lower().split()]
+    return " ".join(p for p in parts if p)
+
+
+#: 符号 → 零售词的展开表。**顺序固定**(元组而非 dict 推导), 确定性的一部分。
+#: 每条都附了"为什么这是机械操作"以及"防护条件"。
+_SYMBOL_REWRITES: tuple[tuple[str, re.Pattern[str], str], ...] = (
+    # ``$5`` → ``5 dollar``。价格符号在英文零售语境里只有一个读法; 商品标题里写的是
+    # "dollar"/"dollars" 而不是 ``$``, 而分析器会把 ``$`` 整个丢掉, 于是这条查询里的价格
+    # 信息在 token 层面凭空消失。允许 ``$ 5`` 中间有一个空格。
+    ("money", re.compile(r"\$\s?(\d[\d,]*(?:\.\d+)?)"), r"\1 dollar"),
+    # ``5"`` → ``5 inch``。防护: 双引号前必须紧跟数字, 否则它是引号不是英寸符
+    # (证据里的 ``&#34;we're in the army…&#34;`` 正是引号, 前面是空白, 不会命中)。
+    ("inch", re.compile(r"(?<=[0-9])\s*\""), " inch"),
+    # ``6'`` → ``6 foot``。防护双侧: 前必须是数字(排除 ``don't``), 后不能是字母
+    # (排除 ``90's``)。本轮证据里一次都没触发, 保留是因为它与 inch 同源同形。
+    ("foot", re.compile(r"(?<=[0-9])'(?![a-z])"), " foot"),
+    ("percent", re.compile(r"(?<=[0-9])\s*%"), " percent"),
+    # 独立成词的 ``&`` → ``and``。HTML 实体解码在它之前跑, 所以 ``&#34;`` 里的 ``&`` 到这里
+    # 已经不存在了, 不会被误当成连词。
+    ("ampersand", re.compile(r"(?<=\s)&(?=\s)"), "and"),
+)
+
+_ENTITY = re.compile(r"&(?:#\d{1,7}|#[xX][0-9a-fA-F]{1,6}|[A-Za-z][A-Za-z0-9]{1,31});")
+
+
+def _decode_entities(query: str) -> str:
+    """把 HTML 实体解回字符。``html.unescape`` 是标准库, 纯函数, 确定性。
+
+    这是本文件里唯一一个**能证明**自己不是恒等变换的机械操作: ``&#34;`` 在分析器下产出一个
+    垃圾 token ``34`` (实测 ``&#34;we're …&#34;`` → ``['34', "we're", …, '34']``), 解码后这两个
+    ``34`` 消失。剥标点做不到这件事——``&#34;we're`` 剥掉首部的 ``&#`` 之后剩 ``34;we're``,
+    token 流一字不变。
+    """
+    return html.unescape(query) if _ENTITY.search(query) else query
+
+
+_MODEL_YEAR = re.compile(r"^(0\d|1\d|2\d)\s+[a-z]")
+"""查询以两位数字 + 空格 + 字母开头 → 在汽配语境里几乎必然是车型年份。
+
+依据: 本轮 train 侧证据里三条 NDCG@10 = 0 的查询全是这个形状
+(``03 durango front calipers…`` / ``04 nissan titan…`` / ``07 passat…``), 而它们**没有任何
+标点可剥**——剥标点的启发式对它们完全无能为力, 只有同义词能碰到它们。
+"""
+
+#: 频次挖掘时要跳过的功能词。不含具体品类词, 免得把真正的信号也滤掉。
+_FUNCTION_WORDS: frozenset[str] = frozenset(
+    {
+        "the", "a", "an", "and", "or", "for", "with", "that", "this", "are", "is", "was",
+        "on", "in", "at", "of", "to", "it", "its", "be", "but", "have", "has", "do", "does",
+        "can", "will", "would", "should", "what", "which", "who", "when", "where", "how",
+        "my", "me", "you", "your", "they", "them", "there", "here", "one", "two", "pack",
+    }
+)
+
+
+@dataclass(frozen=True)
+class _Family:
+    """一族启发式的产出。一族 = 一条提案, 因为门禁是逐提案判的。
+
+    为什么不把三族合成一条提案: `ProposalLoop` 对每条提案跑一次完整评测, 合成一条就只能得到
+    "这一堆东西合起来有没有用"。而本轮要回答的问题恰恰是分族的——"剥标点"预期是恒等变换,
+    "符号展开"预期能动 token 流, 两者混在一起, 测出 Δ=0 时无法分辨是两族都没用, 还是一族有用
+    一族有害正好抵消。
+    """
+
+    key: str
+    name: str
+    rationale: str
+    synonyms: list[_SynonymEntry] = field(default_factory=list)
+    rewrite_rules: list[_RewriteRuleEntry] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+    """本族在**送进 `_Compiler` 之前**就自我否决的条目。与 `_Compiler` 的守卫记录合并进
+    `Proposal.guard_notes`, 但加了前缀以示区分: 一个是启发式自己的取舍, 一个是共用守卫的裁决。
+    """
+
+
+class SymbolicRuleProposer:
+    """确定性的符号提案器 —— 与 `LLMProposer` **同空间**的对照臂。
+
+    与 `LLMProposer` 的关系, 逐条对齐 (对照成立的全部前提):
+
+    ======================  ==========================================================
+    证据                    同一个 `_Evidence.build(diagnosis, max_low, max_zero)`,
+                            默认窗口 (40 / 20) 也相同
+    输出形状                同一组 `_SynonymEntry` / `_RewriteRuleEntry` / `_ProposedChange`
+    守卫                    同一个 `_Compiler.compile()` —— 引用校验、子串/整串可行性、
+                            否定守卫、契约上下界, 一条不多一条不少
+    条数上限                同一个 `MAX_PROPOSALS`
+    无证据时                同样抛 `ValueError`, 不返回空列表
+    闭环                    同一个 `ProposalLoop.assess()`, 同一份基线, 同一批评测查询
+    ======================  ==========================================================
+
+    唯一的差别只有"提案从哪来"。任何别的差别都会让对照失效, 所以本类**不**新增守卫、
+    **不**放宽守卫、**不**碰 `field_weights` / `brand_boosts` / `minimum_score`。
+
+    三族启发式, 以及**故意不做**的事
+    --------------------------------
+
+    **(1) `punctuation` —— 首尾标点规范化。** 上一轮 LLM 提案的全部内容就是这个 (30 条改写里
+    24 条的实质操作), 所以它必须在基线里。预期结论: **恒等**。分析器在分词阶段已经把首尾标点
+    丢了 (实测 ``'# 2 pencils not sharpened'`` 与 ``'2 pencils not sharpened'`` 分词结果逐位相同),
+    所以这一族在 token 层面很可能什么都没改。把它单列成一条提案, 就是为了让这个"什么都没改"
+    被评测直接量出来, 而不是靠嘴说。
+
+    **(2) `symbol` —— 符号与 HTML 实体展开。** 只收 `_analyzed_tokens` 判定为**真的改变了
+    token 流**的改写: ``$5`` → ``5 dollar``、``5"`` → ``5 inch``、``&#34;`` 解码掉两个垃圾
+    token ``34``。这是"机械操作里唯一可能有效的那一半", 与 (1) 分开评测。
+
+    **(3) `synonym` —— 符号同义词与车型年份。** 只有这一族能泛化到证据之外: `expandSynonyms`
+    是**子串包含**触发, 所以 term ``"`` 会命中 train 里全部 4 条带英寸符的查询, 而证据里只有
+    1 条。这是本轮唯一可能撬动均值的杠杆 (改写是整串相等, 一条规则只影响一条查询)。
+    子串误伤的防护写在每条候选旁边。
+
+    **故意不做的事 (每条都有依据):**
+
+    * **不做拼写纠错。** ``multi_match`` 开了 ``fuzziness: AUTO``: 长度 > 5 的 token 容许 2 次
+      编辑。上一轮 LLM 把 ``!awnmower`` 改成 ``lawnmower`` (编辑距离 1, 长度 8) ——
+      引擎本来就能匹配上, 这条改写的边际收益是零。同理 ``lacies`` → ``laces``。
+      把它留给 LLM 臂: 如果 LLM 的增量全落在这里, 那增量就是零, 而这是个结论不是遗漏。
+    * **不插入语义名词。** ``.22`` → ``.22 caliber``、``#15`` → ``size 15``、
+      ``$1 million`` → ``1 million dollar bills`` 都需要品类知识, 正则给不出。
+      **这正是 LLM 臂可能的真实增量, 所以必须留空**——基线把它做了, 对照就白做了。
+    * **不做 ``#`` → ``number``/``size``。** ``#`` 在本数据集里至少有三种读法 (``# 2 pencils``
+      的份量号、``#9x5`` 的螺丝规格、``#15 charm`` 的尺码), 机械展开必然选错一种; 而分析器
+      本来就把 ``#`` 丢掉, 展开只会凭空加一个标题里多半不存在的 token。
+    * **不做频次挖掘出来的同义词。** train 侧证据只有个位数条查询, 其中出现次数 ≥2 的
+      token 是 ``not`` / ``without`` / ``the`` 这类功能词, 而给否定词做同义词展开正是
+      `NEGATION_CUES` 守卫存在的理由。挖掘照跑, 结果写进 `guard_notes` 存证, 但不产出条目 ——
+      "机械地弃权"也是一个需要被记录的动作。
+    * **不删词、不缩短查询。** ``operator=or`` 下删掉购物者打出来的词只会丢信号,
+      而且"哪个词该删"没有机械判据。
+    """
+
+    name = "symbolic"
+    origin = "symbolic-rule"
+
+    #: 与 `LLMProposer.__init__` 的默认值逐位相同 —— 两臂看到的证据窗口必须一样宽。
+    _DEFAULT_MAX_LOW: ClassVar[int] = 40
+    _DEFAULT_MAX_ZERO: ClassVar[int] = 20
+
+    #: 单字符符号同义词。子串触发, 所以只收"在英文零售查询里读法唯一"的符号。
+    #: 每一项: (符号, 展开项, 防护说明)。故意做成有序元组而不是 dict, 确定性的一部分。
+    _SYMBOL_SYNONYMS: ClassVar[tuple[tuple[str, str, str], ...]] = (
+        ('"', "inch", "双引号在商品查询里几乎只作英寸符; 只在证据里它紧跟数字时才提"),
+        ("$", "dollar", "价格符号读法唯一"),
+        ("%", "percent", "百分号读法唯一"),
+    )
+
+    def __init__(
+        self,
+        *,
+        max_low: int = _DEFAULT_MAX_LOW,
+        max_zero: int = _DEFAULT_MAX_ZERO,
+        max_proposals: int = MAX_PROPOSALS,
+        min_support: int = 2,
+    ) -> None:
+        self.max_low = max_low
+        self.max_zero = max_zero
+        self.max_proposals = max_proposals
+        self.min_support = min_support
+        # 刻意**不**定义 self.model / model_name / llm_model:
+        # `loop._proposer_model()` 按这三个属性名取模型名, 对照报告里"模型"那一栏必须为空,
+        # 否则一个没有调用任何模型的臂会在产物里显示成有模型。
+
+    # ------------------------------------------------------------------ 三族启发式
+
+    def _punctuation_family(self, ordered: list[tuple[int, str]]) -> _Family:
+        """首尾标点规范化 —— 朴素正则基线, 预期恒等。"""
+        entries: list[_RewriteRuleEntry] = []
+        notes: list[str] = []
+        for qid, query in ordered:
+            cleaned = _strip_edge_punct(query)
+            if not cleaned:
+                notes.append(f"[启发式] 跳过 query_id={qid}: 剥掉首尾标点后不剩任何字符")
+                continue
+            # 与 match 逐字相同的改写交给 `_Compiler` 的恒等守卫去判, 不在这里预先滤掉 ——
+            # 守卫记录本身就是产物的一部分("这条查询根本没有标点可剥"是一条结论)。
+            entries.append(
+                _RewriteRuleEntry(match=query, rewrite=cleaned, evidence_query_ids=[qid])
+            )
+        same, diff = self._token_split(entries)
+        if diff:
+            notes.append(
+                "[启发式] 本族有 "
+                f"{len(diff)} 条改写在本地近似分词下改变了 token 流 ({', '.join(diff)}); "
+                "按设计它们本该只出现在 symbol 族, 请复核 _strip_edge_punct"
+            )
+        return _Family(
+            key="punctuation",
+            name="Strip leading and trailing punctuation from evidence queries",
+            rationale=(
+                "A whole-query rewrite that removes only the punctuation at the edges of each "
+                "token. This is the naive regular-expression baseline and it is deliberately "
+                f"nothing more. {same} of the {len(entries)} candidate rewrites leave the "
+                "analysed token stream unchanged (the remainder are dropped by the shared "
+                "compiler guard as string-level identities), so this proposal is expected to "
+                "move NDCG@10 by exactly zero; measuring that zero is the point."
+            ),
+            rewrite_rules=entries,
+            notes=notes,
+        )
+
+    def _symbol_family(self, ordered: list[tuple[int, str]]) -> _Family:
+        """符号 / HTML 实体展开 —— 只收真的改变了 token 流的改写。"""
+        entries: list[_RewriteRuleEntry] = []
+        notes: list[str] = []
+        fired: list[str] = []
+        for qid, query in ordered:
+            expanded = _decode_entities(query)
+            hits: list[str] = ["entity"] if expanded != query else []
+            for label, pattern, repl in _SYMBOL_REWRITES:
+                expanded, count = pattern.subn(repl, expanded)
+                if count:
+                    hits.append(label)
+            if not hits:
+                continue  # 这条查询里没有任何可展开的符号, 本族对它无话可说
+            rewrite = _strip_edge_punct(expanded)
+            if not rewrite:
+                continue
+            if _analyzed_tokens(rewrite) == _analyzed_tokens(query):
+                # token 流没变 = 对引擎而言是恒等操作。留在 punctuation 族即可,
+                # 放进本族会污染"本族只含有效改动"这个前提。
+                notes.append(
+                    f"[启发式] 跳过 query_id={qid}: 展开后 token 流与原查询相同, "
+                    "属于外观改动, 已归入 punctuation 族"
+                )
+                continue
+            entries.append(
+                _RewriteRuleEntry(match=query, rewrite=rewrite, evidence_query_ids=[qid])
+            )
+            fired.append(f"query_id={qid}({'+'.join(hits)})")
+        return _Family(
+            key="symbol",
+            name="Expand retail symbols and decode HTML entities",
+            rationale=(
+                "Rewrites that change what the analyser actually indexes: a currency or unit "
+                "symbol becomes the retail word the catalogue spells out, and an HTML entity "
+                "is decoded so that its digits stop entering the index as a junk token. Only "
+                "rewrites whose analysed token stream differs from the original are kept "
+                f"({len(entries)} of them: {', '.join(fired) or 'none'}), which is what "
+                "separates this proposal from the punctuation one."
+            ),
+            rewrite_rules=entries,
+            notes=notes,
+        )
+
+    def _synonym_family(self, ordered: list[tuple[int, str]]) -> _Family:
+        """符号同义词 + 车型年份 —— 唯一能泛化到证据之外的一族。"""
+        entries: list[_SynonymEntry] = []
+        notes: list[str] = []
+
+        # (a) 单字符符号同义词。`expandSynonyms` 是子串包含触发, 所以这些 term 会命中
+        #     **整个评测集**里含该符号的查询, 而不只是证据里的那几条 —— 这正是要的泛化。
+        for symbol, expansion, guard in self._SYMBOL_SYNONYMS:
+            cited = [qid for qid, q in ordered if symbol in q]
+            if not cited:
+                # 不在证据里出现的 term, `_Compiler` 也会拦 (子串触发条件不成立)。
+                # 这里先记一笔, 让"为什么没提 $ → dollar"在产物里说得清。
+                notes.append(f"[启发式] 未提同义词 {symbol!r} → {expansion!r}: 证据里没有这个符号")
+                continue
+            if symbol == '"':
+                # 防护: 双引号既是英寸符也是引号。只有当证据里它**紧跟数字**时才敢展开成 inch。
+                numeric = [qid for qid, q in ordered if re.search(r'[0-9]\s*"', q)]
+                if not numeric:
+                    notes.append(
+                        '[启发式] 未提同义词 \'"\' → \'inch\': 证据里的双引号都不紧跟数字, '
+                        "更像引号而非英寸符"
+                    )
+                    continue
+                cited = numeric
+            entries.append(
+                _SynonymEntry(term=symbol, expansions=[expansion], evidence_query_ids=cited)
+            )
+            notes.append(f"[启发式] 同义词 {symbol!r} → {expansion!r} 的防护依据: {guard}")
+
+        # (b) 车型年份。两位数字开头 + 空格 + 字母 → 展开成四位年份。
+        #     **子串误伤必须说清楚**: `_normalize_query` 会把 term 首尾空白折掉, 所以 term 只能是
+        #     裸的两位数字 ``03``, 它会在任何含 "03" 的查询上触发 (实测 train 1400 条里
+        #     ``03`` 命中 2 条: 目标查询, 外加 ``.030 lincoln flux core`` 这条误伤)。
+        #     接受这个代价的理由: 展开项只是**追加**一个 token, 原查询一字不动, 所以误伤的
+        #     上限是"多一个 OR 分支", 而不是语义反转; 而三条 NDCG@10 = 0 的汽配查询除此之外
+        #     没有任何机械抓手可用。
+        seen_years: list[str] = []
+        for qid, query in ordered:
+            if not _MODEL_YEAR.match(query):
+                continue
+            two = query[:2]
+            if two in seen_years:
+                continue
+            seen_years.append(two)
+            entries.append(
+                _SynonymEntry(
+                    term=two,
+                    # `_MODEL_YEAR` 只匹配 00–29 开头, 所以世纪前缀恒为 "20"。
+                    expansions=["20" + two],
+                    evidence_query_ids=[q for q, s in ordered if s[:2] == two and _MODEL_YEAR.match(s)],
+                )
+            )
+        if seen_years:
+            notes.append(
+                f"[启发式] 车型年份同义词 {seen_years}: term 只能是裸两位数字 "
+                "(_normalize_query 折掉首尾空白), 会在任何含该数字串的查询上子串触发; "
+                "展开项是追加而非替换, 误伤上限为多一个 OR 分支"
+            )
+
+        # (c) 频次挖掘 —— 跑, 但机械地弃权。见类文档"故意不做的事"。
+        counts: dict[str, int] = {}
+        for _, query in ordered:
+            for tok in sorted(set(_analyzed_tokens(query))):
+                if len(tok) > 2 and tok not in _FUNCTION_WORDS and tok not in NEGATION_CUES:
+                    counts[tok] = counts.get(tok, 0) + 1
+        recurring = sorted(t for t, c in counts.items() if c >= self.min_support)
+        notes.append(
+            f"[启发式] 频次挖掘: 证据里出现 ≥{self.min_support} 次的实词 {recurring or '无'}; "
+            "一律不产出同义词 —— 展开项需要品类知识, 正则给不出, 而给否定词/功能词做展开正是"
+            "否定守卫要拦的东西。这一条是刻意的弃权, 不是遗漏。"
+        )
+
+        return _Family(
+            key="synonym",
+            name="Symbol and model-year synonyms",
+            rationale=(
+                "Synonym entries fire on SUBSTRING containment, so unlike a rewrite rule they "
+                "generalise past the evidence: a term of '\"' reaches every query in the "
+                "evaluation set that carries an inch mark, not only the one cited here. These "
+                "entries append a token the shopper did not type — the retail word for a unit "
+                "symbol, or the four-digit form of a two-digit model year — and never remove "
+                "anything, so a misfire costs one extra OR branch and cannot invert intent."
+            ),
+            synonyms=entries,
+            notes=notes,
+        )
+
+    # ------------------------------------------------------------------ 辅助
+
+    @staticmethod
+    def _token_split(entries: list[_RewriteRuleEntry]) -> tuple[int, list[str]]:
+        """返回 (token 流未变的条数, token 流变了的条目标签)。只用于自检与文案。"""
+        same, diff = 0, []
+        for e in entries:
+            if _analyzed_tokens(e.rewrite) == _analyzed_tokens(e.match):
+                same += 1
+            else:
+                diff.append(f"query_id={e.evidence_query_ids[0] if e.evidence_query_ids else '?'}")
+        return same, diff
+
+    # ------------------------------------------------------------------ Proposer 契约
+
+    def propose(self, diagnosis: dict[str, Any], current: StrategyConfig) -> list[Proposal]:
+        """按证据机械地产出提案。确定性: 同一份 `diagnosis` 两次调用产出逐位相同的结果。
+
+        确定性从哪来: (a) 证据按 `query_id` 排序后再遍历, 不依赖诊断列表的到达顺序;
+        (b) 符号表、同义词表都是有序元组; (c) 频次挖掘的结果 `sorted` 之后才用;
+        (d) 全程不取时间、不取随机数、不调用任何网络服务(包括不问 ES 要分词结果)。
+
+        空列表的含义与 `LLMProposer` 一致: **跑了, 但没有一条通过守卫**。"没跑"在无证据时
+        会抛 `ValueError` —— 两臂在这一点上的行为必须一样, 否则"某臂返回空"在两边含义不同。
+        """
+        evidence = _Evidence.build(diagnosis, self.max_low, self.max_zero)
+        if not evidence.by_id:
+            raise ValueError(
+                "本轮诊断没有任何可引用的查询证据（zero-result 与 low-quality 都是空）；"
+                "拒绝在无证据的情况下产出提案。"
+            )
+
+        # 按 query_id 排序 —— 确定性的第一道保证。
+        ordered = sorted(evidence.by_id.items())
+
+        families = [
+            self._punctuation_family(ordered),
+            self._symbol_family(ordered),
+            self._synonym_family(ordered),
+        ][: self.max_proposals]
+
+        compiler = _Compiler(evidence, current)
+        proposals: list[Proposal] = []
+        for family in families:
+            change = _ProposedChange(
+                name=family.name,
+                rationale=family.rationale,
+                synonyms=family.synonyms,
+                rewrite_rules=family.rewrite_rules,
+            )
+            config, guard_notes, cited = compiler.compile(change)
+            notes = family.notes + guard_notes
+            if config is None:
+                logger.warning(
+                    json.dumps(
+                        {"event": "agent.symbolic.proposal_discarded", "proposer": self.name,
+                         "family": family.key, "name": family.name,
+                         "synonyms": len(family.synonyms),
+                         "rewrite_rules": len(family.rewrite_rules), "notes": notes},
+                        ensure_ascii=False,
+                    )
+                )
+                continue
+            proposals.append(
+                Proposal(
+                    name=family.name,
+                    config=config,
+                    rationale=family.rationale,
+                    evidence=[f"query_id={qid} {evidence.by_id[qid]!r}" for qid in cited],
+                    # 族名编进 origin: `loop._outcome_payload` 归档 origin 而不归档族,
+                    # 不带上就没法在产物里分辨"这条 Δ 是哪族启发式做出来的"。
+                    origin=f"{self.origin}:{family.key}",
+                    model=None,  # 没有模型。对照报告里这一栏必须与 LLM 臂可区分。
+                    guard_notes=notes,
+                )
+            )
+            if guard_notes:
+                logger.warning(
+                    json.dumps(
+                        {"event": "agent.symbolic.guard_notes", "proposer": self.name,
+                         "family": family.key, "notes": guard_notes},
+                        ensure_ascii=False,
+                    )
+                )
+        return proposals
+
+
+__all__ = [
+    "Proposal",
+    "Proposer",
+    "RuleProposer",
+    "LLMProposer",
+    "SymbolicRuleProposer",
+]

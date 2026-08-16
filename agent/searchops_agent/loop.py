@@ -51,6 +51,28 @@ RNG 的实现细节，而哈希序不依赖。
 那时用 `--eval-sample 0` 跑满，并在产物里如实记下 N。
 子集的 N、成员指纹、选取方式一律写进产物：两个提案器的对照必须在同一批查询上才算数。
 
+**(4) 每条提案同时报告两种分析，但只有一种能决定门禁。**
+符号空间的提案效应是稀疏的——引擎侧 `SearchQueryCompiler.applyRewrite` 走整串相等
+比较 + 整条替换，一条 rewrite_rule 最多影响一条查询；`expandSynonyms` 走子串包含触发，
+虽能泛化但也误伤。于是"30 条规则动了 30 条查询"在 n=1400 的均值上被稀释到贴着最小可
+检出差以下。只报整体检验，读到的永远是"什么都没发生"，而实际可能是"20 条被显著改善、
+10 条被改坏"——这两种事实在均值上长得一模一样。
+
+因此 `assess()` 在门禁之后额外算一份**受影响子集**（`stats.affected_analysis`）：
+逐 query_id 容差比对候选与基线，取指标真的动了的那些查询，在该子集上跑同一套配对检验。
+两套结论在产物里**并列**呈现（`proposals[].conclusions`），并且：
+
+  * (a) 整体配对检验 —— 预注册、全评测子集、**门禁的唯一依据**；
+  * (b) 受影响子集分析 —— **事后条件化**（成员资格由候选自己的结果决定），只作描述性
+        证据，p 值不具备预注册检验的错误率保证，**不得**与 (a) 同等看待。
+
+门禁判定不读 (b) 的任何字段。这不是"暂时没接上"，而是接上就等于挑一个对自己有利的切片：
+子集的选中条件恰好是"这条查询动了"，零差值样本被系统性排除，差值天然远离零。
+产物里的 `affected_subset.used_by_gate` 恒为 false，并原样带上 `stats.POST_HOC_CAVEAT` 全文。
+
+失败隔离：(b) 的计算包在自己的 try 里，出错只写进 `affected_subset_error`，
+不改变 (a) 的结论也不改变提案的 status。描述性分析永远不该有能力改变门禁结局。
+
 
 产物
 ----
@@ -73,7 +95,15 @@ from .client import SearchOpsClient, ToolGatewayError
 from .eval.gate import GateDecision, GatePolicy, evaluate_gate
 from .eval.loader import by_query_id, load_run
 from .eval.splits import Split, load_split, query_ids_hash, to_eval_queries
-from .eval.stats import PairedResult, benjamini_hochberg
+from .eval.stats import (
+    AFFECTED_DETECT_METRICS,
+    AFFECTED_TOLERANCE,
+    POST_HOC_CAVEAT,
+    AffectedSubset,
+    PairedResult,
+    affected_analysis,
+    benjamini_hochberg,
+)
 from .models import EvaluationResult, StrategyConfig
 from .proposers import Proposal, Proposer
 from .tools import Tool, build_registry
@@ -90,13 +120,60 @@ DEFAULT_EVAL_SAMPLE = 700
 EVAL_K = 10
 """服务端目前只接受 k=10。"""
 
-ARTIFACT_SCHEMA = "searchops.propose-run/1"
+ARTIFACT_SCHEMA = "searchops.propose-run/2"
+"""产物 schema 版本。
+
+/2 相对 /1 是**纯增量**：/1 的每个字段都还在原位、含义不变，只是每条提案多了
+`affected_subset` / `affected_subset_error` / `conclusions` 三个键，顶层多了
+`field_notes`。按 /1 写的读取方不改代码也能继续读 /2。
+版本号仍然要涨，否则下游无法区分"这份产物没有子集分析"和"这份产物的候选没受影响"。
+"""
+
+ARTIFACT_SCHEMA_SUPERSEDES = ("searchops.propose-run/1",)
+"""本 schema 向后兼容的旧版本，原样写进产物供下游判断。"""
 
 # 状态词表。集中在这里，免得报告与产物各写各的。
 STATUS_SUBMITTED = "submitted"
 STATUS_BLOCKED = "blocked"
 STATUS_DRY_RUN = "gate-passed（dry_run，未建草稿）"
 STATUS_ERROR = "error"
+
+#: 产物里新增结构的字段说明。写进产物本身而不是只写在这里——下游读的是 JSON，
+#: 而"这份 p 值不能当预注册结论用"这种限定条件必须跟着数据走，不能靠读代码的人记得。
+FIELD_NOTES: dict[str, str] = {
+    "schema": (
+        "searchops.propose-run/2。相对 /1 是纯增量：/1 的所有字段原位保留、含义不变，"
+        "新增 proposals[].affected_subset、proposals[].affected_subset_error、"
+        "proposals[].conclusions 与顶层 field_notes / schema_supersedes。"
+    ),
+    "proposals[].gate": (
+        "(a) 整体配对检验。预注册口径：全评测子集（evaluation_setup.eval_query_ids 全体）、"
+        "多指标 BH 校正。**门禁判定的唯一依据**，promote / status 只由它决定。"
+    ),
+    "proposals[].affected_subset": (
+        "(b) 受影响子集分析。先逐 query_id 容差比对候选与基线，取检出口径内任一指标"
+        "真的发生变化的查询，再在该子集上跑同一套配对检验（同一 bootstrap / 置换检验 /"
+        "iterations）。**事后条件化（post-hoc conditioning）**：成员资格由候选自己的评测"
+        "结果决定，零差值样本被系统性排除，子集内差值天然远离零，p 值不具备预注册检验的"
+        "错误率保证。只作描述性证据，不得与 (a) 同等看待。used_by_gate 恒为 false。"
+    ),
+    "proposals[].affected_subset.query_ids": (
+        "受影响查询的 query_id 列表（升序，各检出指标的并集）。按指标拆分见 changed_by_metric。"
+    ),
+    "proposals[].affected_subset.paired": (
+        "子集上的配对检验结果，形状与 gate.paired 一致，另带 wins/losses/ties 与 post_hoc=true。"
+        "bh_pass 恒为 null：BH 控制的是预注册检验族的 FDR，而该检验不在那个族里，"
+        "套一个 BH 会让它看起来像门禁族的一员。"
+    ),
+    "proposals[].affected_subset_error": (
+        "子集分析自身的异常（字符串，正常为 null）。它与门禁完全隔离：这里非 null 时"
+        "gate 结论与 status 照常有效。"
+    ),
+    "proposals[].conclusions": (
+        "(a) 与 (b) 两套结论按指标并列，便于直接读出'均值没动但 N 条查询被改了'这种情形。"
+        "gate_decided_by 恒为 'overall_prereg'。"
+    ),
+}
 
 
 class BaselineMismatch(RuntimeError):
@@ -244,6 +321,10 @@ class Outcome:
     evaluation: EvaluationResult | None = None
     eval_seconds: float | None = None
     decision: GateDecision | None = None
+    #: (b) 受影响子集分析。事后条件化，纯描述性——**不参与 status / promote 的任何判定**。
+    affected: AffectedSubset | None = None
+    #: 子集分析自己出的错。单独记录，好让它永远无法把一条本来有结论的提案变成 ERROR。
+    affected_error: str | None = None
     strategy_id: str | None = None
     status: str = "pending"
     error: str | None = None
@@ -262,7 +343,13 @@ class Outcome:
                 + (f"（{self.eval_seconds:.1f}s）" if self.eval_seconds is not None else "")
             )
         if self.decision:
+            lines.append("    (a) 整体配对检验（预注册，全评测子集，门禁依据）：")
             lines += ["    " + ln for ln in self.decision.render().splitlines()]
+        if self.affected is not None:
+            lines.append("    (b) 受影响子集（事后条件化，仅描述性，门禁不采信）：")
+            lines += ["    " + ln for ln in self.affected.summary().splitlines()]
+        if self.affected_error:
+            lines.append(f"    受影响子集分析失败（不影响门禁结论）：{self.affected_error}")
         if self.error:
             lines.append(f"    错误：{self.error}")
         return "\n".join(lines)
@@ -299,6 +386,8 @@ class LoopReport:
             f"，基线 {Path(self.bench.get('baseline_run', '')).name}，holdout 未参与",
             f"诊断：{self.diagnosis_size}",
             f"提案 {len(self.outcomes)} 条，通过门禁并提交 {len(self.submitted)} 条",
+            "分析口径：(a) 整体配对检验 = 预注册、全评测子集、门禁的唯一依据；"
+            "(b) 受影响子集 = 事后条件化，仅描述提案实际改了哪些查询，不参与判定",
         ]
         lines += [o.render() for o in self.outcomes]
         if self.artifact_path:
@@ -334,6 +423,7 @@ class ProposalLoop:
         use_ai: bool = False,
         verify_baseline_against_service: bool = True,
         include_query_metrics: bool = True,
+        affected_tolerance: float = AFFECTED_TOLERANCE,
     ) -> None:
         self.client = client
         self.proposer = proposer
@@ -351,6 +441,8 @@ class ProposalLoop:
         self.use_ai = use_ai
         self.verify_baseline_against_service = verify_baseline_against_service
         self.include_query_metrics = include_query_metrics
+        #: 判定"这条查询变了"的浮点容差。可配是为了让测试能钉住边界，不是为了调松。
+        self.affected_tolerance = affected_tolerance
         #: 通过注册表访问客户端，越权在构造期就会抛 GovernanceViolation
         self.tools: dict[str, Tool] = build_registry(client)
         self._bench: TrainBench | None = None
@@ -423,6 +515,31 @@ class ProposalLoop:
             self.bench.rows, config, k=EVAL_K, use_ai=self.use_ai
         )
 
+    def _affected(self, candidate: dict[int, dict[str, Any]], decision: GateDecision) -> AffectedSubset:
+        """(b) 受影响子集分析。**纯描述性**，调用方不得据此改变任何判定。
+
+        两处口径刻意各自对齐一件事：
+
+        * 报告指标取 `decision.results` 的**实际**指标序列，而不是重新从 policy 拼一遍。
+          门禁比了什么，子集就比什么——"整体 vs 子集"必须逐指标对得上，中间不能有
+          第二份推导出来的指标列表偷偷分叉。
+        * 检出口径取 主指标 + `AFFECTED_DETECT_METRICS`（去重保序）。主指标必须在里面
+          （它是门禁看的那个），recall10 补一个盲区（召回集合变了但位次没变）。
+
+        重采样参数（iterations / 默认 seed）与门禁完全一致：两套结论之间唯一的差别
+        必须是样本集合，不能是统计实现或随机流。
+        """
+        metrics = tuple(dict.fromkeys(r.metric for r in decision.results))
+        detect = tuple(dict.fromkeys((self.policy.primary_metric, *AFFECTED_DETECT_METRICS)))
+        return affected_analysis(
+            self.bench.baseline,
+            candidate,
+            metrics=metrics,
+            detect_metrics=detect,
+            tolerance=self.affected_tolerance,
+            iterations=self.iterations,
+        )
+
     def assess(self, proposal: Proposal, diagnosis: dict[str, Any]) -> Outcome:
         """一条提案的完整评审：干跑 → 自证 → 门禁 →（非 dry_run 时）建草稿并提交。
 
@@ -443,6 +560,14 @@ class ProposalLoop:
             outcome.decision = evaluate_gate(
                 self.bench.baseline, candidate, self.policy, iterations=self.iterations
             )
+
+            # (b) 受影响子集。**只是描述**：下面的 status 分支一个字段都不读它。
+            # 包在自己的 try 里，是为了让这条性质不依赖"这段代码没 bug"——
+            # 子集分析炸掉时门禁结论照常成立，提案不会因此变成 ERROR。
+            try:
+                outcome.affected = self._affected(candidate, outcome.decision)
+            except Exception as exc:
+                outcome.affected_error = f"{type(exc).__name__}: {exc}"
 
             if not outcome.decision.promote:
                 outcome.status = STATUS_BLOCKED
@@ -504,6 +629,8 @@ class ProposalLoop:
     def _artifact(self, report: LoopReport, current: Any) -> dict[str, Any]:
         return {
             "schema": ARTIFACT_SCHEMA,
+            "schema_supersedes": list(ARTIFACT_SCHEMA_SUPERSEDES),
+            "field_notes": FIELD_NOTES,
             "run_tag": report.run_tag,
             "proposer": report.proposer,
             "proposer_class": type(self.proposer).__name__,
@@ -543,6 +670,11 @@ class ProposalLoop:
                 "submitted": len(report.submitted),
                 "errors": len(report.errored),
                 "statuses": [o.status for o in report.outcomes],
+                # 追加项：一眼看出"门禁全拦下"到底是"什么都没动"还是"动了但均值测不出"。
+                "affected_subset_sizes": [
+                    (o.affected.size if o.affected is not None else None) for o in report.outcomes
+                ],
+                "affected_subset_is_post_hoc": True,
             },
         }
 
@@ -567,6 +699,10 @@ class ProposalLoop:
             )
         if o.decision is not None:
             payload["gate"] = _decision_payload(o.decision)
+        # 新增字段一律**追加**，绝不改动上面任何一个既有键的含义（schema /2 是 /1 的超集）。
+        payload["affected_subset"] = _affected_payload(o.affected)
+        payload["affected_subset_error"] = o.affected_error
+        payload["conclusions"] = _conclusions_payload(o.decision, o.affected)
         return payload
 
 
@@ -599,7 +735,15 @@ def _evaluation_payload(
 
 
 def _paired_payload(r: PairedResult, bh_pass: bool | None) -> dict[str, Any]:
+    """一条配对检验结果的产物形状。
+
+    新增的 `scope` / `post_hoc` 两个键默认按"整体、预注册"填；`_affected_payload`
+    会把它们覆写成子集口径。每条 paired 记录都自带口径标记，是为了让任何一条被单独
+    摘出来引用时都还带着它的适用范围——摘引用的人不一定回头看上下文。
+    """
     return {
+        "scope": "overall_prereg",
+        "post_hoc": False,
         "metric": r.metric,
         "n": r.n,
         "baseline_mean": r.baseline_mean,
@@ -615,6 +759,106 @@ def _paired_payload(r: PairedResult, bh_pass: bool | None) -> dict[str, Any]:
         "effect": r.effect_label,
         "verdict": r.verdict_label,
         "summary": r.summary(),
+    }
+
+
+def _brief(r: PairedResult) -> dict[str, Any]:
+    """并列表格里的精简版配对结论。字段是 _paired_payload 的真子集，含义逐字相同。"""
+    return {
+        "n": r.n,
+        "delta": r.delta,
+        "ci_low": r.ci_low,
+        "ci_high": r.ci_high,
+        "p_value": r.p_value,
+        "cliffs_delta": r.cliffs_delta,
+        "effect": r.effect_label,
+        "significant_by_p": r.significant,
+        "ci_excludes_zero": r.ci_excludes_zero,
+        "verdict": r.verdict_label,
+    }
+
+
+def _affected_payload(a: AffectedSubset | None) -> dict[str, Any] | None:
+    """(b) 的产物形状。
+
+    `post_hoc` / `used_by_gate` / `caveat` 三个字段是**冗余的**，而且是故意冗余：
+    下游可能只读其中任意一个，限定条件必须在每条读取路径上都撞得到，不能只写在 README。
+    """
+    if a is None:
+        return None
+    paired = []
+    for r in a.results:
+        wl = a.win_loss.get(r.metric)
+        entry = _paired_payload(r, None)  # bh_pass=None：子集不属于预注册检验族，见下面的 note
+        entry.update(
+            scope="affected_post_hoc",
+            post_hoc=True,
+            bh_note="子集不做 BH 校正：BH 控制的是预注册检验族的 FDR，该检验不在那个族里",
+            wins=wl.wins if wl is not None else None,
+            losses=wl.losses if wl is not None else None,
+            ties=wl.ties if wl is not None else None,
+        )
+        paired.append(entry)
+    return {
+        "post_hoc": True,
+        "used_by_gate": False,
+        "caveat": a.caveat,
+        "definition": a.definition,
+        "detect_metrics": list(a.detect_metrics),
+        "tolerance": a.tolerance,
+        "overall_n": a.overall_n,
+        "affected_n": a.size,
+        "affected_ratio": a.ratio,
+        "is_empty": a.is_empty,
+        "query_ids": list(a.query_ids),
+        "changed_by_metric": {
+            m: {"n": len(ids), "query_ids": list(ids)} for m, ids in a.changed_by_metric.items()
+        },
+        "zero_result_flips": {
+            "n": len(a.zero_result_flip_ids),
+            "query_ids": list(a.zero_result_flip_ids),
+            "note": "单独报告，**不**并入子集定义（子集按指标值变化定义）；"
+                    "两侧指标都为 0 时它是唯一能看见'结果换了一批'的信号",
+        },
+        "paired": paired,
+        "summary": a.summary(),
+    }
+
+
+def _conclusions_payload(
+    d: GateDecision | None, a: AffectedSubset | None
+) -> dict[str, Any] | None:
+    """(a) 与 (b) 逐指标并列。
+
+    并列本身就是结论的一部分：稀疏效应下 (a) 常常是"Δ+0.0003，p=0.6，不显著"，
+    而 (b) 可能是"n=23，Δ+0.06，win 15 / loss 8"。两行摆在一起，读者才看得出
+    "什么都没发生"与"动了 23 条、有涨有跌"的区别；单看任何一行都会读错。
+    """
+    if d is None:
+        return None
+    rows = []
+    for r in d.results:
+        sub = a.result_for(r.metric) if a is not None else None
+        wl = a.win_loss.get(r.metric) if a is not None else None
+        row: dict[str, Any] = {"metric": r.metric, "overall_prereg": _brief(r)}
+        if sub is None:
+            row["affected_post_hoc"] = None
+        else:
+            row["affected_post_hoc"] = {
+                **_brief(sub),
+                "wins": wl.wins if wl is not None else None,
+                "losses": wl.losses if wl is not None else None,
+                "ties": wl.ties if wl is not None else None,
+            }
+        rows.append(row)
+    return {
+        "gate_decided_by": "overall_prereg",
+        "overall_prereg_note": "预注册、全评测子集、BH 校正；promote 只由它决定",
+        "affected_post_hoc_note": POST_HOC_CAVEAT,
+        "overall_n": d.results[0].n if d.results else None,
+        "affected_n": a.size if a is not None else None,
+        "affected_subset_empty": a.is_empty if a is not None else None,
+        "by_metric": rows,
     }
 
 
@@ -664,4 +908,6 @@ __all__ = [
     "DEFAULT_TRAIN_BASELINE",
     "DEFAULT_ARTIFACTS_DIR",
     "ARTIFACT_SCHEMA",
+    "ARTIFACT_SCHEMA_SUPERSEDES",
+    "FIELD_NOTES",
 ]

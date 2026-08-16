@@ -1,0 +1,74 @@
+{
+  "schema": "searchops.control-runs/1",
+  "tag": "ctl20260816",
+  "evidence_snapshot": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/control-evidence-ctl20260816.json",
+  "evidence_sha256": "b75245d789c891e27849b2014862f1d0ee345233cfad165f99a76d76bfd4e142",
+  "eval_sample": 0,
+  "iterations": 10000,
+  "diagnose_limit": 200,
+  "symbolic_determinism": {
+    "repeat_calls": 2,
+    "identical": true,
+    "names": [
+      "Strip leading and trailing punctuation from evidence queries",
+      "Expand retail symbols and decode HTML entities",
+      "Symbol and model-year synonyms"
+    ]
+  },
+  "runs": [
+    {
+      "run_tag": "ctl20260816-symbolic",
+      "proposer": "symbolic",
+      "model": null,
+      "failed": false,
+      "artifact": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-symbolic-ctl20260816-symbolic.json",
+      "wall_seconds": 59.46,
+      "n_proposals": 3,
+      "statuses": [
+        "blocked",
+        "blocked",
+        "blocked"
+      ]
+    },
+    {
+      "run_tag": "ctl20260816-llm1",
+      "proposer": "llm",
+      "model": "qwen3.7-flash-2026-07-15",
+      "failed": false,
+      "artifact": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm1.json",
+      "wall_seconds": 65.51,
+      "n_proposals": 3,
+      "statuses": [
+        "blocked",
+        "blocked",
+        "blocked"
+      ]
+    },
+    {
+      "run_tag": "ctl20260816-llm2",
+      "proposer": "llm",
+      "model": "qwen3.7-flash-2026-07-15",
+      "failed": false,
+      "artifact": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm2.json",
+      "wall_seconds": 64.9,
+      "n_proposals": 3,
+      "statuses": [
+        "blocked",
+        "blocked",
+        "blocked"
+      ]
+    },
+    {
+      "run_tag": "ctl20260816-llm3",
+      "proposer": "llm",
+      "model": "qwen3.7-flash-2026-07-15",
+      "failed": false,
+      "artifact": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm3.json",
+      "wall_seconds": 23.65,
+      "n_proposals": 1,
+      "statuses": [
+        "blocked"
+      ]
+    }
+  ]
+}

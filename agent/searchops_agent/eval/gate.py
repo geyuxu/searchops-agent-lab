@@ -38,15 +38,41 @@ class GatePolicy:
     """护栏指标：不要求提升，但不允许显著劣化。"""
 
 
+#: 配对置换检验的零分布只由**非零差值**决定：受影响 k 条时只有 2^k 种符号组合，
+#: 因此可达的最小 p 是 1/2^k。k=3 时下限 0.125、k=4 时 0.0625，都大于 α=0.05 ——
+#: 也就是说**无论候选策略多好，检验都不可能判显著**。
+#:
+#: 这类情形必须与"测过了，没通过"分开报。两者都返回 BLOCK 的话，
+#: 门禁就重演了本项目一路在修的同一个缺陷：把两种成因不同的状态塌缩成同一个信号
+#: （见 AiRewriteStatus 的由来）。运维看到 BLOCK 会以为提案被否决了，
+#: 实际是这批证据根本不足以裁决它。
+MIN_AFFECTED = 5
+"""判定所需的最少受影响查询数。低于它则不给结论，只报证据不足。"""
+
+
 @dataclass
 class GateDecision:
     promote: bool
     reasons: list[str] = field(default_factory=list)
     results: list[PairedResult] = field(default_factory=list)
     alignment: str = ""
+    #: 本次判定是否**根本不具备分辨力**（受影响查询太少，检验的 p 下限就大于 α）。
+    #: 与"测了但没通过"必须分开——理由见 MIN_AFFECTED 的注释。
+    undecidable: bool = False
+    affected: int = 0
+
+    @property
+    def verdict(self) -> str:
+        if self.undecidable:
+            return "INSUFFICIENT_EVIDENCE"
+        return "PROMOTE" if self.promote else "BLOCK"
 
     def render(self) -> str:
-        head = "PROMOTE — 可进入人工审批" if self.promote else "BLOCK — 不得提交审批"
+        head = {
+            "PROMOTE": "PROMOTE — 可进入人工审批",
+            "BLOCK": "BLOCK — 不得提交审批",
+            "INSUFFICIENT_EVIDENCE": "INSUFFICIENT_EVIDENCE — 证据不足以裁决，不得据此下结论",
+        }[self.verdict]
         lines = [head, f"  配对覆盖：{self.alignment}"]
         lines += [f"  {r.summary()}" for r in self.results]
         lines += [f"  · {r}" for r in self.reasons]
@@ -59,6 +85,31 @@ def evaluate_gate(
     policy = policy or GatePolicy()
     metrics = (policy.primary_metric,) + tuple(m for m in policy.guard_metrics if m != policy.primary_metric)
     results = compare(baseline, candidate, metrics=metrics, **kw)
+
+    # 先看这次判定有没有分辨力：受影响查询太少时，检验的 p 下限就已经大于 α，
+    # 再往下算也只会得到一个注定不显著的结果，然后被误读成"提案被否决"。
+    shared_ids = sorted(set(baseline) & set(candidate))
+    affected = sum(
+        1 for q in shared_ids
+        if abs(baseline[q][policy.primary_metric] - candidate[q][policy.primary_metric]) > 1e-9
+    )
+    if affected < MIN_AFFECTED:
+        floor = 1.0 if affected == 0 else 1.0 / (2 ** affected)
+        from .stats import align_report
+        return GateDecision(
+            promote=False,
+            undecidable=True,
+            affected=affected,
+            results=results,
+            alignment=align_report(baseline, candidate),
+            reasons=[
+                f"仅 {affected} 条查询的 {policy.primary_metric} 发生变化"
+                f"（阈值 {MIN_AFFECTED}）；配对置换检验在该规模下的 p 下限为 {floor:.4f}，"
+                "已大于显著性水平，本次判定不具备分辨力",
+                "这不是『提案未通过』，而是『这批证据无法裁决该提案』——"
+                "两者必须分开，否则会把无信息当成否定结论",
+            ],
+        )
 
     # 多指标同时判定，先做 BH 校正再谈显著性。
     # 门禁用的是 stats.promotion_evidence()——BH 通过 且 p<0.05 且 CI 不跨零 的合取，

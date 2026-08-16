@@ -1,0 +1,272 @@
+{
+  "schema": "searchops.control-firing/1",
+  "tag": "ctl20260816",
+  "method": "对每条提案的候选配置调用 preview（DRY_RUN，只读，不落库），统计相对当前线上策略的位次变化条数。0 = 引擎层面恒等；>0 = 确实触发。",
+  "caveat": "本文件是描述性取证，**不参与门禁、不参与统计判定**。它解释的是受影响子集为空到底是'规则没触发'还是'触发了但两侧指标都为 0 所以看不见'。",
+  "arms": {
+    "symbolic": {
+      "artifact": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-symbolic-ctl20260816-symbolic.json",
+      "model": null,
+      "proposals": [
+        {
+          "name": "Strip leading and trailing punctuation from evidence queries",
+          "origin": "symbolic-rule:punctuation",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "# 2 pencils not sharpened",
+              "changed_positions": 0,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "#9x5\" wood screws",
+              "changed_positions": 0,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "&#34;we're in the army not in the navy&#34;",
+              "changed_positions": 0,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "(thermos funtainer without the handle on the lid) - 2 pack",
+              "changed_positions": 0,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": ".22 pellets not lead",
+              "changed_positions": 0,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": false,
+          "fired_probe_count": 0,
+          "affected_n": 0,
+          "affected_is_empty": true,
+          "interpretation": "引擎层面恒等：探针位次一条都没变"
+        },
+        {
+          "name": "Expand retail symbols and decode HTML entities",
+          "origin": "symbolic-rule:symbol",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "#9x5\" wood screws",
+              "changed_positions": 16,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "&#34;we're in the army not in the navy&#34;",
+              "changed_positions": 15,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": true,
+          "fired_probe_count": 2,
+          "affected_n": 0,
+          "affected_is_empty": true,
+          "interpretation": "触发了但指标看不见：结果集换了，而这些查询在基线与候选下的 ndcg10/recall10 相同（多为两侧皆 0）"
+        },
+        {
+          "name": "Symbol and model-year synonyms",
+          "origin": "symbolic-rule:synonym",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "#9x5\" wood screws",
+              "changed_positions": 16,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "03 durango front calipers without pads",
+              "changed_positions": 20,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "04 nissan titan fender flares without box",
+              "changed_positions": 19,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "07 passat front bumper grille trim without fog lights",
+              "changed_positions": 17,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": true,
+          "fired_probe_count": 4,
+          "affected_n": 3,
+          "affected_is_empty": false,
+          "interpretation": "触发且指标可见"
+        }
+      ]
+    },
+    "llm1": {
+      "artifact": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm1.json",
+      "model": "qwen3.7-flash-2026-07-15",
+      "proposals": [
+        {
+          "name": "fix_screw_size_notation",
+          "origin": "llm:qwen3.7-flash-2026-07-15",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "#9x5\" wood screws",
+              "changed_positions": 17,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": true,
+          "fired_probe_count": 1,
+          "affected_n": 0,
+          "affected_is_empty": true,
+          "interpretation": "触发了但指标看不见：结果集换了，而这些查询在基线与候选下的 ndcg10/recall10 相同（多为两侧皆 0）"
+        },
+        {
+          "name": "clarify_thermos_funtainer_negation",
+          "origin": "llm:qwen3.7-flash-2026-07-15",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "(thermos funtainer without the handle on the lid) - 2 pack",
+              "changed_positions": 0,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": false,
+          "fired_probe_count": 0,
+          "affected_n": 0,
+          "affected_is_empty": true,
+          "interpretation": "引擎层面恒等：探针位次一条都没变"
+        },
+        {
+          "name": "auto_parts_without_accessories",
+          "origin": "llm:qwen3.7-flash-2026-07-15",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "03 durango front calipers without pads",
+              "changed_positions": 12,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "04 nissan titan fender flares without box",
+              "changed_positions": 11,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "07 passat front bumper grille trim without fog lights",
+              "changed_positions": 5,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": true,
+          "fired_probe_count": 3,
+          "affected_n": 0,
+          "affected_is_empty": true,
+          "interpretation": "触发了但指标看不见：结果集换了，而这些查询在基线与候选下的 ndcg10/recall10 相同（多为两侧皆 0）"
+        }
+      ]
+    },
+    "llm2": {
+      "artifact": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm2.json",
+      "model": "qwen3.7-flash-2026-07-15",
+      "proposals": [
+        {
+          "name": "fix_screw_size_notation",
+          "origin": "llm:qwen3.7-flash-2026-07-15",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "#9x5\" wood screws",
+              "changed_positions": 17,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": true,
+          "fired_probe_count": 1,
+          "affected_n": 0,
+          "affected_is_empty": true,
+          "interpretation": "触发了但指标看不见：结果集换了，而这些查询在基线与候选下的 ndcg10/recall10 相同（多为两侧皆 0）"
+        },
+        {
+          "name": "fix_thermos_handle_negation",
+          "origin": "llm:qwen3.7-flash-2026-07-15",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "(thermos funtainer without the handle on the lid) - 2 pack",
+              "changed_positions": 18,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": true,
+          "fired_probe_count": 1,
+          "affected_n": 1,
+          "affected_is_empty": false,
+          "interpretation": "触发且指标可见"
+        },
+        {
+          "name": "fix_durango_titan_passat_without_parts",
+          "origin": "llm:qwen3.7-flash-2026-07-15",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "03 durango front calipers without pads",
+              "changed_positions": 12,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "04 nissan titan fender flares without box",
+              "changed_positions": 0,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "07 passat front bumper grille trim without fog lights",
+              "changed_positions": 2,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": true,
+          "fired_probe_count": 2,
+          "affected_n": 0,
+          "affected_is_empty": true,
+          "interpretation": "触发了但指标看不见：结果集换了，而这些查询在基线与候选下的 ndcg10/recall10 相同（多为两侧皆 0）"
+        }
+      ]
+    },
+    "llm3": {
+      "artifact": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm3.json",
+      "model": "qwen3.7-flash-2026-07-15",
+      "proposals": [
+        {
+          "name": "Fix automotive part exclusions via rewrite rules",
+          "origin": "llm:qwen3.7-flash-2026-07-15",
+          "status": "blocked",
+          "probes": [
+            {
+              "query": "03 durango front calipers without pads",
+              "changed_positions": 12,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "04 nissan titan fender flares without box",
+              "changed_positions": 0,
+              "baseline_selfcheck_changed_positions": 0
+            },
+            {
+              "query": "07 passat front bumper grille trim without fog lights",
+              "changed_positions": 2,
+              "baseline_selfcheck_changed_positions": 0
+            }
+          ],
+          "any_probe_fired": true,
+          "fired_probe_count": 2,
+          "affected_n": 0,
+          "affected_is_empty": true,
+          "interpretation": "触发了但指标看不见：结果集换了，而这些查询在基线与候选下的 ndcg10/recall10 相同（多为两侧皆 0）"
+        }
+      ]
+    }
+  }
+}

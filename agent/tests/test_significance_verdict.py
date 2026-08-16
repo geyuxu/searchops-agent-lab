@@ -263,3 +263,30 @@ def test_numeric_outputs_are_pinned():
     assert r2.ci_low == -0.0001758333333333347
     assert r2.ci_high == 0.20341339285714286
     assert r2.p_value == 0.046476761619190406
+
+
+def test_gate_separates_undecidable_from_rejected():
+    """受影响查询太少时报 INSUFFICIENT_EVIDENCE，不报 BLOCK。
+
+    配对置换检验的零分布只由非零差值决定：受影响 k 条 → 只有 2^k 种符号组合 →
+    可达最小 p = 1/2^k。k≤4 时下限 ≥0.0625 > α，检验根本不可能判显著。
+    此时返回 BLOCK 等于把"无法裁决"说成"已被否决"——正是本项目一路在修的那类塌缩。
+    """
+    from searchops_agent.eval.gate import MIN_AFFECTED, GatePolicy, evaluate_gate
+
+    base = {i: {"ndcg10": 0.5, "recall10": 0.5, "mrr10": 0.5, "zero_result": False} for i in range(200)}
+
+    few = {i: dict(m) for i, m in base.items()}
+    for i in range(MIN_AFFECTED - 1):          # 少于阈值
+        few[i]["ndcg10"] = 0.95
+    d = evaluate_gate(base, few, GatePolicy(), iterations=500)
+    assert d.verdict == "INSUFFICIENT_EVIDENCE"
+    assert d.undecidable and not d.promote
+    assert d.affected == MIN_AFFECTED - 1
+
+    many = {i: dict(m) for i, m in base.items()}
+    for i in range(60):                        # 远超阈值，且是大幅提升
+        many[i]["ndcg10"] = 0.95
+    d2 = evaluate_gate(base, many, GatePolicy(), iterations=500)
+    assert not d2.undecidable, "证据充足时不应再走证据不足分支"
+    assert d2.verdict in ("PROMOTE", "BLOCK")

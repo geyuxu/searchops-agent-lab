@@ -1,0 +1,2005 @@
+{
+  "schema": "searchops.control-alignment/1",
+  "tag": "ctl20260816",
+  "artifacts": {
+    "symbolic": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-symbolic-ctl20260816-symbolic.json",
+    "llm1": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm1.json",
+    "llm2": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm2.json",
+    "llm3": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/propose-llm-ctl20260816-llm3.json"
+  },
+  "artifact_schemas": {
+    "symbolic": "searchops.propose-run/2",
+    "llm1": "searchops.propose-run/2",
+    "llm2": "searchops.propose-run/2",
+    "llm3": "searchops.propose-run/2"
+  },
+  "proposer_identity": {
+    "symbolic": {
+      "proposer": "symbolic",
+      "proposer_class": "SymbolicRuleProposer",
+      "model": null,
+      "dry_run": true
+    },
+    "llm1": {
+      "proposer": "llm",
+      "proposer_class": "LLMProposer",
+      "model": "qwen3.7-flash-2026-07-15",
+      "dry_run": true
+    },
+    "llm2": {
+      "proposer": "llm",
+      "proposer_class": "LLMProposer",
+      "model": "qwen3.7-flash-2026-07-15",
+      "dry_run": true
+    },
+    "llm3": {
+      "proposer": "llm",
+      "proposer_class": "LLMProposer",
+      "model": "qwen3.7-flash-2026-07-15",
+      "dry_run": true
+    }
+  },
+  "alignment_proof": {
+    "evaluation_setup_identical_across_arms": true,
+    "gate_policy_identical_across_arms": true,
+    "eval_query_ids_identical": true,
+    "baseline_headline_identical": true,
+    "current_strategy_identical": true,
+    "evaluation_setup": {
+      "symbolic": {
+        "split_manifest": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/split-manifest.json",
+        "split_seed": 20260816,
+        "split_total": 2000,
+        "side": "train",
+        "train_size": 1400,
+        "eval_sample_size": 1400,
+        "selection": "train 置换序（sha256(f'{split_seed}|{query_id}') 升序）的前 N 条",
+        "subset_query_ids_sha256": "0de91de6b03ae5fd3e00af8ffb3c31264bb9425f50c7f95e06c62adc73bf45ea",
+        "train_query_ids_sha256": "0de91de6b03ae5fd3e00af8ffb3c31264bb9425f50c7f95e06c62adc73bf45ea",
+        "baseline_run": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/baseline-v7-train.json",
+        "baseline_headline": {
+          "run_id": "548882aa-fd51-4d3d-9dfa-75f6f05a67b3",
+          "strategy_version": -1,
+          "weights_from_strategy_version": 7,
+          "query_count": 1400,
+          "precision10": 0.10685714285714286,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "ndcg10": 0.4821606101158704,
+          "zero_result_rate": 0.0007142857142857143,
+          "generated_at": "2026-08-16T06:58:47.51122+01:00"
+        },
+        "baseline_field_weights": {
+          "title": 4.0,
+          "brand": 2.5,
+          "bullet_point": 1.5,
+          "description": 1.0,
+          "category": 1.2
+        },
+        "holdout_used": false,
+        "k": 10,
+        "use_ai": false,
+        "safety_class": "DRY_RUN（evaluate_candidate：不落库、不碰 strategy 版本）"
+      },
+      "llm1": {
+        "split_manifest": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/split-manifest.json",
+        "split_seed": 20260816,
+        "split_total": 2000,
+        "side": "train",
+        "train_size": 1400,
+        "eval_sample_size": 1400,
+        "selection": "train 置换序（sha256(f'{split_seed}|{query_id}') 升序）的前 N 条",
+        "subset_query_ids_sha256": "0de91de6b03ae5fd3e00af8ffb3c31264bb9425f50c7f95e06c62adc73bf45ea",
+        "train_query_ids_sha256": "0de91de6b03ae5fd3e00af8ffb3c31264bb9425f50c7f95e06c62adc73bf45ea",
+        "baseline_run": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/baseline-v7-train.json",
+        "baseline_headline": {
+          "run_id": "548882aa-fd51-4d3d-9dfa-75f6f05a67b3",
+          "strategy_version": -1,
+          "weights_from_strategy_version": 7,
+          "query_count": 1400,
+          "precision10": 0.10685714285714286,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "ndcg10": 0.4821606101158704,
+          "zero_result_rate": 0.0007142857142857143,
+          "generated_at": "2026-08-16T06:58:47.51122+01:00"
+        },
+        "baseline_field_weights": {
+          "title": 4.0,
+          "brand": 2.5,
+          "bullet_point": 1.5,
+          "description": 1.0,
+          "category": 1.2
+        },
+        "holdout_used": false,
+        "k": 10,
+        "use_ai": false,
+        "safety_class": "DRY_RUN（evaluate_candidate：不落库、不碰 strategy 版本）"
+      },
+      "llm2": {
+        "split_manifest": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/split-manifest.json",
+        "split_seed": 20260816,
+        "split_total": 2000,
+        "side": "train",
+        "train_size": 1400,
+        "eval_sample_size": 1400,
+        "selection": "train 置换序（sha256(f'{split_seed}|{query_id}') 升序）的前 N 条",
+        "subset_query_ids_sha256": "0de91de6b03ae5fd3e00af8ffb3c31264bb9425f50c7f95e06c62adc73bf45ea",
+        "train_query_ids_sha256": "0de91de6b03ae5fd3e00af8ffb3c31264bb9425f50c7f95e06c62adc73bf45ea",
+        "baseline_run": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/baseline-v7-train.json",
+        "baseline_headline": {
+          "run_id": "548882aa-fd51-4d3d-9dfa-75f6f05a67b3",
+          "strategy_version": -1,
+          "weights_from_strategy_version": 7,
+          "query_count": 1400,
+          "precision10": 0.10685714285714286,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "ndcg10": 0.4821606101158704,
+          "zero_result_rate": 0.0007142857142857143,
+          "generated_at": "2026-08-16T06:58:47.51122+01:00"
+        },
+        "baseline_field_weights": {
+          "title": 4.0,
+          "brand": 2.5,
+          "bullet_point": 1.5,
+          "description": 1.0,
+          "category": 1.2
+        },
+        "holdout_used": false,
+        "k": 10,
+        "use_ai": false,
+        "safety_class": "DRY_RUN（evaluate_candidate：不落库、不碰 strategy 版本）"
+      },
+      "llm3": {
+        "split_manifest": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/split-manifest.json",
+        "split_seed": 20260816,
+        "split_total": 2000,
+        "side": "train",
+        "train_size": 1400,
+        "eval_sample_size": 1400,
+        "selection": "train 置换序（sha256(f'{split_seed}|{query_id}') 升序）的前 N 条",
+        "subset_query_ids_sha256": "0de91de6b03ae5fd3e00af8ffb3c31264bb9425f50c7f95e06c62adc73bf45ea",
+        "train_query_ids_sha256": "0de91de6b03ae5fd3e00af8ffb3c31264bb9425f50c7f95e06c62adc73bf45ea",
+        "baseline_run": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/baseline-v7-train.json",
+        "baseline_headline": {
+          "run_id": "548882aa-fd51-4d3d-9dfa-75f6f05a67b3",
+          "strategy_version": -1,
+          "weights_from_strategy_version": 7,
+          "query_count": 1400,
+          "precision10": 0.10685714285714286,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "ndcg10": 0.4821606101158704,
+          "zero_result_rate": 0.0007142857142857143,
+          "generated_at": "2026-08-16T06:58:47.51122+01:00"
+        },
+        "baseline_field_weights": {
+          "title": 4.0,
+          "brand": 2.5,
+          "bullet_point": 1.5,
+          "description": 1.0,
+          "category": 1.2
+        },
+        "holdout_used": false,
+        "k": 10,
+        "use_ai": false,
+        "safety_class": "DRY_RUN（evaluate_candidate：不落库、不碰 strategy 版本）"
+      }
+    },
+    "gate_policy": {
+      "symbolic": {
+        "primary_metric": "ndcg10",
+        "require_significant": true,
+        "max_zero_result_increase": 0.0,
+        "max_catastrophic_ratio": 0.1,
+        "catastrophic_drop": 0.3,
+        "guard_metrics": [
+          "recall10",
+          "mrr10"
+        ],
+        "bootstrap_permutation_iterations": 10000
+      },
+      "llm1": {
+        "primary_metric": "ndcg10",
+        "require_significant": true,
+        "max_zero_result_increase": 0.0,
+        "max_catastrophic_ratio": 0.1,
+        "catastrophic_drop": 0.3,
+        "guard_metrics": [
+          "recall10",
+          "mrr10"
+        ],
+        "bootstrap_permutation_iterations": 10000
+      },
+      "llm2": {
+        "primary_metric": "ndcg10",
+        "require_significant": true,
+        "max_zero_result_increase": 0.0,
+        "max_catastrophic_ratio": 0.1,
+        "catastrophic_drop": 0.3,
+        "guard_metrics": [
+          "recall10",
+          "mrr10"
+        ],
+        "bootstrap_permutation_iterations": 10000
+      },
+      "llm3": {
+        "primary_metric": "ndcg10",
+        "require_significant": true,
+        "max_zero_result_increase": 0.0,
+        "max_catastrophic_ratio": 0.1,
+        "catastrophic_drop": 0.3,
+        "guard_metrics": [
+          "recall10",
+          "mrr10"
+        ],
+        "bootstrap_permutation_iterations": 10000
+      }
+    },
+    "eval_query_ids_sha256": {
+      "symbolic": "e34e209ff22234a719ed8e2873a1b0cff55bd610c87cc0e4323f00562ab5fbd1",
+      "llm1": "e34e209ff22234a719ed8e2873a1b0cff55bd610c87cc0e4323f00562ab5fbd1",
+      "llm2": "e34e209ff22234a719ed8e2873a1b0cff55bd610c87cc0e4323f00562ab5fbd1",
+      "llm3": "e34e209ff22234a719ed8e2873a1b0cff55bd610c87cc0e4323f00562ab5fbd1"
+    },
+    "eval_n": {
+      "symbolic": 1400,
+      "llm1": 1400,
+      "llm2": 1400,
+      "llm3": 1400
+    },
+    "evidence_ids_cited_per_arm": {
+      "symbolic": [
+        "query_id=114",
+        "query_id=184",
+        "query_id=337",
+        "query_id=46",
+        "query_id=504",
+        "query_id=517",
+        "query_id=562",
+        "query_id=6"
+      ],
+      "llm1": [
+        "query_id=184",
+        "query_id=46",
+        "query_id=504",
+        "query_id=517",
+        "query_id=562"
+      ],
+      "llm2": [
+        "query_id=184",
+        "query_id=46",
+        "query_id=504",
+        "query_id=517",
+        "query_id=562"
+      ],
+      "llm3": [
+        "query_id=504",
+        "query_id=517",
+        "query_id=562"
+      ]
+    },
+    "frozen_evidence_sha256": "b75245d789c891e27849b2014862f1d0ee345233cfad165f99a76d76bfd4e142",
+    "frozen_evidence_by_id_sha256": "868db12a783047f77e7a94d31678ccd90f75d2b3378e0de22dee12edc0c7e6c9",
+    "evidence_window_proof": {
+      "windows_max_low_max_zero": {
+        "llm": [
+          40,
+          20
+        ],
+        "symbolic": [
+          40,
+          20
+        ]
+      },
+      "windows_identical": true,
+      "built_by_id_sha256": {
+        "llm": "868db12a783047f77e7a94d31678ccd90f75d2b3378e0de22dee12edc0c7e6c9",
+        "symbolic": "868db12a783047f77e7a94d31678ccd90f75d2b3378e0de22dee12edc0c7e6c9"
+      },
+      "built_by_id_identical": true,
+      "n_evidence_queries": {
+        "llm": 8,
+        "symbolic": 8
+      },
+      "evidence_query_ids": [
+        6,
+        46,
+        114,
+        184,
+        337,
+        504,
+        517,
+        562
+      ],
+      "note": "两臂用同一个 `_Evidence.build`、同一份冻结诊断、同一组窗口参数（max_low/max_zero）。此处逐位复算并给出哈希，证明'同一批证据'不是靠约定而是可核对的事实。"
+    },
+    "evidence_frozen_how": "诊断只向服务抓取一次（diagnose_limit=200 ≥ 分析表全部 112 行），落盘为 control-evidence-{tag}.json 并算指纹；四次运行都用同一份快照的深拷贝（驱动脚本覆写 ProposalLoop.diagnose，闭环其余部分未改）。因此'分析表在动'不可能让两臂看到不同证据。"
+  },
+  "affected_query_detail": {
+    "symbolic": [
+      {
+        "proposal": "Symbol and model-year synonyms",
+        "origin": "symbolic-rule:synonym",
+        "query_id": 327,
+        "query": ".030 lincoln flux core",
+        "ndcg10": [
+          1.0,
+          0.2850703250369507
+        ],
+        "recall10": [
+          1.0,
+          0.3333333333333333
+        ],
+        "mrr10": [
+          1.0,
+          0.3333333333333333
+        ],
+        "direction": "loss",
+        "cited_as_evidence": false
+      },
+      {
+        "proposal": "Symbol and model-year synonyms",
+        "origin": "symbolic-rule:synonym",
+        "query_id": 517,
+        "query": "04 nissan titan fender flares without box",
+        "ndcg10": [
+          0.0,
+          0.3010299956639812
+        ],
+        "recall10": [
+          0.0,
+          1.0
+        ],
+        "mrr10": [
+          0.0,
+          0.1111111111111111
+        ],
+        "direction": "win",
+        "cited_as_evidence": true
+      },
+      {
+        "proposal": "Symbol and model-year synonyms",
+        "origin": "symbolic-rule:synonym",
+        "query_id": 565,
+        "query": "07 zx6r plastics unpainted without abs",
+        "ndcg10": [
+          1.0,
+          0.9134015924715543
+        ],
+        "recall10": [
+          1.0,
+          1.0
+        ],
+        "mrr10": [
+          1.0,
+          1.0
+        ],
+        "direction": "loss",
+        "cited_as_evidence": false
+      }
+    ],
+    "llm1": [],
+    "llm2": [
+      {
+        "proposal": "fix_thermos_handle_negation",
+        "origin": "llm:qwen3.7-flash-2026-07-15",
+        "query_id": 184,
+        "query": "(thermos funtainer without the handle on the lid) - 2 pack",
+        "ndcg10": [
+          0.0,
+          0.35195904451706733
+        ],
+        "recall10": [
+          0.0,
+          0.5
+        ],
+        "mrr10": [
+          0.0,
+          0.3333333333333333
+        ],
+        "direction": "win",
+        "cited_as_evidence": true
+      }
+    ],
+    "llm3": []
+  },
+  "interpretation_caveats": [
+    "(b) 受影响子集是**事后条件化**的：成员资格由候选自己的评测结果决定，零差值样本被系统性排除，子集内差值天然远离零。它是描述性证据，不具备预注册检验的错误率保证，产物里 used_by_gate 恒为 false。",
+    "子集极小时置换检验退化：n=1 时符号翻转只有两种排列，p 必然是 1.0000（llm2 的 fix_thermos_handle_negation 正是这种情形：Δ+0.3520 而 p=1.0000）。此时应读 wins/losses 与逐查询明细，不要读 p。",
+    "受影响子集按**指标值**变化定义，因此看不见'结果集换了一批但两侧指标都为 0'的情形。control-firing-{tag}.json 用 preview 的位次变化条数把'规则根本没触发'与'触发了但指标看不见'分开。",
+    "整体检验 (a) 是唯一的门禁依据；本轮四次运行、共 10 条提案全部 BLOCK。"
+  ],
+  "firing_forensics": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/control-firing-ctl20260816.json",
+  "action_space_proof": {
+    "allowed_diff_keys": [
+      "rewrite_rules",
+      "synonyms"
+    ],
+    "per_arm": {
+      "symbolic": {
+        "proposals": [
+          {
+            "name": "Strip leading and trailing punctuation from evidence queries",
+            "origin": "symbolic-rule:punctuation",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 5,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "# 2 pencils not sharpened",
+                "rewrite": "2 pencils not sharpened"
+              },
+              {
+                "match": "#9x5\" wood screws",
+                "rewrite": "9x5 wood screws"
+              },
+              {
+                "match": "&#34;we're in the army not in the navy&#34;",
+                "rewrite": "34;we're in the army not in the navy&#34"
+              },
+              {
+                "match": "(thermos funtainer without the handle on the lid) - 2 pack",
+                "rewrite": "thermos funtainer without the handle on the lid 2 pack"
+              },
+              {
+                "match": ".22 pellets not lead",
+                "rewrite": "22 pellets not lead"
+              }
+            ]
+          },
+          {
+            "name": "Expand retail symbols and decode HTML entities",
+            "origin": "symbolic-rule:symbol",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 2,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "#9x5\" wood screws",
+                "rewrite": "9x5 inch wood screws"
+              },
+              {
+                "match": "&#34;we're in the army not in the navy&#34;",
+                "rewrite": "we're in the army not in the navy"
+              }
+            ]
+          },
+          {
+            "name": "Symbol and model-year synonyms",
+            "origin": "symbolic-rule:synonym",
+            "diff_keys": [
+              "synonyms"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 4,
+            "n_rewrite_rules": 0,
+            "synonyms": {
+              "\"": [
+                "inch"
+              ],
+              "03": [
+                "2003"
+              ],
+              "04": [
+                "2004"
+              ],
+              "07": [
+                "2007"
+              ]
+            },
+            "rewrite_rules": []
+          }
+        ],
+        "all_within_symbol_space": true,
+        "any_field_weights_touched": false
+      },
+      "llm1": {
+        "proposals": [
+          {
+            "name": "fix_screw_size_notation",
+            "origin": "llm:qwen3.7-flash-2026-07-15",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 1,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "#9x5\" wood screws",
+                "rewrite": "9 x 5 inch wood screws"
+              }
+            ]
+          },
+          {
+            "name": "clarify_thermos_funtainer_negation",
+            "origin": "llm:qwen3.7-flash-2026-07-15",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 1,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "(thermos funtainer without the handle on the lid) - 2 pack",
+                "rewrite": "thermos funtainer without the handle on the lid 2 pack"
+              }
+            ]
+          },
+          {
+            "name": "auto_parts_without_accessories",
+            "origin": "llm:qwen3.7-flash-2026-07-15",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 3,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "03 durango front calipers without pads",
+                "rewrite": "durango front calipers without pads"
+              },
+              {
+                "match": "04 nissan titan fender flares without box",
+                "rewrite": "nissan titan fender flares without box"
+              },
+              {
+                "match": "07 passat front bumper grille trim without fog lights",
+                "rewrite": "passat front bumper grille trim without fog lights"
+              }
+            ]
+          }
+        ],
+        "all_within_symbol_space": true,
+        "any_field_weights_touched": false
+      },
+      "llm2": {
+        "proposals": [
+          {
+            "name": "fix_screw_size_notation",
+            "origin": "llm:qwen3.7-flash-2026-07-15",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 1,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "#9x5\" wood screws",
+                "rewrite": "wood screws #9 5 inch"
+              }
+            ]
+          },
+          {
+            "name": "fix_thermos_handle_negation",
+            "origin": "llm:qwen3.7-flash-2026-07-15",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 1,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "(thermos funtainer without the handle on the lid) - 2 pack",
+                "rewrite": "thermos funtainer without handle - 2 pack"
+              }
+            ]
+          },
+          {
+            "name": "fix_durango_titan_passat_without_parts",
+            "origin": "llm:qwen3.7-flash-2026-07-15",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 3,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "03 durango front calipers without pads",
+                "rewrite": "03 durango front calipers no pads"
+              },
+              {
+                "match": "04 nissan titan fender flares without box",
+                "rewrite": "04 nissan titan fender flares no box"
+              },
+              {
+                "match": "07 passat front bumper grille trim without fog lights",
+                "rewrite": "07 passat front bumper grille trim no fog lights"
+              }
+            ]
+          }
+        ],
+        "all_within_symbol_space": true,
+        "any_field_weights_touched": false
+      },
+      "llm3": {
+        "proposals": [
+          {
+            "name": "Fix automotive part exclusions via rewrite rules",
+            "origin": "llm:qwen3.7-flash-2026-07-15",
+            "diff_keys": [
+              "rewrite_rules"
+            ],
+            "illegal_diff_keys": [],
+            "field_weights_in_diff": false,
+            "field_weights_equal_current": true,
+            "brand_boosts_equal_current": true,
+            "minimum_score_equal_current": true,
+            "n_synonym_terms": 0,
+            "n_rewrite_rules": 3,
+            "synonyms": {},
+            "rewrite_rules": [
+              {
+                "match": "03 durango front calipers without pads",
+                "rewrite": "03 durango front calipers no pads"
+              },
+              {
+                "match": "04 nissan titan fender flares without box",
+                "rewrite": "04 nissan titan fender flares no box"
+              },
+              {
+                "match": "07 passat front bumper grille trim without fog lights",
+                "rewrite": "07 passat front bumper grille trim no fog lights"
+              }
+            ]
+          }
+        ],
+        "all_within_symbol_space": true,
+        "any_field_weights_touched": false
+      }
+    },
+    "all_arms_within_symbol_space": true,
+    "any_arm_touched_field_weights": false
+  },
+  "holdout_zero_participation": {
+    "diagnose_limit": 200,
+    "audit": {
+      "zero_result_queries": {
+        "raw_rows": 0,
+        "kept_train": 0,
+        "dropped_total": 0,
+        "dropped_identifiable_holdout": 0,
+        "dropped_unknown_provenance": 0,
+        "dropped_holdout_examples": [],
+        "kept_query_ids": []
+      },
+      "low_quality_queries": {
+        "raw_rows": 112,
+        "kept_train": 8,
+        "dropped_total": 104,
+        "dropped_identifiable_holdout": 5,
+        "dropped_unknown_provenance": 99,
+        "dropped_holdout_examples": [
+          {
+            "query_id": 75,
+            "query": "$13 bb guns without a yellow tube"
+          },
+          {
+            "query_id": 288,
+            "query": "- w nest cam iq outdoor security camera without the magnet"
+          },
+          {
+            "query_id": 695,
+            "query": "1 carry-on bag not exceeding 22 x 16 x 10 in"
+          },
+          {
+            "query_id": 698,
+            "query": "1 cc tuberculin syringe without needle"
+          },
+          {
+            "query_id": 884,
+            "query": "1 step motorhome cleaner without washing"
+          }
+        ],
+        "kept_query_ids": [
+          6,
+          46,
+          114,
+          184,
+          337,
+          504,
+          517,
+          562
+        ]
+      },
+      "loop_train_only_dropped_rows": 104,
+      "kept_ids_intersect_holdout": [],
+      "holdout_participation": "none"
+    },
+    "evaluation_setup_holdout_used": {
+      "symbolic": false,
+      "llm1": false,
+      "llm2": false,
+      "llm3": false
+    },
+    "eval_side": {
+      "symbolic": "train",
+      "llm1": "train",
+      "llm2": "train",
+      "llm3": "train"
+    }
+  },
+  "per_run": {
+    "symbolic": [
+      {
+        "name": "Strip leading and trailing punctuation from evidence queries",
+        "origin": "symbolic-rule:punctuation",
+        "status": "blocked",
+        "evidence": [
+          "query_id=6 '# 2 pencils not sharpened'",
+          "query_id=46 '#9x5\" wood screws'",
+          "query_id=114 \"&#34;we're in the army not in the navy&#34;\"",
+          "query_id=184 '(thermos funtainer without the handle on the lid) - 2 pack'",
+          "query_id=337 '.22 pellets not lead'"
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 5,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "# 2 pencils not sharpened",
+            "rewrite": "2 pencils not sharpened"
+          },
+          {
+            "match": "#9x5\" wood screws",
+            "rewrite": "9x5 wood screws"
+          },
+          {
+            "match": "&#34;we're in the army not in the navy&#34;",
+            "rewrite": "34;we're in the army not in the navy&#34"
+          },
+          {
+            "match": "(thermos funtainer without the handle on the lid) - 2 pack",
+            "rewrite": "thermos funtainer without the handle on the lid 2 pack"
+          },
+          {
+            "match": ".22 pellets not lead",
+            "rewrite": "22 pellets not lead"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4821606101158704,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "precision10": 0.10685714285714286,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ+0.0000）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4821606101158704,
+          "delta": 0.0,
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 0,
+          "overall_n": 1400,
+          "ratio": 0.0,
+          "is_empty": true,
+          "query_ids": [],
+          "zero_result_flips": 0,
+          "ndcg10": null,
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "60317514cf6a2053dfbd6f0ec5eaae17f1e0d7caef850b4e26307daa02f9c2c4"
+      },
+      {
+        "name": "Expand retail symbols and decode HTML entities",
+        "origin": "symbolic-rule:symbol",
+        "status": "blocked",
+        "evidence": [
+          "query_id=46 '#9x5\" wood screws'",
+          "query_id=114 \"&#34;we're in the army not in the navy&#34;\""
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 2,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "#9x5\" wood screws",
+            "rewrite": "9x5 inch wood screws"
+          },
+          {
+            "match": "&#34;we're in the army not in the navy&#34;",
+            "rewrite": "we're in the army not in the navy"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4821606101158704,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "precision10": 0.10685714285714286,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ+0.0000）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4821606101158704,
+          "delta": 0.0,
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 0,
+          "overall_n": 1400,
+          "ratio": 0.0,
+          "is_empty": true,
+          "query_ids": [],
+          "zero_result_flips": 0,
+          "ndcg10": null,
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "7183aec111c496949ffb8885dd25feb5f8f5f2aa46e5284680e5fb55cf4467a9"
+      },
+      {
+        "name": "Symbol and model-year synonyms",
+        "origin": "symbolic-rule:synonym",
+        "status": "blocked",
+        "evidence": [
+          "query_id=46 '#9x5\" wood screws'",
+          "query_id=504 '03 durango front calipers without pads'",
+          "query_id=517 '04 nissan titan fender flares without box'",
+          "query_id=562 '07 passat front bumper grille trim without fog lights'"
+        ],
+        "n_synonym_terms": 4,
+        "n_rewrite_rules": 0,
+        "synonyms": {
+          "\"": [
+            "inch"
+          ],
+          "03": [
+            "2003"
+          ],
+          "04": [
+            "2004"
+          ],
+          "07": [
+            "2007"
+          ]
+        },
+        "rewrite_rules": [],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4818031114824222,
+          "recall10": 0.5852772108843538,
+          "mrr10": 0.503172619047619,
+          "precision10": 0.10678571428571429,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ-0.0004）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4818031114824222,
+          "delta": -0.00035749863344822425,
+          "ci": [
+            -0.0015938481660125671,
+            0.0005644430738263261
+          ],
+          "p_value": 0.7551244875512448,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": -0.00035749863344822425,
+            "p_value": 0.7551244875512448,
+            "ci": [
+              -0.0015938481660125671,
+              0.0005644430738263261
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.00023809523809523804,
+            "p_value": 1.0,
+            "ci": [
+              -0.0014285714285714286,
+              0.002142857142857143
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": -0.0003968253968253968,
+            "p_value": 1.0,
+            "ci": [
+              -0.0014285714285714286,
+              0.0002380952380952381
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 3,
+          "overall_n": 1400,
+          "ratio": 0.002142857142857143,
+          "is_empty": false,
+          "query_ids": [
+            327,
+            517,
+            565
+          ],
+          "zero_result_flips": 0,
+          "ndcg10": {
+            "delta": -0.16683269560917133,
+            "ci": [
+              -0.7149296749630493,
+              0.3010299956639812
+            ],
+            "p_value": 0.7489251074892511,
+            "wins": 1,
+            "losses": 2,
+            "ties": 0,
+            "baseline_mean": 0.6666666666666666,
+            "candidate_mean": 0.49983397105749533
+          },
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "851c87f1e7399caa34bf6c506ffe8018eb80b4f7b30c9149bd56aa2fcdb873a4"
+      }
+    ],
+    "llm1": [
+      {
+        "name": "fix_screw_size_notation",
+        "origin": "llm:qwen3.7-flash-2026-07-15",
+        "status": "blocked",
+        "evidence": [
+          "query_id=46 '#9x5\" wood screws'"
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 1,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "#9x5\" wood screws",
+            "rewrite": "9 x 5 inch wood screws"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4821606101158704,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "precision10": 0.10685714285714286,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ+0.0000）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4821606101158704,
+          "delta": 0.0,
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 0,
+          "overall_n": 1400,
+          "ratio": 0.0,
+          "is_empty": true,
+          "query_ids": [],
+          "zero_result_flips": 0,
+          "ndcg10": null,
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "9696c843921f34877699972ae2f1c6ee2d218a58a20dc1cfff0f0afd06e68a0e"
+      },
+      {
+        "name": "clarify_thermos_funtainer_negation",
+        "origin": "llm:qwen3.7-flash-2026-07-15",
+        "status": "blocked",
+        "evidence": [
+          "query_id=184 '(thermos funtainer without the handle on the lid) - 2 pack'"
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 1,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "(thermos funtainer without the handle on the lid) - 2 pack",
+            "rewrite": "thermos funtainer without the handle on the lid 2 pack"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4821606101158704,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "precision10": 0.10685714285714286,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ+0.0000）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4821606101158704,
+          "delta": 0.0,
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 0,
+          "overall_n": 1400,
+          "ratio": 0.0,
+          "is_empty": true,
+          "query_ids": [],
+          "zero_result_flips": 0,
+          "ndcg10": null,
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "23ac2ed367c6a29eb197a7a36b35333373b3d89750c87f497182055993cd281e"
+      },
+      {
+        "name": "auto_parts_without_accessories",
+        "origin": "llm:qwen3.7-flash-2026-07-15",
+        "status": "blocked",
+        "evidence": [
+          "query_id=504 '03 durango front calipers without pads'",
+          "query_id=517 '04 nissan titan fender flares without box'",
+          "query_id=562 '07 passat front bumper grille trim without fog lights'"
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 3,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "03 durango front calipers without pads",
+            "rewrite": "durango front calipers without pads"
+          },
+          {
+            "match": "04 nissan titan fender flares without box",
+            "rewrite": "nissan titan fender flares without box"
+          },
+          {
+            "match": "07 passat front bumper grille trim without fog lights",
+            "rewrite": "passat front bumper grille trim without fog lights"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4821606101158704,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "precision10": 0.10685714285714286,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ+0.0000）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4821606101158704,
+          "delta": 0.0,
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 0,
+          "overall_n": 1400,
+          "ratio": 0.0,
+          "is_empty": true,
+          "query_ids": [],
+          "zero_result_flips": 0,
+          "ndcg10": null,
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "aa54aa07a8d5d0b16a3610c0d967d8ff8aa2dcad51e6959c3d935864e8d49545"
+      }
+    ],
+    "llm2": [
+      {
+        "name": "fix_screw_size_notation",
+        "origin": "llm:qwen3.7-flash-2026-07-15",
+        "status": "blocked",
+        "evidence": [
+          "query_id=46 '#9x5\" wood screws'"
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 1,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "#9x5\" wood screws",
+            "rewrite": "wood screws #9 5 inch"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4821606101158704,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "precision10": 0.10685714285714286,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ+0.0000）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4821606101158704,
+          "delta": 0.0,
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 0,
+          "overall_n": 1400,
+          "ratio": 0.0,
+          "is_empty": true,
+          "query_ids": [],
+          "zero_result_flips": 0,
+          "ndcg10": null,
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "c0be9903eaeb35b146e0f045d6d860d2b087c5ca858832fae5549cf04f75180d"
+      },
+      {
+        "name": "fix_thermos_handle_negation",
+        "origin": "llm:qwen3.7-flash-2026-07-15",
+        "status": "blocked",
+        "evidence": [
+          "query_id=184 '(thermos funtainer without the handle on the lid) - 2 pack'"
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 1,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "(thermos funtainer without the handle on the lid) - 2 pack",
+            "rewrite": "thermos funtainer without handle - 2 pack"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4824120094333826,
+          "recall10": 0.5853962585034014,
+          "mrr10": 0.5038075396825397,
+          "precision10": 0.10692857142857144,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 提升未通过晋级显著性判据（BH 校正 且 p<0.05 且 CI 不跨零）：BH 校正未通过、置换检验 p≥0.05、95% CI 跨零（p=1.0000，CI [+0.0000, +0.0008]）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4824120094333827,
+          "delta": 0.00025139931751219093,
+          "ci": [
+            0.0,
+            0.0007541979525365729
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.00025139931751219093,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0007541979525365729
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.00035714285714285714,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0010714285714285715
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0002380952380952381,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0007142857142857143
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 1,
+          "overall_n": 1400,
+          "ratio": 0.0007142857142857143,
+          "is_empty": false,
+          "query_ids": [
+            184
+          ],
+          "zero_result_flips": 0,
+          "ndcg10": {
+            "delta": 0.35195904451706733,
+            "ci": [
+              0.35195904451706733,
+              0.35195904451706733
+            ],
+            "p_value": 1.0,
+            "wins": 1,
+            "losses": 0,
+            "ties": 0,
+            "baseline_mean": 0.0,
+            "candidate_mean": 0.35195904451706733
+          },
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "15f21e759290e63e92ed1abed9b9250eb4bc201e03906cf6a6c1c232f9e5daed"
+      },
+      {
+        "name": "fix_durango_titan_passat_without_parts",
+        "origin": "llm:qwen3.7-flash-2026-07-15",
+        "status": "blocked",
+        "evidence": [
+          "query_id=504 '03 durango front calipers without pads'",
+          "query_id=517 '04 nissan titan fender flares without box'",
+          "query_id=562 '07 passat front bumper grille trim without fog lights'"
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 3,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "03 durango front calipers without pads",
+            "rewrite": "03 durango front calipers no pads"
+          },
+          {
+            "match": "04 nissan titan fender flares without box",
+            "rewrite": "04 nissan titan fender flares no box"
+          },
+          {
+            "match": "07 passat front bumper grille trim without fog lights",
+            "rewrite": "07 passat front bumper grille trim no fog lights"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4821606101158704,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "precision10": 0.10685714285714286,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ+0.0000）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4821606101158704,
+          "delta": 0.0,
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 0,
+          "overall_n": 1400,
+          "ratio": 0.0,
+          "is_empty": true,
+          "query_ids": [],
+          "zero_result_flips": 0,
+          "ndcg10": null,
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "22036e0311ebd979c44bab350536fe4cbccffe7c2091c89d1e6b64fed8bc8ac6"
+      }
+    ],
+    "llm3": [
+      {
+        "name": "Fix automotive part exclusions via rewrite rules",
+        "origin": "llm:qwen3.7-flash-2026-07-15",
+        "status": "blocked",
+        "evidence": [
+          "query_id=504 '03 durango front calipers without pads'",
+          "query_id=517 '04 nissan titan fender flares without box'",
+          "query_id=562 '07 passat front bumper grille trim without fog lights'"
+        ],
+        "n_synonym_terms": 0,
+        "n_rewrite_rules": 3,
+        "synonyms": {},
+        "rewrite_rules": [
+          {
+            "match": "03 durango front calipers without pads",
+            "rewrite": "03 durango front calipers no pads"
+          },
+          {
+            "match": "04 nissan titan fender flares without box",
+            "rewrite": "04 nissan titan fender flares no box"
+          },
+          {
+            "match": "07 passat front bumper grille trim without fog lights",
+            "rewrite": "07 passat front bumper grille trim no fog lights"
+          }
+        ],
+        "eval_headline": {
+          "query_count": 1400,
+          "ndcg10": 0.4821606101158704,
+          "recall10": 0.5850391156462585,
+          "mrr10": 0.5035694444444445,
+          "precision10": 0.10685714285714286,
+          "zero_result_rate": 0.0007142857142857143
+        },
+        "gate_verdict": "BLOCK",
+        "gate_reasons": [
+          "主指标 ndcg10 未提升（Δ+0.0000）"
+        ],
+        "overall_prereg": {
+          "metric": "ndcg10",
+          "n": 1400,
+          "baseline_mean": 0.4821606101158704,
+          "candidate_mean": 0.4821606101158704,
+          "delta": 0.0,
+          "ci": [
+            0.0,
+            0.0
+          ],
+          "p_value": 1.0,
+          "verdict": "不显著"
+        },
+        "overall_all_metrics": [
+          {
+            "metric": "ndcg10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "recall10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          },
+          {
+            "metric": "mrr10",
+            "delta": 0.0,
+            "p_value": 1.0,
+            "ci": [
+              0.0,
+              0.0
+            ],
+            "verdict": "不显著",
+            "bh_pass": false
+          }
+        ],
+        "affected": {
+          "affected_n": 0,
+          "overall_n": 1400,
+          "ratio": 0.0,
+          "is_empty": true,
+          "query_ids": [],
+          "zero_result_flips": 0,
+          "ndcg10": null,
+          "used_by_gate": false,
+          "post_hoc": true
+        },
+        "affected_subset_error": null,
+        "proposal_fingerprint": "22036e0311ebd979c44bab350536fe4cbccffe7c2091c89d1e6b64fed8bc8ac6"
+      }
+    ]
+  },
+  "llm_variance": {
+    "runs": [
+      "llm1",
+      "llm2",
+      "llm3"
+    ],
+    "per_run_proposal_count": {
+      "llm1": 3,
+      "llm2": 3,
+      "llm3": 1
+    },
+    "per_run_proposal_names": {
+      "llm1": [
+        "fix_screw_size_notation",
+        "clarify_thermos_funtainer_negation",
+        "auto_parts_without_accessories"
+      ],
+      "llm2": [
+        "fix_screw_size_notation",
+        "fix_thermos_handle_negation",
+        "fix_durango_titan_passat_without_parts"
+      ],
+      "llm3": [
+        "Fix automotive part exclusions via rewrite rules"
+      ]
+    },
+    "per_run_fingerprints": {
+      "llm1": [
+        "9696c843921f34877699972ae2f1c6ee2d218a58a20dc1cfff0f0afd06e68a0e",
+        "23ac2ed367c6a29eb197a7a36b35333373b3d89750c87f497182055993cd281e",
+        "aa54aa07a8d5d0b16a3610c0d967d8ff8aa2dcad51e6959c3d935864e8d49545"
+      ],
+      "llm2": [
+        "c0be9903eaeb35b146e0f045d6d860d2b087c5ca858832fae5549cf04f75180d",
+        "15f21e759290e63e92ed1abed9b9250eb4bc201e03906cf6a6c1c232f9e5daed",
+        "22036e0311ebd979c44bab350536fe4cbccffe7c2091c89d1e6b64fed8bc8ac6"
+      ],
+      "llm3": [
+        "22036e0311ebd979c44bab350536fe4cbccffe7c2091c89d1e6b64fed8bc8ac6"
+      ]
+    },
+    "whole_run_fingerprint": {
+      "llm1": "fd86e518766c7ad4cb93ecfb5fc9167444d7292339e630f8772ce3ebe6602798",
+      "llm2": "31c27e0df46842f354cf00a6752f33dc30f3a8a36006e9048ab11d0bcdf13ee8",
+      "llm3": "f9fc78793870f9a375cb89337d4a06d0025339f2a5e0ccd20dd7dc46633be8b9"
+    },
+    "identical_across_runs": false,
+    "shared_proposal_fingerprints": [],
+    "rewrite_rule_sets": {
+      "llm1": [
+        "{\"match\": \"#9x5\\\" wood screws\", \"rewrite\": \"9 x 5 inch wood screws\"}",
+        "{\"match\": \"(thermos funtainer without the handle on the lid) - 2 pack\", \"rewrite\": \"thermos funtainer without the handle on the lid 2 pack\"}",
+        "{\"match\": \"03 durango front calipers without pads\", \"rewrite\": \"durango front calipers without pads\"}",
+        "{\"match\": \"04 nissan titan fender flares without box\", \"rewrite\": \"nissan titan fender flares without box\"}",
+        "{\"match\": \"07 passat front bumper grille trim without fog lights\", \"rewrite\": \"passat front bumper grille trim without fog lights\"}"
+      ],
+      "llm2": [
+        "{\"match\": \"#9x5\\\" wood screws\", \"rewrite\": \"wood screws #9 5 inch\"}",
+        "{\"match\": \"(thermos funtainer without the handle on the lid) - 2 pack\", \"rewrite\": \"thermos funtainer without handle - 2 pack\"}",
+        "{\"match\": \"03 durango front calipers without pads\", \"rewrite\": \"03 durango front calipers no pads\"}",
+        "{\"match\": \"04 nissan titan fender flares without box\", \"rewrite\": \"04 nissan titan fender flares no box\"}",
+        "{\"match\": \"07 passat front bumper grille trim without fog lights\", \"rewrite\": \"07 passat front bumper grille trim no fog lights\"}"
+      ],
+      "llm3": [
+        "{\"match\": \"03 durango front calipers without pads\", \"rewrite\": \"03 durango front calipers no pads\"}",
+        "{\"match\": \"04 nissan titan fender flares without box\", \"rewrite\": \"04 nissan titan fender flares no box\"}",
+        "{\"match\": \"07 passat front bumper grille trim without fog lights\", \"rewrite\": \"07 passat front bumper grille trim no fog lights\"}"
+      ]
+    },
+    "synonym_maps": {
+      "llm1": {},
+      "llm2": {},
+      "llm3": {}
+    },
+    "affected_union_per_run": {
+      "llm1": [],
+      "llm2": [
+        184
+      ],
+      "llm3": []
+    },
+    "affected_union_sizes": {
+      "llm1": 0,
+      "llm2": 1,
+      "llm3": 0
+    },
+    "affected_pairwise_jaccard": {
+      "llm1|llm2": 0.0,
+      "llm1|llm3": null,
+      "llm2|llm3": 0.0
+    },
+    "ndcg10_overall_delta_per_run": {
+      "llm1": [
+        {
+          "name": "fix_screw_size_notation",
+          "delta": 0.0,
+          "p": 1.0,
+          "status": "blocked"
+        },
+        {
+          "name": "clarify_thermos_funtainer_negation",
+          "delta": 0.0,
+          "p": 1.0,
+          "status": "blocked"
+        },
+        {
+          "name": "auto_parts_without_accessories",
+          "delta": 0.0,
+          "p": 1.0,
+          "status": "blocked"
+        }
+      ],
+      "llm2": [
+        {
+          "name": "fix_screw_size_notation",
+          "delta": 0.0,
+          "p": 1.0,
+          "status": "blocked"
+        },
+        {
+          "name": "fix_thermos_handle_negation",
+          "delta": 0.00025139931751219093,
+          "p": 1.0,
+          "status": "blocked"
+        },
+        {
+          "name": "fix_durango_titan_passat_without_parts",
+          "delta": 0.0,
+          "p": 1.0,
+          "status": "blocked"
+        }
+      ],
+      "llm3": [
+        {
+          "name": "Fix automotive part exclusions via rewrite rules",
+          "delta": 0.0,
+          "p": 1.0,
+          "status": "blocked"
+        }
+      ]
+    }
+  },
+  "affected_union_per_arm": {
+    "symbolic": [
+      327,
+      517,
+      565
+    ],
+    "llm1": [],
+    "llm2": [
+      184
+    ],
+    "llm3": []
+  },
+  "affected_cross_arm_jaccard": {
+    "symbolic|llm1": 0.0,
+    "symbolic|llm2": 0.0,
+    "symbolic|llm3": 0.0,
+    "llm1|llm2": 0.0,
+    "llm1|llm3": null,
+    "llm2|llm3": 0.0
+  },
+  "gate_outcomes": {
+    "symbolic": {
+      "statuses": [
+        "blocked",
+        "blocked",
+        "blocked"
+      ],
+      "submitted": 0,
+      "blocked": 3,
+      "errors": 0,
+      "affected_subset_sizes": [
+        0,
+        0,
+        3
+      ]
+    },
+    "llm1": {
+      "statuses": [
+        "blocked",
+        "blocked",
+        "blocked"
+      ],
+      "submitted": 0,
+      "blocked": 3,
+      "errors": 0,
+      "affected_subset_sizes": [
+        0,
+        0,
+        0
+      ]
+    },
+    "llm2": {
+      "statuses": [
+        "blocked",
+        "blocked",
+        "blocked"
+      ],
+      "submitted": 0,
+      "blocked": 3,
+      "errors": 0,
+      "affected_subset_sizes": [
+        0,
+        1,
+        0
+      ]
+    },
+    "llm3": {
+      "statuses": [
+        "blocked"
+      ],
+      "submitted": 0,
+      "blocked": 1,
+      "errors": 0,
+      "affected_subset_sizes": [
+        0
+      ]
+    }
+  }
+}
