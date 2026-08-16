@@ -1,0 +1,10 @@
+{
+  "original_query": "Laptop under $500",
+  "rewritten_query": "laptop notebook computer",
+  "extracted_filters": { "brand": "Demo", "price_lte": 500.0 },
+  "confidence": 0.82,
+  "explanation": "Deterministic lexical rule applied: laptop→notebook computer.",
+  "provider": "mock",
+  "latency_ms": 0
+}
+

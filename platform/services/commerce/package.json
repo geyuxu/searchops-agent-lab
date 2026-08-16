@@ -1,0 +1,35 @@
+{
+  "name": "@searchops/commerce",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Medusa commerce runtime for Commerce SearchOps Lab",
+  "license": "MIT",
+  "scripts": {
+    "build": "medusa build",
+    "dev": "node scripts/migrate-lab.mjs && medusa develop",
+    "start": "medusa db:migrate && node scripts/migrate-lab.mjs && medusa start",
+    "test": "node --experimental-strip-types --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@medusajs/admin-sdk": "2.18.0",
+    "@medusajs/caching-redis": "2.18.0",
+    "@medusajs/cli": "2.18.0",
+    "@medusajs/framework": "2.18.0",
+    "@medusajs/medusa": "2.18.0",
+    "pg": "8.22.0",
+    "ts-node": "10.9.2"
+  },
+  "devDependencies": {
+    "@swc/core": "1.15.11",
+    "@types/node": "20.17.24",
+    "@types/pg": "8.20.3",
+    "@types/react": "18.3.27",
+    "@types/react-dom": "18.3.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typescript": "5.6.3"
+  },
+  "engines": {
+    "node": ">=22 <=24"
+  }
+}

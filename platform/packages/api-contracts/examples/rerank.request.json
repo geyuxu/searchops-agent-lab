@@ -1,0 +1,9 @@
+{
+  "query": "red running shoes",
+  "request_id": "example-rerank-001",
+  "candidates": [
+    { "product_id": "p1", "title": "Coffee mug", "bm25_score": 2.0 },
+    { "product_id": "p2", "title": "Red running athletic shoes", "bm25_score": 2.0 }
+  ]
+}
+

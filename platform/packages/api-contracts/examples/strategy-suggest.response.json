@@ -1,0 +1,11 @@
+{
+  "proposed_changes": [{ "operation": "add", "path": "/rewrite_rules/0", "value": { "match": "wireless lamp", "rewrite": "wireless lamp" }, "reason": "Flagged for operator-authored rewrite because the query returned no results." }],
+  "expected_impact": "Preview these bounded changes against retained ESCI judgments.",
+  "evidence_refs": ["query_metrics[0]"],
+  "confidence": 0.72,
+  "risk_level": "medium",
+  "requires_approval": true,
+  "provider": "mock",
+  "latency_ms": 0
+}
+

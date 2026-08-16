@@ -1,0 +1,8 @@
+{
+  "ranked_product_ids": ["p2", "p1"],
+  "scores": [{ "product_id": "p2", "score": 0.81 }, { "product_id": "p1", "score": 0.03 }],
+  "explanation": "Deterministic lexical overlap (80%), bounded BM25 (19%), and stable tie-break (1%).",
+  "provider": "mock",
+  "latency_ms": 0
+}
+

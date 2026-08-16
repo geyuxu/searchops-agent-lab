@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://commerce-searchops-lab.local/schemas/ai-contracts.schema.json",
+  "title": "Commerce SearchOps AI contracts",
+  "type": "object",
+  "$defs": {
+    "queryRewriteRequest": { "$ref": "../openapi/ai-adapter.openapi.json#/components/schemas/QueryRewriteRequest" },
+    "queryRewriteResponse": { "$ref": "../openapi/ai-adapter.openapi.json#/components/schemas/QueryRewriteResponse" },
+    "rerankRequest": { "$ref": "../openapi/ai-adapter.openapi.json#/components/schemas/RerankRequest" },
+    "rerankResponse": { "$ref": "../openapi/ai-adapter.openapi.json#/components/schemas/RerankResponse" },
+    "strategySuggestRequest": { "$ref": "../openapi/ai-adapter.openapi.json#/components/schemas/StrategySuggestRequest" },
+    "strategySuggestResponse": { "$ref": "../openapi/ai-adapter.openapi.json#/components/schemas/StrategySuggestResponse" }
+  }
+}
+

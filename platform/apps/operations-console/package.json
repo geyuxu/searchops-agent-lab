@@ -1,0 +1,28 @@
+{
+  "name": "@searchops/operations-console",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0 --port 3001",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0 --port 3001",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@searchops/ui": "file:../../packages/ui",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "typescript": "7.0.2"
+  },
+  "overrides": {
+    "postcss": "8.5.25",
+    "sharp": "0.35.3"
+  },
+  "engines": { "node": ">=22 <=24" }
+}

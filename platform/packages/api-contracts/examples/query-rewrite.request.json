@@ -1,0 +1,7 @@
+{
+  "query": "Laptop under $500",
+  "locale": "en-US",
+  "filters": { "brand": "Demo" },
+  "request_id": "example-rewrite-001"
+}
+

@@ -1,0 +1,52 @@
+{
+  "index_patterns": ["products-v*"],
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "refresh_interval": "1s",
+      "analysis": {
+        "analyzer": {
+          "searchops_text": {
+            "type": "custom",
+            "tokenizer": "standard",
+            "filter": ["lowercase", "asciifolding"]
+          }
+        }
+      }
+    },
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "product_id": {"type": "keyword"},
+        "title": {
+          "type": "text",
+          "analyzer": "searchops_text",
+          "fields": {"keyword": {"type": "keyword", "ignore_above": 512}}
+        },
+        "brand": {
+          "type": "text",
+          "analyzer": "searchops_text",
+          "fields": {"keyword": {"type": "keyword", "ignore_above": 256}}
+        },
+        "description": {"type": "text", "analyzer": "searchops_text"},
+        "bullet_point": {"type": "text", "analyzer": "searchops_text"},
+        "color": {"type": "keyword"},
+        "locale": {"type": "keyword"},
+        "category": {
+          "type": "text",
+          "analyzer": "searchops_text",
+          "fields": {"keyword": {"type": "keyword"}}
+        },
+        "price_cents": {"type": "integer"},
+        "currency": {"type": "keyword"},
+        "inventory": {"type": "integer"},
+        "placeholder_hue": {"type": "integer"},
+        "popularity": {"type": "double"},
+        "provenance": {"type": "keyword"}
+      }
+    }
+  },
+  "priority": 100,
+  "_meta": {"owner": "commerce-searchops-lab", "version": 1}
+}

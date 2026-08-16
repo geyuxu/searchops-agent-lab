@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.POST = POST;
+const db_1 = require("../../../../lib/db");
+async function POST(req, res) {
+    try {
+        const id = crypto.randomUUID();
+        await db_1.pool.query("INSERT INTO lab_carts (id) VALUES ($1)", [id]);
+        res.setHeader("X-Request-ID", (0, db_1.requestId)(req.headers));
+        res.status(201).json({ cart: await (0, db_1.cart)(id) });
+    }
+    catch (error) {
+        (0, db_1.respondError)(res, error);
+    }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicm91dGUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi8uLi9zcmMvYXBpL2xhYi9jb21tZXJjZS9jYXJ0cy9yb3V0ZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUdBLG9CQVNDO0FBWEQsMkNBQXdFO0FBRWpFLEtBQUssVUFBVSxJQUFJLENBQUMsR0FBa0IsRUFBRSxHQUFtQjtJQUNoRSxJQUFJLENBQUM7UUFDSCxNQUFNLEVBQUUsR0FBRyxNQUFNLENBQUMsVUFBVSxFQUFFLENBQUE7UUFDOUIsTUFBTSxTQUFJLENBQUMsS0FBSyxDQUFDLHdDQUF3QyxFQUFFLENBQUMsRUFBRSxDQUFDLENBQUMsQ0FBQTtRQUNoRSxHQUFHLENBQUMsU0FBUyxDQUFDLGNBQWMsRUFBRSxJQUFBLGNBQVMsRUFBQyxHQUFHLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQTtRQUNyRCxHQUFHLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxDQUFDLElBQUksQ0FBQyxFQUFFLElBQUksRUFBRSxNQUFNLElBQUEsU0FBSSxFQUFDLEVBQUUsQ0FBQyxFQUFFLENBQUMsQ0FBQTtJQUNoRCxDQUFDO0lBQUMsT0FBTyxLQUFLLEVBQUUsQ0FBQztRQUNmLElBQUEsaUJBQVksRUFBQyxHQUFHLEVBQUUsS0FBSyxDQUFDLENBQUE7SUFDMUIsQ0FBQztBQUNILENBQUMifQ==

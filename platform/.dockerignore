@@ -1,0 +1,13 @@
+.git
+.env
+**/.next
+**/node_modules
+**/target
+**/.venv
+**/.venv-*
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+data/raw
+data/processed
+tmp

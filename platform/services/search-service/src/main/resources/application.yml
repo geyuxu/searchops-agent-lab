@@ -1,0 +1,54 @@
+server:
+  port: 8080
+  shutdown: graceful
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: search-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/searchops}
+    username: ${SPRING_DATASOURCE_USERNAME:searchops}
+    password: ${SPRING_DATASOURCE_PASSWORD:searchops_local_only}
+    hikari:
+      maximum-pool-size: 8
+      minimum-idle: 1
+  flyway:
+    enabled: true
+  jackson:
+    default-property-inclusion: non_null
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+lab:
+  search:
+    elasticsearch-url: ${ELASTICSEARCH_URL:http://localhost:9200}
+    index-alias: ${ELASTICSEARCH_INDEX_ALIAS:products-read}
+    ai-adapter-url: ${AI_ADAPTER_URL:http://localhost:8000}
+    ai-enabled: ${AI_ENABLED:false}
+    ai-timeout-ms: ${AI_TIMEOUT_MS:400}
+    approval-secret: ${SEARCHOPS_APPROVAL_SECRET:local-demo-approval-secret}
+    processed-data-path: ${PROCESSED_DATA_PATH:/app/data/processed}
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+    lab.searchops: ${LOG_LEVEL:INFO}
+  pattern:
+    console: '{"timestamp":"%d{yyyy-MM-dd''T''HH:mm:ss.SSSXXX}","level":"%p","service":"search-service","request_id":"%X{requestId:-}","logger":"%logger{36}","message":"%replace(%m){''[\r\n]+'','' ''}"}%n'
+

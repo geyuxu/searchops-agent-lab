@@ -1,0 +1,190 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Commerce SearchOps Agent Tool Gateway",
+    "version": "1.0.0",
+    "description": "Governed tools for operators and future agents. No operation mutates Elasticsearch directly."
+  },
+  "servers": [{"url": "http://localhost:8080/api/v1/tools"}],
+  "paths": {
+    "/query-metrics": {
+      "get": {
+        "operationId": "getQueryMetrics",
+        "tags": ["read"],
+        "parameters": [{"name": "query", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1}}],
+        "responses": {"200": {"description": "Aggregated query detail", "content": {"application/json": {"schema": {"type": "object"}}}}}
+      }
+    },
+    "/zero-result-queries": {
+      "get": {
+        "operationId": "getZeroResultQueries",
+        "tags": ["read"],
+        "parameters": [{"$ref": "#/components/parameters/Limit"}],
+        "responses": {"200": {"description": "Zero-result query rows", "content": {"application/json": {"schema": {"type": "array", "items": {"type": "object"}}}}}}
+      }
+    },
+    "/low-quality-queries": {
+      "get": {
+        "operationId": "getLowQualityQueries",
+        "tags": ["read"],
+        "parameters": [{"$ref": "#/components/parameters/Limit"}],
+        "responses": {"200": {"description": "Low-NDCG query rows", "content": {"application/json": {"schema": {"type": "array", "items": {"type": "object"}}}}}}
+      }
+    },
+    "/strategies/current": {
+      "get": {
+        "operationId": "getCurrentStrategy",
+        "tags": ["read"],
+        "responses": {"200": {"$ref": "#/components/responses/Strategy"}}
+      }
+    },
+    "/strategies/history": {
+      "get": {
+        "operationId": "getStrategyHistory",
+        "tags": ["read"],
+        "responses": {"200": {"description": "Strategy history", "content": {"application/json": {"schema": {"type": "array", "items": {"$ref": "#/components/schemas/Strategy"}}}}}}
+      }
+    },
+    "/strategies/preview": {
+      "post": {
+        "operationId": "previewStrategy",
+        "tags": ["dry-run"],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PreviewRequest"}}}},
+        "responses": {"200": {"description": "Current/proposed result comparison with dry_run=true", "content": {"application/json": {"schema": {"type": "object", "required": ["current", "proposed", "changed_positions", "dry_run"]}}}}}
+      }
+    },
+    "/evaluations/query": {
+      "post": {
+        "operationId": "evaluateQuery",
+        "tags": ["read"],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/EvaluationQuery"}}}},
+        "responses": {"200": {"description": "P@10, R@10, MRR@10, NDCG@10 and zero-result flag", "content": {"application/json": {"schema": {"type": "object"}}}}}
+      }
+    },
+    "/strategies/drafts": {
+      "post": {
+        "operationId": "createStrategyDraft",
+        "tags": ["write"],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CreateStrategyRequest"}}}},
+        "responses": {"200": {"$ref": "#/components/responses/Strategy"}, "409": {"$ref": "#/components/responses/Error"}}
+      }
+    },
+    "/strategies/{id}/submit": {
+      "post": {
+        "operationId": "submitStrategy",
+        "tags": ["write"],
+        "parameters": [{"$ref": "#/components/parameters/StrategyId"}, {"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"$ref": "#/components/requestBodies/Transition"},
+        "responses": {"200": {"$ref": "#/components/responses/Strategy"}, "409": {"$ref": "#/components/responses/Error"}}
+      }
+    },
+    "/strategies/{id}/approve": {
+      "post": {
+        "operationId": "approveStrategy",
+        "tags": ["write"],
+        "parameters": [{"$ref": "#/components/parameters/StrategyId"}, {"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"$ref": "#/components/requestBodies/Transition"},
+        "responses": {"200": {"description": "Approved strategy and one approval token", "content": {"application/json": {"schema": {"type": "object", "required": ["strategy", "approval_token"], "properties": {"strategy": {"$ref": "#/components/schemas/Strategy"}, "approval_token": {"type": "string", "writeOnly": true}}}}}}, "409": {"$ref": "#/components/responses/Error"}}
+      }
+    },
+    "/strategies/{id}/publish": {
+      "post": {
+        "operationId": "publishStrategy",
+        "tags": ["write"],
+        "parameters": [{"$ref": "#/components/parameters/StrategyId"}, {"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PublishRequest"}}}},
+        "responses": {"200": {"$ref": "#/components/responses/Strategy"}, "403": {"$ref": "#/components/responses/Error"}, "409": {"$ref": "#/components/responses/Error"}}
+      }
+    },
+    "/strategies/rollback": {
+      "post": {
+        "operationId": "rollbackStrategy",
+        "tags": ["write"],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RollbackRequest"}}}},
+        "responses": {"200": {"$ref": "#/components/responses/Strategy"}, "403": {"$ref": "#/components/responses/Error"}, "409": {"$ref": "#/components/responses/Error"}}
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Limit": {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 500, "default": 50}},
+      "StrategyId": {"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}},
+      "IdempotencyKey": {"name": "Idempotency-Key", "in": "header", "required": true, "schema": {"type": "string", "minLength": 1, "maxLength": 200}}
+    },
+    "requestBodies": {
+      "Transition": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TransitionRequest"}}}}
+    },
+    "responses": {
+      "Strategy": {"description": "Strategy version", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Strategy"}}}},
+      "Error": {"description": "Validated error with request ID", "content": {"application/json": {"schema": {"type": "object", "required": ["error", "message", "request_id", "timestamp"]}}}}
+    },
+    "schemas": {
+      "StrategyConfig": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "synonyms": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+          "rewrite_rules": {"type": "array", "items": {"type": "object", "required": ["match", "rewrite"], "properties": {"match": {"type": "string"}, "rewrite": {"type": "string"}}}},
+          "pinned_product_ids": {"type": "array", "items": {"type": "string"}},
+          "blocked_product_ids": {"type": "array", "items": {"type": "string"}},
+          "brand_boosts": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 100}},
+          "field_weights": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 20}},
+          "minimum_score": {"type": "number", "minimum": 0, "maximum": 1000}
+        }
+      },
+      "Strategy": {
+        "type": "object",
+        "required": ["id", "version", "name", "status", "config", "created_by", "created_at"],
+        "properties": {
+          "id": {"type": "string", "format": "uuid"},
+          "version": {"type": "integer"},
+          "name": {"type": "string"},
+          "status": {"type": "string", "enum": ["DRAFT", "IN_REVIEW", "APPROVED", "PUBLISHED", "ROLLED_BACK", "RETIRED"]},
+          "config": {"$ref": "#/components/schemas/StrategyConfig"},
+          "created_by": {"type": "string"},
+          "created_at": {"type": "string", "format": "date-time"},
+          "approved_by": {"type": ["string", "null"]},
+          "approved_at": {"type": ["string", "null"], "format": "date-time"},
+          "published_at": {"type": ["string", "null"], "format": "date-time"},
+          "supersedes_version": {"type": ["integer", "null"]}
+        }
+      },
+      "ActorRequest": {
+        "type": "object",
+        "required": ["actor", "request_id"],
+        "properties": {"actor": {"type": "string", "minLength": 1}, "request_id": {"type": "string", "minLength": 1, "maxLength": 128}}
+      },
+      "TransitionRequest": {"$ref": "#/components/schemas/ActorRequest"},
+      "CreateStrategyRequest": {
+        "allOf": [
+          {"$ref": "#/components/schemas/ActorRequest"},
+          {"type": "object", "required": ["name", "config"], "properties": {"name": {"type": "string", "minLength": 1}, "config": {"$ref": "#/components/schemas/StrategyConfig"}}}
+        ]
+      },
+      "PublishRequest": {
+        "allOf": [
+          {"$ref": "#/components/schemas/ActorRequest"},
+          {"type": "object", "required": ["approval_token"], "properties": {"approval_token": {"type": "string", "minLength": 1, "writeOnly": true}}}
+        ]
+      },
+      "RollbackRequest": {
+        "allOf": [
+          {"$ref": "#/components/schemas/PublishRequest"},
+          {"type": "object", "required": ["target_version"], "properties": {"target_version": {"type": "integer", "minimum": 1}}}
+        ]
+      },
+      "PreviewRequest": {
+        "type": "object",
+        "required": ["query", "size", "config"],
+        "properties": {"query": {"type": "string", "minLength": 1, "maxLength": 500}, "locale": {"type": "string"}, "size": {"type": "integer", "minimum": 1, "maximum": 50}, "config": {"$ref": "#/components/schemas/StrategyConfig"}}
+      },
+      "EvaluationQuery": {
+        "type": "object",
+        "required": ["query_id", "query", "judgments"],
+        "properties": {"query_id": {"type": "integer"}, "query": {"type": "string", "minLength": 1}, "judgments": {"type": "object", "additionalProperties": {"type": "string", "enum": ["E", "S", "C", "I"]}}}
+      }
+    }
+  }
+}

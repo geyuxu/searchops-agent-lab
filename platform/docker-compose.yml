@@ -1,0 +1,191 @@
+name: ${COMPOSE_PROJECT_NAME:-commerce-searchops-lab}
+
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-searchops}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-searchops_local_only}
+      POSTGRES_DB: ${POSTGRES_DB:-searchops}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/docker/init-databases.sql:/docker-entrypoint-initdb.d/001-init-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-searchops} -d ${POSTGRES_DB:-searchops}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 512m
+
+  redis:
+    image: redis:7.4.5-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "192mb", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 256m
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.2
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      xpack.ml.enabled: "false"
+      ingest.geoip.downloader.enabled: "false"
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    ports:
+      - "127.0.0.1:9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=3s' >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
+    mem_limit: 1536m
+
+  ai-adapter:
+    build:
+      context: ./services/ai-adapter
+    environment:
+      AI_PROVIDER: ${AI_PROVIDER:-mock}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/ai/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 256m
+
+  search-service:
+    build:
+      context: ./services/search-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-searchops}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-searchops}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-searchops_local_only}
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_INDEX_ALIAS: ${ELASTICSEARCH_INDEX_ALIAS:-products-read}
+      AI_ADAPTER_URL: http://ai-adapter:8000
+      AI_ENABLED: ${AI_ENABLED:-true}
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-400}
+      SEARCHOPS_APPROVAL_SECRET: ${SEARCHOPS_APPROVAL_SECRET:-local-demo-approval-secret}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./data/processed:/app/data/processed:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      ai-adapter:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 4s
+      retries: 24
+      start_period: 30s
+    restart: unless-stopped
+    mem_limit: 640m
+
+  commerce:
+    build:
+      context: ./services/commerce
+    environment:
+      NODE_ENV: production
+      MEDUSA_DISABLE_TELEMETRY: "true"
+      NODE_OPTIONS: --max-old-space-size=1024
+      DATABASE_URL: postgresql://${POSTGRES_USER:-searchops}:${POSTGRES_PASSWORD:-searchops_local_only}@postgres:5432/commerce
+      REDIS_URL: redis://redis:6379
+      STORE_CORS: http://localhost:3000
+      ADMIN_CORS: http://localhost:9000,http://localhost:3001
+      AUTH_CORS: http://localhost:3000,http://localhost:3001
+      JWT_SECRET: ${JWT_SECRET:-local-demo-jwt-secret-change-me}
+      COOKIE_SECRET: ${COOKIE_SECRET:-local-demo-cookie-secret-change-me}
+    ports:
+      - "127.0.0.1:9000:9000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:9000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 4s
+      retries: 30
+      start_period: 40s
+    restart: unless-stopped
+    mem_limit: 1536m
+
+  storefront:
+    build:
+      context: .
+      dockerfile: ./apps/storefront/Dockerfile
+      args:
+        NEXT_PUBLIC_SEARCH_SERVICE_URL: ${NEXT_PUBLIC_SEARCH_SERVICE_URL:-http://localhost:8080}
+        NEXT_PUBLIC_COMMERCE_SERVICE_URL: ${NEXT_PUBLIC_COMMERCE_SERVICE_URL:-http://localhost:9000}
+    environment:
+      SEARCH_SERVICE_URL: http://search-service:8080
+      COMMERCE_SERVICE_URL: http://commerce:9000
+      NEXT_PUBLIC_SEARCH_SERVICE_URL: ${NEXT_PUBLIC_SEARCH_SERVICE_URL:-http://localhost:8080}
+      NEXT_PUBLIC_COMMERCE_SERVICE_URL: ${NEXT_PUBLIC_COMMERCE_SERVICE_URL:-http://localhost:9000}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      search-service:
+        condition: service_healthy
+      commerce:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 4s
+      retries: 24
+    restart: unless-stopped
+    mem_limit: 384m
+
+  operations-console:
+    build:
+      context: .
+      dockerfile: ./apps/operations-console/Dockerfile
+      args:
+        NEXT_PUBLIC_SEARCH_SERVICE_URL: ${NEXT_PUBLIC_SEARCH_SERVICE_URL:-http://localhost:8080}
+    environment:
+      SEARCH_SERVICE_URL: http://search-service:8080
+      NEXT_PUBLIC_SEARCH_SERVICE_URL: ${NEXT_PUBLIC_SEARCH_SERVICE_URL:-http://localhost:8080}
+    ports:
+      - "127.0.0.1:3001:3001"
+    depends_on:
+      search-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 4s
+      retries: 24
+    restart: unless-stopped
+    mem_limit: 384m
+
+volumes:
+  postgres_data:
+  redis_data:
+  elasticsearch_data:

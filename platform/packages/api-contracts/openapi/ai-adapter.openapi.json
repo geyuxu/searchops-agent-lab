@@ -1,0 +1,81 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Commerce SearchOps AI Adapter",
+    "version": "1.0.0",
+    "description": "Optional AI boundary. provider=mock requires no model key and is deterministic."
+  },
+  "servers": [{ "url": "http://localhost:8000" }],
+  "paths": {
+    "/ai/health": {
+      "get": {
+        "operationId": "aiHealth",
+        "responses": { "200": { "description": "Provider health", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HealthResponse" } } } } }
+      }
+    },
+    "/ai/query-rewrite": {
+      "post": {
+        "operationId": "queryRewrite",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryRewriteRequest" } } } },
+        "responses": { "200": { "description": "Rewritten query", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryRewriteResponse" } } } }, "422": { "$ref": "#/components/responses/ValidationError" } }
+      }
+    },
+    "/ai/rerank": {
+      "post": {
+        "operationId": "rerank",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RerankRequest" } } } },
+        "responses": { "200": { "description": "Ranked candidates", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RerankResponse" } } } }, "422": { "$ref": "#/components/responses/ValidationError" } }
+      }
+    },
+    "/ai/strategy-suggest": {
+      "post": {
+        "operationId": "strategySuggest",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StrategySuggestRequest" } } } },
+        "responses": { "200": { "description": "Governed suggestion", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StrategySuggestResponse" } } } }, "422": { "$ref": "#/components/responses/ValidationError" } }
+      }
+    }
+  },
+  "components": {
+    "responses": { "ValidationError": { "description": "Input failed schema validation" } },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object", "additionalProperties": false,
+        "required": ["status", "provider", "llm_required"],
+        "properties": { "status": { "const": "ok" }, "provider": { "type": "string" }, "llm_required": { "type": "boolean" } }
+      },
+      "QueryRewriteRequest": {
+        "type": "object", "additionalProperties": false,
+        "required": ["query", "locale", "filters", "request_id"],
+        "properties": { "query": { "type": "string", "minLength": 1, "maxLength": 500 }, "locale": { "type": "string" }, "filters": { "type": "object" }, "request_id": { "type": "string", "minLength": 1, "maxLength": 128 } }
+      },
+      "QueryRewriteResponse": {
+        "type": "object", "additionalProperties": false,
+        "required": ["original_query", "rewritten_query", "extracted_filters", "confidence", "explanation", "provider", "latency_ms"],
+        "properties": { "original_query": { "type": "string" }, "rewritten_query": { "type": "string" }, "extracted_filters": { "type": "object" }, "confidence": { "type": "number", "minimum": 0, "maximum": 1 }, "explanation": { "type": "string" }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 } }
+      },
+      "Candidate": {
+        "type": "object", "additionalProperties": false, "required": ["product_id"],
+        "properties": { "product_id": { "type": "string" }, "title": { "type": "string" }, "brand": { "type": "string" }, "description": { "type": "string" }, "bm25_score": { "type": "number" } }
+      },
+      "RerankRequest": {
+        "type": "object", "additionalProperties": false, "required": ["query", "candidates", "request_id"],
+        "properties": { "query": { "type": "string", "minLength": 1 }, "candidates": { "type": "array", "minItems": 1, "maxItems": 200, "items": { "$ref": "#/components/schemas/Candidate" } }, "request_id": { "type": "string", "minLength": 1 } }
+      },
+      "RerankScore": { "type": "object", "additionalProperties": false, "required": ["product_id", "score"], "properties": { "product_id": { "type": "string" }, "score": { "type": "number" } } },
+      "RerankResponse": {
+        "type": "object", "additionalProperties": false, "required": ["ranked_product_ids", "scores", "explanation", "provider", "latency_ms"],
+        "properties": { "ranked_product_ids": { "type": "array", "items": { "type": "string" } }, "scores": { "type": "array", "items": { "$ref": "#/components/schemas/RerankScore" } }, "explanation": { "type": "string" }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 } }
+      },
+      "StrategySuggestRequest": {
+        "type": "object", "additionalProperties": false, "required": ["query_metrics", "current_strategy", "evidence", "request_id"],
+        "properties": { "query_metrics": { "type": "array", "items": { "type": "object" } }, "current_strategy": { "type": "object" }, "evidence": { "type": "array" }, "request_id": { "type": "string", "minLength": 1 } }
+      },
+      "ProposedChange": { "type": "object", "additionalProperties": false, "required": ["operation", "path", "value", "reason"], "properties": { "operation": { "type": "string" }, "path": { "type": "string" }, "value": {}, "reason": { "type": "string" } } },
+      "StrategySuggestResponse": {
+        "type": "object", "additionalProperties": false, "required": ["proposed_changes", "expected_impact", "evidence_refs", "confidence", "risk_level", "requires_approval", "provider", "latency_ms"],
+        "properties": { "proposed_changes": { "type": "array", "items": { "$ref": "#/components/schemas/ProposedChange" } }, "expected_impact": { "type": "string" }, "evidence_refs": { "type": "array", "items": { "type": "string" } }, "confidence": { "type": "number", "minimum": 0, "maximum": 1 }, "risk_level": { "enum": ["low", "medium", "high"] }, "requires_approval": { "const": true }, "provider": { "type": "string" }, "latency_ms": { "type": "integer", "minimum": 0 } }
+      }
+    }
+  }
+}
+
