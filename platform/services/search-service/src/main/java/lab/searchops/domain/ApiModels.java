@@ -142,9 +142,32 @@ public final class ApiModels {
             // 变成 400。而 data/scripts/evaluate.py 发的 payload 只有 queries/k/persist，
             // 用 primitive 会让整条基线复现链路当场断掉。
             // 用 Boolean + 紧凑构造器归一化，可使该字段真正可选，且不依赖全局 Jackson 配置。
-            @JsonProperty("use_ai") Boolean useAi) {
+            @JsonProperty("use_ai") Boolean useAi,
+            // 候选策略配置（可选）。传了就用它编译检索查询，评测一个**尚未发布**的配置；
+            // 缺省（null）时行为与新增此字段之前逐字节一致——评测当前已发布策略。
+            //
+            // 为什么需要它：以前想扫描 field_weights 之类的参数，只能真的发布/回滚几十次，
+            // 把 strategy 版本历史和审计流全污染；Agent 也无法对自己的提案跑整轮离线评测。
+            //
+            // 类型上是对象（而非 primitive），Jackson 3 的 FAIL_ON_NULL_FOR_PRIMITIVES
+            // 陷阱（见上面 use_ai 的注释）不适用；缺省即 null，null 就是"用已发布策略"。
+            // 注意：候选配置评测**强制不落库**，理由见 EvaluationService.run 的注释。
+            @JsonProperty("strategy_config") @Valid StrategyConfig strategyConfig) {
         public EvaluationRequest {
             useAi = Boolean.TRUE.equals(useAi);
+            // strategyConfig 保持 null 语义：null == 评测当前已发布策略。
+            // 这里刻意不填默认值，"没传候选配置"与"传了一个空候选配置"必须是两件事
+            // ——后者会被 StrategyConfig 的紧凑构造器补成 baseline 权重，是一次真实的候选评测。
+        }
+
+        /**
+         * 四参构造器：不带候选配置 == 评测当前已发布策略。
+         *
+         * <p>保留它是为了让所有既有调用点（EvaluationService.runOne、既有测试）源码不变，
+         * 新增的第 5 个分量对它们完全不可见。
+         */
+        public EvaluationRequest(List<EvaluationQuery> queries, int k, boolean persist, Boolean useAi) {
+            this(queries, k, persist, useAi, null);
         }
     }
 
@@ -159,7 +182,18 @@ public final class ApiModels {
 
     public record EvaluationResult(
             @JsonProperty("run_id") UUID runId,
+            // 已发布策略评测时是真实版本号；候选配置评测时是哨兵
+            // {@link lab.searchops.service.EvaluationService#CANDIDATE_STRATEGY_VERSION}(-1)，
+            // 与 SearchResponse 对候选配置检索用的版本号是同一个哨兵。
             @JsonProperty("strategy_version") int strategyVersion,
+            // "candidate" 表示这一轮评测跑的是请求里带来的候选配置，不是任何已发布版本。
+            // 已发布策略评测时为 null——受 spring.jackson.default-property-inclusion=non_null
+            // 影响该键会被整体省略，因此既有响应（以及 data/processed/evaluation-latest.json
+            // 与 baselines/ 下的归档）的形状一个字节都没变。
+            @JsonProperty("strategy_source") String strategySource,
+            // 仅在"请求要求落库、但因为是候选配置评测而被强制忽略"时为 true，其余情况为 null（省略）。
+            // 让调用方能看出自己的 persist=true 没有生效，而不是以为数据已经写进去了。
+            @JsonProperty("persist_skipped") Boolean persistSkipped,
             @JsonProperty("query_count") int queryCount,
             @JsonProperty("precision10") double precision10,
             @JsonProperty("recall10") double recall10,

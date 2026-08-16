@@ -17,6 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EvaluationService {
+    /**
+     * 候选配置评测在响应里回填的 strategy_version 哨兵值。
+     *
+     * <p>候选配置根本没有版本号——它还没走过 create/submit/approve/publish，
+     * 拿任何真实版本号回填都是在说谎。-1 与 {@code ProductSearchService.search(options, override)}
+     * 给候选检索用的 SearchResponse.strategy_version 是同一个哨兵，全仓库只有这一种含义。
+     */
+    public static final int CANDIDATE_STRATEGY_VERSION = -1;
+
+    /** EvaluationResult.strategy_source 在候选配置评测时的取值；已发布策略评测时该字段为 null。 */
+    public static final String CANDIDATE_STRATEGY_SOURCE = "candidate";
+
     private final ProductSearchService search;
     private final StrategyService strategies;
     private final JdbcTemplate jdbc;
@@ -32,7 +44,20 @@ public class EvaluationService {
         if (request.k() != 10) {
             throw new IllegalArgumentException("This baseline endpoint evaluates exactly k=10");
         }
-        var version = strategies.current().version();
+        // candidate == null 是既有路径：评测当前**已发布**策略，下面每一处分支都退回原样。
+        var candidate = request.strategyConfig();
+        // 候选配置评测不读取任何 strategy：连当前版本号都不查，更不会创建/发布/回滚任何版本。
+        var version = candidate == null ? strategies.current().version() : CANDIDATE_STRATEGY_VERSION;
+
+        // 候选配置评测强制不落库（persist 一律视为 false），与请求里传的 persist 无关。
+        //
+        // 理由：quality_metrics 的唯一键是 (query_id, strategy_version)，而候选配置没有版本号。
+        // 若允许落库，它只能借用某个版本号（或哨兵）写进去，于是这一轮候选跑的数字会通过
+        // ON CONFLICT ... DO UPDATE 覆盖掉同一 (query_id, strategy_version) 下已发布策略的
+        // 真实基线数据，且覆盖不可逆——一次参数扫描就能把整张质量基线表毁掉。
+        // 同理，evaluation_runs 里也不该出现一条 strategy_version 指向"不存在的版本"的记录。
+        var persist = request.persist() && candidate == null;
+
         var metrics = new ArrayList<QueryMetric>(request.queries().size());
         for (var query : request.queries()) {
             // 第 11 个实参是 SearchOptions.useAi。原来这里写死 false，配合 AiAdapterClient
@@ -41,22 +66,30 @@ public class EvaluationService {
             var options = new SearchOptions(query.query(), "en-US", 0, 10, null, null,
                     null, null, null, "relevance", request.useAi(),
                     "evaluation-" + query.queryId(), false);
-            var response = search.search(options);
+            // 候选配置走 ProductSearchService 的 override 重载——也就是 /strategies/preview
+            // 干跑用的那条编译路径（SearchQueryCompiler.compile(options, config, rewritten)），
+            // 不另起一套编译逻辑，preview 与离线评测因此不可能对同一份配置得出不同的查询。
+            // 已发布策略仍走单参重载，调用形状与改动前逐字节一致。
+            var response = candidate == null ? search.search(options) : search.search(options, candidate);
             var ranked = response.products().stream().map(product -> product.productId()).toList();
             var metric = metric(query, ranked);
             metrics.add(metric);
-            if (request.persist()) persist(metric, version);
+            if (persist) persist(metric, version);
         }
         var count = metrics.size();
         var run = new EvaluationResult(
-                UUID.randomUUID(), version, count,
+                UUID.randomUUID(), version,
+                candidate == null ? null : CANDIDATE_STRATEGY_SOURCE,
+                // 只有"要求落库却被强制忽略"时才回填 true，其余情况为 null（响应里整键省略）。
+                request.persist() && !persist ? Boolean.TRUE : null,
+                count,
                 average(metrics, QueryMetric::precision10),
                 average(metrics, QueryMetric::recall10),
                 average(metrics, QueryMetric::mrr10),
                 average(metrics, QueryMetric::ndcg10),
                 average(metrics, metric -> metric.zeroResult() ? 1.0 : 0.0),
                 metrics, request.useAi(), OffsetDateTime.now());
-        if (request.persist()) {
+        if (persist) {
             jdbc.update("""
                     INSERT INTO evaluation_runs
                       (id, strategy_version, query_count, precision10, recall10, mrr10, ndcg10, zero_result_rate)
@@ -86,6 +119,25 @@ public class EvaluationService {
      */
     public EvaluationResult runOne(EvaluationQuery query, boolean useAi) {
         return run(new EvaluationRequest(List.of(query), 10, false, useAi));
+    }
+
+    /**
+     * 候选配置评测入口：对一个**尚未发布**的 strategy_config 跑整轮离线评测。
+     *
+     * <p>与 {@link #run(EvaluationRequest)} 共用同一条实现路径，只多一条前置校验：
+     * strategy_config 必须存在。这条校验是给调用方（尤其是 Agent 工具网关）的护栏——
+     * 少传一个字段就会静默变成"评测当前已发布策略"，Agent 会把别人的成绩当成自己提案的成绩。
+     *
+     * <p>安全等级 DRY_RUN：只读计算，不读取、不修改、不发布任何 strategy，也不写任何表
+     * （落库由 {@link #run(EvaluationRequest)} 强制关闭，理由见那里的注释）。
+     */
+    public EvaluationResult runCandidate(EvaluationRequest request) {
+        if (request.strategyConfig() == null) {
+            throw new IllegalArgumentException(
+                    "strategy_config is required for candidate evaluation; "
+                            + "omit this endpoint to evaluate the published strategy");
+        }
+        return run(request);
     }
 
     private QueryMetric metric(EvaluationQuery query, List<String> ranked) {

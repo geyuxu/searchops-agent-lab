@@ -87,6 +87,36 @@ class SearchOpsClient:
         body = {"query_id": query_id, "query": query, "judgments": judgments}
         return self._request("POST", "/evaluations/query", json=body)
 
+    @safety(SafetyClass.DRY_RUN)
+    def evaluate_candidate(
+        self,
+        queries: list[dict[str, Any]],
+        config: StrategyConfig,
+        *,
+        k: int = 10,
+        use_ai: bool = False,
+    ) -> EvaluationResult:
+        """对一个**尚未发布**的候选配置跑整轮离线评测。
+
+        这是提案闭环里"自证"那一步：Agent 先用它量出候选策略的收益，通过门禁后才
+        建草稿并提交审批。服务端强制不落库，也不读写任何 strategy 版本，因此反复
+        评测不会污染策略历史与审计流——正是这一点让 Agent 可以自由试错。
+
+        `queries` 的每一项形如
+        {"query_id": int, "query": str, "judgments": {product_id: "E"|"S"|"C"|"I"}}。
+        服务端目前只接受 k=10。
+        """
+        body = {
+            "queries": queries,
+            "k": k,
+            "persist": False,  # 服务端也会强制，这里显式传是为了让意图在调用点可见
+            "use_ai": use_ai,
+            "strategy_config": config.model_dump(),
+        }
+        return EvaluationResult.model_validate(
+            self._request("POST", "/evaluations/candidate", json=body)
+        )
+
     # ---- GOVERNED_WRITE -------------------------------------------------
 
     @safety(SafetyClass.GOVERNED_WRITE)

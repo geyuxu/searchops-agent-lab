@@ -59,3 +59,14 @@ def test_writes_require_idempotency_key():
     for name in ("create_draft", "submit"):
         params = inspect.signature(getattr(SearchOpsClient, name)).parameters
         assert "idempotency_key" in params, f"{name} 缺少幂等键参数"
+
+
+def test_candidate_evaluation_is_dry_run(registry):
+    """Agent 自证能力必须是 DRY_RUN 级：能算，但不写任何状态。
+
+    这条保护的是提案闭环的正当性——Agent 之所以可以反复评测自己的候选策略，
+    正是因为这条路径不落库、不读写 strategy 版本、不产生治理事件。
+    一旦它被误标成写入级，Agent 试错就会污染策略历史与审计流。
+    """
+    assert "evaluate_candidate" in registry, "Agent 缺少自证能力，提案无法在提交前被验证"
+    assert registry["evaluate_candidate"].safety_class is SafetyClass.DRY_RUN

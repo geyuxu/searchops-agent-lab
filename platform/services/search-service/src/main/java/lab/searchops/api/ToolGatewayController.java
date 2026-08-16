@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import lab.searchops.domain.ApiModels.CreateStrategyRequest;
 import lab.searchops.domain.ApiModels.EvaluationQuery;
+import lab.searchops.domain.ApiModels.EvaluationRequest;
 import lab.searchops.domain.ApiModels.PreviewRequest;
 import lab.searchops.domain.ApiModels.PublishRequest;
 import lab.searchops.domain.ApiModels.RollbackRequest;
@@ -68,6 +69,23 @@ public class ToolGatewayController {
     public Object evaluate(@Valid @RequestBody EvaluationQuery query,
             @RequestParam(name = "use_ai", defaultValue = "false") boolean useAi) {
         return evaluations.runOne(query, useAi);
+    }
+
+    /**
+     * 候选策略配置的整轮离线评测。安全等级 <b>DRY_RUN</b>，与上面的 /strategies/preview 同级：
+     * 只做只读计算，不写任何状态——不建草稿、不发布、不回滚，也不写 quality_metrics /
+     * evaluation_runs（落库由 EvaluationService 强制关闭，理由见那里的注释）。
+     *
+     * <p>补上的是 Agent 自证闭环最后一环：在这之前 Agent 只能 preview 单条查询，
+     * 想拿整轮 NDCG@10 证明自己的提案，就必须先把提案发布出去——等于让未经审批的配置先上线。
+     *
+     * <p>请求体沿用 EvaluationRequest，但这里 strategy_config 是必填：少传会 400，
+     * 而不是静默退化成"评测当前已发布策略"。响应用 strategy_version=-1 与
+     * strategy_source="candidate" 标记这不是任何已发布版本的成绩。
+     */
+    @PostMapping("/evaluations/candidate")
+    public Object evaluateCandidate(@Valid @RequestBody EvaluationRequest request) {
+        return evaluations.runCandidate(request);
     }
 
     @PostMapping("/strategies/drafts")

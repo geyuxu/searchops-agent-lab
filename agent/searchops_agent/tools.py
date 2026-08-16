@@ -22,6 +22,7 @@ ALLOWED = (
     "strategy_history",
     "preview",
     "evaluate_query",
+    "evaluate_candidate",
     "create_draft",
     "submit",
 )
