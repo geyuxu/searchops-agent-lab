@@ -1,0 +1,244 @@
+{
+  "question": "BM25 字段权重调参的收益，能否在未参与选择的 holdout 上复现？",
+  "best_config": {
+    "field_weights": {
+      "title": 4.0,
+      "brand": 4.0,
+      "bullet_point": 1.7,
+      "description": 1.5,
+      "category": 1.2
+    },
+    "ratios_vs_title": {
+      "brand": 1.0,
+      "bullet_point": 0.425,
+      "description": 0.375,
+      "category": 0.3
+    },
+    "selected_on": "train",
+    "selection_metric": "ndcg10",
+    "train_ndcg10": 0.4881275751155637,
+    "train_baseline_ndcg10": 0.4821606101158704,
+    "split_manifest": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/split-manifest.json",
+    "distinct_configs_evaluated": 218
+  },
+  "train": {
+    "side": "train",
+    "baseline_file": "baseline-v7-train.json",
+    "candidate_file": "sweep-best-train.json",
+    "alignment": "baseline 1400 条 / candidate 1400 条 / 共同 1400 条（仅 baseline 0，仅 candidate 0）",
+    "n": 1400,
+    "metrics": [
+      {
+        "metric": "ndcg10",
+        "baseline_mean": 0.4821606101158704,
+        "candidate_mean": 0.4881275751155637,
+        "delta": 0.005966964999693279,
+        "ci95_low": 0.0027402080806566914,
+        "ci95_high": 0.00955308061972894,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.00019998000199980003,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.0007142857142857143,
+        "effect_label": "negligible",
+        "summary": "ndcg10: 0.4822 → 0.4881 (Δ+0.0060, 95% CI [+0.0027, +0.0096], p=0.0002, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "recall10",
+        "baseline_mean": 0.5850391156462585,
+        "candidate_mean": 0.5934795918367347,
+        "delta": 0.008440476190476191,
+        "ci95_low": 0.0035476190476190477,
+        "ci95_high": 0.013666666666666666,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.000999900009999,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.011428571428571429,
+        "effect_label": "negligible",
+        "summary": "recall10: 0.5850 → 0.5935 (Δ+0.0084, 95% CI [+0.0035, +0.0137], p=0.0010, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "precision10",
+        "baseline_mean": 0.10685714285714286,
+        "candidate_mean": 0.10835714285714285,
+        "delta": 0.0015000000000000005,
+        "ci95_low": 0.0005714285714285716,
+        "ci95_high": 0.0025,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.0006999300069993001,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.011428571428571429,
+        "effect_label": "negligible",
+        "summary": "precision10: 0.1069 → 0.1084 (Δ+0.0015, 95% CI [+0.0006, +0.0025], p=0.0007, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "mrr10",
+        "baseline_mean": 0.5035694444444445,
+        "candidate_mean": 0.5087599206349207,
+        "delta": 0.005190476190476191,
+        "ci95_low": 0.0014557539682539683,
+        "ci95_high": 0.009360303287981861,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.0072992700729927005,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.0,
+        "effect_label": "negligible",
+        "summary": "mrr10: 0.5036 → 0.5088 (Δ+0.0052, 95% CI [+0.0015, +0.0094], p=0.0073, 显著, 效应量 negligible)"
+      }
+    ],
+    "gate": {
+      "promote": true,
+      "reasons": [
+        "全部判据通过；发布仍需人类审批与令牌，Agent 到此为止"
+      ],
+      "render": "PROMOTE — 可进入人工审批\n  配对覆盖：baseline 1400 条 / candidate 1400 条 / 共同 1400 条（仅 baseline 0，仅 candidate 0）\n  ndcg10: 0.4822 → 0.4881 (Δ+0.0060, 95% CI [+0.0027, +0.0096], p=0.0002, 显著, 效应量 negligible)\n  recall10: 0.5850 → 0.5935 (Δ+0.0084, 95% CI [+0.0035, +0.0137], p=0.0010, 显著, 效应量 negligible)\n  mrr10: 0.5036 → 0.5088 (Δ+0.0052, 95% CI [+0.0015, +0.0094], p=0.0073, 显著, 效应量 negligible)\n  · 全部判据通过；发布仍需人类审批与令牌，Agent 到此为止"
+    },
+    "zero_result_rate": {
+      "baseline": 0.0007142857142857143,
+      "candidate": 0.0007142857142857143
+    }
+  },
+  "holdout": {
+    "side": "holdout",
+    "baseline_file": "baseline-v7-holdout.json",
+    "candidate_file": "sweep-best-holdout.json",
+    "alignment": "baseline 600 条 / candidate 600 条 / 共同 600 条（仅 baseline 0，仅 candidate 0）",
+    "n": 600,
+    "metrics": [
+      {
+        "metric": "ndcg10",
+        "baseline_mean": 0.4719617990561964,
+        "candidate_mean": 0.47541311974846623,
+        "delta": 0.0034513206922699093,
+        "ci95_low": -0.0005626099630350311,
+        "ci95_high": 0.007952299565230369,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.12018798120187982,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": -0.0033333333333333335,
+        "effect_label": "negligible",
+        "summary": "ndcg10: 0.4720 → 0.4754 (Δ+0.0035, 95% CI [-0.0006, +0.0080], p=0.1202, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "recall10",
+        "baseline_mean": 0.5801349206349206,
+        "candidate_mean": 0.5854126984126985,
+        "delta": 0.005277777777777778,
+        "ci95_low": -0.0022222222222222227,
+        "ci95_high": 0.012777777777777779,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.2064793520647935,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.011666666666666667,
+        "effect_label": "negligible",
+        "summary": "recall10: 0.5801 → 0.5854 (Δ+0.0053, 95% CI [-0.0022, +0.0128], p=0.2065, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "precision10",
+        "baseline_mean": 0.10849999999999999,
+        "candidate_mean": 0.11050000000000001,
+        "delta": 0.002,
+        "ci95_low": 0.0003333333333333334,
+        "ci95_high": 0.004,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.03949605039496051,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.011666666666666667,
+        "effect_label": "negligible",
+        "summary": "precision10: 0.1085 → 0.1105 (Δ+0.0020, 95% CI [+0.0003, +0.0040], p=0.0395, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "mrr10",
+        "baseline_mean": 0.5043511904761905,
+        "candidate_mean": 0.5058022486772488,
+        "delta": 0.001451058201058201,
+        "ci95_low": -0.0027342923280423283,
+        "ci95_high": 0.005783746693121692,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.5170482951704829,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.005,
+        "effect_label": "negligible",
+        "summary": "mrr10: 0.5044 → 0.5058 (Δ+0.0015, 95% CI [-0.0027, +0.0058], p=0.5170, 不显著, 效应量 negligible)"
+      }
+    ],
+    "gate": {
+      "promote": false,
+      "reasons": [
+        "主指标 ndcg10 提升未通过 BH 校正后的显著性检验（p=0.1202，CI [-0.0006, +0.0080]）"
+      ],
+      "render": "BLOCK — 不得提交审批\n  配对覆盖：baseline 600 条 / candidate 600 条 / 共同 600 条（仅 baseline 0，仅 candidate 0）\n  ndcg10: 0.4720 → 0.4754 (Δ+0.0035, 95% CI [-0.0006, +0.0080], p=0.1202, 不显著, 效应量 negligible)\n  recall10: 0.5801 → 0.5854 (Δ+0.0053, 95% CI [-0.0022, +0.0128], p=0.2065, 不显著, 效应量 negligible)\n  mrr10: 0.5044 → 0.5058 (Δ+0.0015, 95% CI [-0.0027, +0.0058], p=0.5170, 不显著, 效应量 negligible)\n  · 主指标 ndcg10 提升未通过 BH 校正后的显著性检验（p=0.1202，CI [-0.0006, +0.0080]）"
+    },
+    "zero_result_rate": {
+      "baseline": 0.006666666666666667,
+      "candidate": 0.006666666666666667
+    }
+  },
+  "verdict": {
+    "train_ndcg_delta": 0.005966964999693279,
+    "holdout_ndcg_delta": 0.0034513206922699093,
+    "holdout_ndcg_ci95": [
+      -0.0005626099630350311,
+      0.007952299565230369
+    ],
+    "holdout_ndcg_p": 0.12018798120187982,
+    "holdout_cliffs_delta": -0.0033333333333333335,
+    "holdout_effect": "negligible",
+    "fraction_of_train_gain_retained": 0.5784047153699273,
+    "generalises": false,
+    "note": "train 上的 p 值/CI 无效：选择与检验用了同一批数据（winner's curse）。唯一有效的判据是 holdout 那一行。"
+  },
+  "diagnostics_power": {
+    "train": {
+      "ndcg10": {
+        "n": 1400,
+        "mean_diff": 0.005966964999693279,
+        "sd_of_paired_diff": 0.06399516377129182,
+        "changed_queries": 91,
+        "improved": 46,
+        "worsened": 45,
+        "mde_at_this_n_alpha05_power80": 0.004788959544853242,
+        "n_needed_for_observed_effect": 902
+      },
+      "recall10": {
+        "n": 1400,
+        "mean_diff": 0.008440476190476191,
+        "sd_of_paired_diff": 0.09642767666840273,
+        "changed_queries": 30,
+        "improved": 23,
+        "worsened": 7,
+        "mde_at_this_n_alpha05_power80": 0.007215986573915565,
+        "n_needed_for_observed_effect": 1024
+      }
+    },
+    "holdout": {
+      "ndcg10": {
+        "n": 600,
+        "mean_diff": 0.0034513206922699093,
+        "sd_of_paired_diff": 0.05362080052454818,
+        "changed_queries": 40,
+        "improved": 19,
+        "worsened": 21,
+        "mde_at_this_n_alpha05_power80": 0.0061293680412861686,
+        "n_needed_for_observed_effect": 1893
+      },
+      "recall10": {
+        "n": 600,
+        "mean_diff": 0.005277777777777778,
+        "sd_of_paired_diff": 0.09591893501728133,
+        "changed_queries": 11,
+        "improved": 9,
+        "worsened": 2,
+        "mde_at_this_n_alpha05_power80": 0.01096444754829745,
+        "n_needed_for_observed_effect": 2590
+      }
+    }
+  },
+  "diagnostics_power_note": "holdout 上 NDCG@10 的观察效应 +0.0035 小于该 n 下的最小可检出差；要把这个量级的效应检到显著，需要的样本量见 n_needed_for_observed_effect。因此 holdout 的'不显著'同时意味着两件事：(a) 没有证据支持调参增益为真；(b) 即便为真，其量级也小到这套评测集分辨不了——两者都指向同一个运营结论：不值得为它发版。",
+  "structural_finding_category_field_is_dead": {
+    "claim": "strategy 里的 category 权重在本语料上是一个可证明无效的旋钮",
+    "sweep_evidence": "A 段把 category 比值扫遍 18 档 r∈{0,0.05,...,5.0}（含 r=0 即把字段整个从 multi_match.fields 里删掉），NDCG@10 / Recall@10 / MRR@10 / zero_result 全部逐位不变（NDCG 恒为 0.482161，极差 0.000000）。见 sweep-train-report.json 的 axis_curves.category 与 axis_sensitivity_ndcg_range.category=0.0",
+    "mechanism_evidence": "直接查索引 products-v5ce1285d46dc：category.keyword 的 terms 聚合只有 一个桶 'Other'，doc_count=20000，覆盖全部 20000 篇文档。单一取值 → 文档频率=100% → BM25 的 IDF≈0，且只有含 'other' 这个 token 的查询才会命中该字段。",
+    "implication": "这是数据问题，不是调参问题。任何在 category 权重上做的工作收益恒为 0；要让这个字段有用，得先有真实的类目数据。也解释了 top20 里为什么有 8 组配置只差 category 权重却指标完全相同。",
+    "index": "products-v5ce1285d46dc (20000 docs)"
+  }
+}

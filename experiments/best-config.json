@@ -1,0 +1,21 @@
+{
+  "field_weights": {
+    "title": 4.0,
+    "brand": 4.0,
+    "bullet_point": 1.7,
+    "description": 1.5,
+    "category": 1.2
+  },
+  "ratios_vs_title": {
+    "brand": 1.0,
+    "bullet_point": 0.425,
+    "description": 0.375,
+    "category": 0.3
+  },
+  "selected_on": "train",
+  "selection_metric": "ndcg10",
+  "train_ndcg10": 0.4881275751155637,
+  "train_baseline_ndcg10": 0.4821606101158704,
+  "split_manifest": "/Users/geyuxu/Documents/geyuxu/searchops-agent-lab/experiments/split-manifest.json",
+  "distinct_configs_evaluated": 218
+}
