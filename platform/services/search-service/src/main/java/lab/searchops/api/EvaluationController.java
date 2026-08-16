@@ -8,6 +8,7 @@ import lab.searchops.service.EvaluationService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,9 +25,15 @@ public class EvaluationController {
         return evaluations.run(request);
     }
 
+    /**
+     * use_ai 走查询参数而不是请求体：EvaluationQuery 的请求体形状已经冻结在
+     * searchops-tools.openapi.json 里，加可选查询参数不动契约。默认 false，
+     * 与 /run 以及 SearchController 的 use_ai 参数保持同一套默认语义。
+     */
     @PostMapping("/query")
-    public EvaluationResult runOne(@Valid @RequestBody EvaluationQuery query) {
-        return evaluations.runOne(query);
+    public EvaluationResult runOne(@Valid @RequestBody EvaluationQuery query,
+            @RequestParam(name = "use_ai", defaultValue = "false") boolean useAi) {
+        return evaluations.runOne(query, useAi);
     }
 }
 

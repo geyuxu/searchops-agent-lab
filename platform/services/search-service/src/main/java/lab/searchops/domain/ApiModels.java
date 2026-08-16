@@ -45,7 +45,16 @@ public final class ApiModels {
             @JsonProperty("strategy_version") int strategyVersion,
             List<Product> products,
             Map<String, List<FacetBucket>> facets,
+            // ai_applied 现在表示"查询确实被 AI 改写了"（改写结果 != 原始查询）。
+            // 旧语义只表示"AI 调用没抛异常"，mock provider 未命中规则时也是 true，
+            // 于是这个字段无法用来判断 AI 到底有没有影响检索。丢掉的"调用是否成功"
+            // 信息没有消失，被 ai_status 完整接管（APPLIED / NO_CHANGE / 各类降级原因）。
             @JsonProperty("ai_applied") boolean aiApplied,
+            // 本次 AI 改写的确定性结果；降级时即降级原因，永不为 null。
+            @JsonProperty("ai_status") AiRewriteStatus aiStatus,
+            // 实际生效的 provider 名（mock / langchain / …）。未调用或调用失败时为 null，
+            // 受 spring.jackson.default-property-inclusion=non_null 影响该字段会被整体省略。
+            @JsonProperty("ai_provider") String aiProvider,
             @JsonProperty("data_notice") String dataNotice) {}
 
     public record SearchOptions(
@@ -119,7 +128,25 @@ public final class ApiModels {
     public record EvaluationRequest(
             @Size(min = 1, max = 10000) List<@Valid EvaluationQuery> queries,
             @Min(1) @Max(100) int k,
-            boolean persist) {}
+            boolean persist,
+            // 评测是否走 AI 改写路径。以前 EvaluationService 把 useAi 写死成 false，
+            // 所以 make evaluate 永远量不到 AI 的 Recall@10/NDCG@10 变化。
+            //
+            // 必须保持默认 false：现有 200 条查询的基线（strategy v7, NDCG@10 0.4326）
+            // 是在无 AI 条件下产生的，只有默认不变，新旧结果才可比。
+            //
+            // 为什么是包装类型 Boolean 而不是 primitive boolean：
+            // Jackson 3 把 FAIL_ON_NULL_FOR_PRIMITIVES 的默认值从 false 翻转成了 true
+            // （Spring Boot 4.1 的 use-jackson2-defaults 默认为 false，不恢复旧语义），
+            // 因此 primitive 字段一旦缺省就不再静默填 false，而是抛 MismatchedInputException
+            // 变成 400。而 data/scripts/evaluate.py 发的 payload 只有 queries/k/persist，
+            // 用 primitive 会让整条基线复现链路当场断掉。
+            // 用 Boolean + 紧凑构造器归一化，可使该字段真正可选，且不依赖全局 Jackson 配置。
+            @JsonProperty("use_ai") Boolean useAi) {
+        public EvaluationRequest {
+            useAi = Boolean.TRUE.equals(useAi);
+        }
+    }
 
     public record QueryMetric(
             @JsonProperty("query_id") long queryId,
@@ -140,6 +167,9 @@ public final class ApiModels {
             @JsonProperty("ndcg10") double ndcg10,
             @JsonProperty("zero_result_rate") double zeroResultRate,
             List<QueryMetric> queries,
+            // 回显本次评测是否开启了 AI。评测结果会被落到 data/processed/evaluation-latest.json，
+            // 没有这个标记就无法区分基线跑和 AI 候选跑，对比毫无意义。
+            @JsonProperty("use_ai") boolean useAi,
             @JsonProperty("generated_at") OffsetDateTime generatedAt) {}
 
     public record ErrorResponse(

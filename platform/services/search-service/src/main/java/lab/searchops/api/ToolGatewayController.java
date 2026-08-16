@@ -60,9 +60,14 @@ public class ToolGatewayController {
         return strategyController.preview(request);
     }
 
+    /**
+     * 与 /api/v1/evaluations/query 行为对齐：同样接受可选的 use_ai 查询参数，默认 false。
+     * 代理商不传参时，工具网关的行为与既有契约（searchops-tools.openapi.json）完全一致。
+     */
     @PostMapping("/evaluations/query")
-    public Object evaluate(@Valid @RequestBody EvaluationQuery query) {
-        return evaluations.runOne(query);
+    public Object evaluate(@Valid @RequestBody EvaluationQuery query,
+            @RequestParam(name = "use_ai", defaultValue = "false") boolean useAi) {
+        return evaluations.runOne(query, useAi);
     }
 
     @PostMapping("/strategies/drafts")

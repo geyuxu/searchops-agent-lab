@@ -59,8 +59,19 @@ services:
   ai-adapter:
     build:
       context: ./services/ai-adapter
+    # 本服务没有 env_file：platform/.env 只被 compose 用来做 ${VAR} 插值，
+    # 任何要进入容器的变量都必须在下面显式列出，否则 provider 在容器里读不到。
     environment:
       AI_PROVIDER: ${AI_PROVIDER:-mock}
+      # 真实 provider 的预留变量：mock provider 忽略它们，留空透传即可。
+      # 仓库里只登记变量名，真值来自本机 platform/.env（已被 .gitignore 忽略）。
+      AI_MODEL: ${AI_MODEL:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_API_BASE_URL: ${AI_API_BASE_URL:-}
+      AI_TEMPERATURE: ${AI_TEMPERATURE:-0}
+      AI_MAX_TOKENS: ${AI_MAX_TOKENS:-512}
+      # provider 自身调用模型的超时，必须小于 search-service 的 AI_TIMEOUT_MS。
+      AI_REQUEST_TIMEOUT_MS: ${AI_REQUEST_TIMEOUT_MS:-4000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:
       - "127.0.0.1:8000:8000"
@@ -83,7 +94,11 @@ services:
       ELASTICSEARCH_INDEX_ALIAS: ${ELASTICSEARCH_INDEX_ALIAS:-products-read}
       AI_ADAPTER_URL: http://ai-adapter:8000
       AI_ENABLED: ${AI_ENABLED:-true}
-      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-400}
+      # 400ms 只够确定性 mock；真实 LLM 在该预算下必然超时并降级成纯 BM25，
+      # 而请求仍返回 200，故障不可见。默认与 application.yml 一致抬到 5000ms。
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-5000}
+      # 连接超时，与读超时分开：适配器不可达时快速失败，不吃掉整个读超时预算。
+      AI_CONNECT_TIMEOUT_MS: ${AI_CONNECT_TIMEOUT_MS:-1000}
       SEARCHOPS_APPROVAL_SECRET: ${SEARCHOPS_APPROVAL_SECRET:-local-demo-approval-secret}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:

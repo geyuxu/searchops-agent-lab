@@ -35,8 +35,11 @@ public class EvaluationService {
         var version = strategies.current().version();
         var metrics = new ArrayList<QueryMetric>(request.queries().size());
         for (var query : request.queries()) {
+            // 第 11 个实参是 SearchOptions.useAi。原来这里写死 false，配合 AiAdapterClient
+            // 里的 `!aiEnabled() || !useAi()` 短路，导致 AI_ENABLED=true 也测不到 AI。
+            // 现在跟随请求；请求缺省仍是 false，无 AI 基线因此保持可复现。
             var options = new SearchOptions(query.query(), "en-US", 0, 10, null, null,
-                    null, null, null, "relevance", false,
+                    null, null, null, "relevance", request.useAi(),
                     "evaluation-" + query.queryId(), false);
             var response = search.search(options);
             var ranked = response.products().stream().map(product -> product.productId()).toList();
@@ -52,7 +55,7 @@ public class EvaluationService {
                 average(metrics, QueryMetric::mrr10),
                 average(metrics, QueryMetric::ndcg10),
                 average(metrics, metric -> metric.zeroResult() ? 1.0 : 0.0),
-                metrics, OffsetDateTime.now());
+                metrics, request.useAi(), OffsetDateTime.now());
         if (request.persist()) {
             jdbc.update("""
                     INSERT INTO evaluation_runs
@@ -72,8 +75,17 @@ public class EvaluationService {
                 """, limit);
     }
 
+    /** 单条评测，不走 AI。保留这个重载是为了让既有调用方（工具网关契约）行为完全不变。 */
     public EvaluationResult runOne(EvaluationQuery query) {
-        return run(new EvaluationRequest(List.of(query), 10, false));
+        return runOne(query, false);
+    }
+
+    /**
+     * 单条评测。与 {@link #run(EvaluationRequest)} 共用同一条实现路径，
+     * 保证 /evaluations/run 与 /evaluations/query 两条入口对 useAi 的处理完全一致。
+     */
+    public EvaluationResult runOne(EvaluationQuery query, boolean useAi) {
+        return run(new EvaluationRequest(List.of(query), 10, false, useAi));
     }
 
     private QueryMetric metric(EvaluationQuery query, List<String> ranked) {

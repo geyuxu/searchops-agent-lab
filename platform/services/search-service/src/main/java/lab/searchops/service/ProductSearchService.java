@@ -48,9 +48,11 @@ public class ProductSearchService {
         var total = raw.path("hits").path("total").path("value").asLong();
         var latency = Math.max(0, (System.nanoTime() - started) / 1_000_000);
         var version = override == null ? active.version() : -1;
+        // rewrite.applied() 现在只在"改写结果 != 原始查询"时为 true；
+        // AI 调用成功但没动查询会是 false + status=NO_CHANGE，调用失败则是 false + 具体降级原因。
         var response = new SearchResponse(options.requestId(), options.query(), compiled.effectiveQuery(),
                 total, options.page(), options.size(), latency, version, products, facets(raw),
-                rewrite.applied(), DATA_NOTICE);
+                rewrite.applied(), rewrite.status(), rewrite.provider(), DATA_NOTICE);
         if (options.logRequest() && override == null) {
             analytics.record(options, compiled.effectiveQuery(), total, latency,
                     products.stream().map(Product::productId).limit(10).toList(), version);

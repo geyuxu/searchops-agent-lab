@@ -40,8 +40,16 @@ lab:
     elasticsearch-url: ${ELASTICSEARCH_URL:http://localhost:9200}
     index-alias: ${ELASTICSEARCH_INDEX_ALIAS:products-read}
     ai-adapter-url: ${AI_ADAPTER_URL:http://localhost:8000}
-    ai-enabled: ${AI_ENABLED:false}
-    ai-timeout-ms: ${AI_TIMEOUT_MS:400}
+    # 默认值从 false 改为 true，与 .env / docker-compose.yml 对齐：三处不一致时，
+    # 「AI 到底开没开」取决于启动方式，排查降级问题会得出相反结论。
+    # true 是安全的：默认 provider 是无密钥的确定性 mock，且适配器不可达只会降级成
+    # 纯 BM25（ai_status=TRANSPORT_ERROR），不会让搜索请求失败。
+    # kill switch 仍然是 AI_ENABLED=false，此时 ai_status=DISABLED。
+    ai-enabled: ${AI_ENABLED:true}
+    # 读超时默认值从 400ms 抬到 5000ms：400ms 只够确定性 mock provider，真实 LLM 必然超时
+    # 并触发静默 BM25 降级。仍可由 AI_TIMEOUT_MS 覆盖。
+    ai-timeout-ms: ${AI_TIMEOUT_MS:5000}
+    ai-connect-timeout-ms: ${AI_CONNECT_TIMEOUT_MS:1000}
     approval-secret: ${SEARCHOPS_APPROVAL_SECRET:local-demo-approval-secret}
     processed-data-path: ${PROCESSED_DATA_PATH:/app/data/processed}
 
