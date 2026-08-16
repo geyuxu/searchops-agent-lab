@@ -1,0 +1,375 @@
+{
+  "question": "LangChain 查询改写在干净随机划分的新留出集（600 条）上，能否复现/否定旧 200 条切片的结论？",
+  "generated_at": "2026-08-16T07:27:08.948817+00:00",
+  "baseline_file": "baseline-v7-holdout.json",
+  "candidate_file": "rewrite-holdout.json",
+  "coverage_file": "rewrite-holdout-coverage.json",
+  "setup": {
+    "split_manifest": "experiments/split-manifest.json",
+    "split": "holdout",
+    "split_seed": 20260816,
+    "query_ids_sha256": "d284958e3c09d92c1f267318a0c1829b4250c6d4f10a8efc360892dd611f0ebd",
+    "fingerprint_matches_baseline": true,
+    "field_weights": {
+      "title": 4.0,
+      "brand": 2.5,
+      "bullet_point": 1.5,
+      "description": 1.0,
+      "category": 1.2
+    },
+    "weights_from_strategy_version": 7,
+    "only_difference_vs_baseline": "use_ai=true（同一条 /evaluations/candidate 路径、同一份 v7 权重、同一批 query_id）",
+    "ai": {
+      "adapter_url": "http://127.0.0.1:8010",
+      "provider": "app.providers.langchain_rewrite:LangChainRewriteProvider",
+      "provider_name_reported": "langchain-rewrite",
+      "model": "qwen3.7-flash-2026-07-15",
+      "api_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_env": "DASHSCOPE_API_KEY (值从不落盘/不打印)",
+      "temperature": 0.0,
+      "max_tokens": 256,
+      "max_retries": 0,
+      "structured_output_method": "function_calling",
+      "extra_body": {
+        "enable_thinking": false
+      },
+      "provider_request_timeout_ms": 4000,
+      "java_ai_timeout_ms": 5000,
+      "java_ai_connect_timeout_ms": 1000,
+      "java_ai_enabled": true,
+      "prompt_source": "platform/services/ai-adapter/app/providers/langchain_rewrite.py LangChainRewriteProvider._SYSTEM_PROMPT (未改动)"
+    },
+    "run_window_utc": {
+      "started": "2026-08-16T07:06:25.482900+00:00",
+      "finished": "2026-08-16T07:23:20.382764+00:00"
+    },
+    "isolated_instances": {
+      "ai_adapter": "http://127.0.0.1:8010（本次新起，跑完已停）",
+      "search_service": "http://127.0.0.1:8081（本次新起，复用已编译 target/classes，跑完已停）",
+      "untouched": "编排方的 :8000 / :8080 全程未改动"
+    }
+  },
+  "headline": {
+    "ndcg10": {
+      "baseline": 0.4719617990561964,
+      "rewrite": 0.4744885371090538
+    },
+    "recall10": {
+      "baseline": 0.5801349206349207,
+      "rewrite": 0.5812619047619048
+    },
+    "precision10": {
+      "baseline": 0.10850000000000001,
+      "rewrite": 0.10766666666666667
+    },
+    "mrr10": {
+      "baseline": 0.5043511904761905,
+      "rewrite": 0.511193783068783
+    },
+    "zero_result_rate": {
+      "baseline": 0.006666666666666667,
+      "rewrite": 0.005
+    }
+  },
+  "primary": {
+    "alignment": "baseline 600 条 / candidate 600 条 / 共同 600 条（仅 baseline 0，仅 candidate 0）",
+    "n": 600,
+    "metrics": [
+      {
+        "metric": "ndcg10",
+        "n": 600,
+        "baseline_mean": 0.4719617990561964,
+        "candidate_mean": 0.4744885371090538,
+        "delta": 0.002526738052857496,
+        "ci95_low": -0.006682590604510944,
+        "ci95_high": 0.011831634896907587,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.5942405759424058,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.016666666666666666,
+        "effect_label": "negligible",
+        "summary": "ndcg10: 0.4720 → 0.4745 (Δ+0.0025, 95% CI [-0.0067, +0.0118], p=0.5942, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "recall10",
+        "n": 600,
+        "baseline_mean": 0.5801349206349206,
+        "candidate_mean": 0.5812619047619048,
+        "delta": 0.0011269841269841271,
+        "ci95_low": -0.009333333333333334,
+        "ci95_high": 0.011805952380952377,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.8328167183281672,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.0,
+        "effect_label": "negligible",
+        "summary": "recall10: 0.5801 → 0.5813 (Δ+0.0011, 95% CI [-0.0093, +0.0118], p=0.8328, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "precision10",
+        "n": 600,
+        "baseline_mean": 0.10849999999999999,
+        "candidate_mean": 0.10766666666666666,
+        "delta": -0.0008333333333333334,
+        "ci95_low": -0.0035,
+        "ci95_high": 0.0016666666666666668,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.5611438856114389,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.0,
+        "effect_label": "negligible",
+        "summary": "precision10: 0.1085 → 0.1077 (Δ-0.0008, 95% CI [-0.0035, +0.0017], p=0.5611, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "mrr10",
+        "n": 600,
+        "baseline_mean": 0.5043511904761905,
+        "candidate_mean": 0.5111937830687832,
+        "delta": 0.006842592592592594,
+        "ci95_low": -0.004196676587301587,
+        "ci95_high": 0.018367096560846563,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.23077692230776922,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.02,
+        "effect_label": "negligible",
+        "summary": "mrr10: 0.5044 → 0.5112 (Δ+0.0068, 95% CI [-0.0042, +0.0184], p=0.2308, 不显著, 效应量 negligible)"
+      }
+    ],
+    "gate": {
+      "primary_metric": "ndcg10",
+      "promote": false,
+      "reasons": [
+        "主指标 ndcg10 提升未通过 BH 校正后的显著性检验（p=0.5942，CI [-0.0067, +0.0118]）"
+      ],
+      "render": "BLOCK — 不得提交审批\n  配对覆盖：baseline 600 条 / candidate 600 条 / 共同 600 条（仅 baseline 0，仅 candidate 0）\n  ndcg10: 0.4720 → 0.4745 (Δ+0.0025, 95% CI [-0.0067, +0.0118], p=0.5942, 不显著, 效应量 negligible)\n  recall10: 0.5801 → 0.5813 (Δ+0.0011, 95% CI [-0.0093, +0.0118], p=0.8328, 不显著, 效应量 negligible)\n  mrr10: 0.5044 → 0.5112 (Δ+0.0068, 95% CI [-0.0042, +0.0184], p=0.2308, 不显著, 效应量 negligible)\n  · 主指标 ndcg10 提升未通过 BH 校正后的显著性检验（p=0.5942，CI [-0.0067, +0.0118]）"
+    }
+  },
+  "applied_subset_exploratory": {
+    "note": "探索性子集分析，不是预先声明的主判据。条件是'改写真的被应用'（Java ai_status=APPLIED），该条件由 provider 行为决定、与指标结果无关，因此不是按结果挑样本；但它仍然是事后划分的子组，n 更小、未做多重比较校正，不能单独用来支持上线。",
+    "n": 152,
+    "alignment": "APPLIED 子集 152 条 / 全集 600 条",
+    "metrics": [
+      {
+        "metric": "ndcg10",
+        "n": 152,
+        "baseline_mean": 0.4734815623286714,
+        "candidate_mean": 0.48345552832679306,
+        "delta": 0.009973965998121693,
+        "ci95_low": -0.025974409501452866,
+        "ci95_high": 0.04538909485935374,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.5928407159284071,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.06578947368421052,
+        "effect_label": "negligible",
+        "summary": "ndcg10: 0.4735 → 0.4835 (Δ+0.0100, 95% CI [-0.0260, +0.0454], p=0.5928, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "recall10",
+        "n": 152,
+        "baseline_mean": 0.5838659147869675,
+        "candidate_mean": 0.5883145363408522,
+        "delta": 0.0044486215538847105,
+        "ci95_low": -0.03667136591478697,
+        "ci95_high": 0.046398417919799484,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.8382161783821618,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.0,
+        "effect_label": "negligible",
+        "summary": "recall10: 0.5839 → 0.5883 (Δ+0.0044, 95% CI [-0.0367, +0.0464], p=0.8382, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "precision10",
+        "n": 152,
+        "baseline_mean": 0.11842105263157894,
+        "candidate_mean": 0.11513157894736842,
+        "delta": -0.003289473684210526,
+        "ci95_low": -0.013815789473684212,
+        "ci95_high": 0.006578947368421052,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.587041295870413,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.0,
+        "effect_label": "negligible",
+        "summary": "precision10: 0.1184 → 0.1151 (Δ-0.0033, 95% CI [-0.0138, +0.0066], p=0.5870, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "mrr10",
+        "n": 152,
+        "baseline_mean": 0.5156145572263993,
+        "candidate_mean": 0.542624791144528,
+        "delta": 0.027010233918128658,
+        "ci95_low": -0.01613421574770259,
+        "ci95_high": 0.07104571324143691,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.22777722227777222,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.07894736842105263,
+        "effect_label": "negligible",
+        "summary": "mrr10: 0.5156 → 0.5426 (Δ+0.0270, 95% CI [-0.0161, +0.0710], p=0.2278, 不显著, 效应量 negligible)"
+      }
+    ]
+  },
+  "coverage": {
+    "n_queries": 600,
+    "ai_status_counts": {
+      "APPLIED": 152,
+      "NO_CHANGE": 419,
+      "TIMEOUT": 24,
+      "TRANSPORT_ERROR": 5
+    },
+    "applied_rate": 0.2533,
+    "adapter_calls_logged": 600,
+    "adapter_http_200": 574,
+    "adapter_http_500": 26,
+    "adapter_error_types": {
+      "APIConnectionError": 21,
+      "APITimeoutError": 4,
+      "ValueError": 1
+    },
+    "adapter_vs_java_mismatch": 3,
+    "adapter_wall_ms": {
+      "n": 600,
+      "p50": 1427.8,
+      "p90": 2329.3,
+      "p95": 3241.7,
+      "max": 16861.1
+    },
+    "ndcg10_changed_queries": 64,
+    "ndcg10_improved": 37,
+    "ndcg10_worsened": 27,
+    "ndcg10_unchanged": 536,
+    "provider_names_reported": {
+      "langchain-rewrite": 571
+    },
+    "applied_subset": {
+      "n": 152,
+      "ndcg10_baseline_mean": 0.473482,
+      "ndcg10_rewrite_mean": 0.483456,
+      "ndcg10_mean_delta": 0.009974,
+      "metric_changed": 64
+    }
+  },
+  "consistency_checks": {
+    "inert_queries": 448,
+    "inert_queries_with_nonzero_metric_delta": 0,
+    "inert_check_passed": true,
+    "inert_check_meaning": "NO_CHANGE / TIMEOUT / TRANSPORT_ERROR 三种状态下交给 ES 的都是原查询，因此这些查询的四项指标必须与基线逐位相等。任何非零差值都意味着链路里还有别的变量在动（缓存、索引漂移、权重没对齐），结论就不能引用。",
+    "applied_queries": 152,
+    "applied_queries_with_ndcg10_moved": 64,
+    "applied_queries_with_ndcg10_unmoved": 88,
+    "concurrent_recompile": {
+      "what_happened": "并行的 Java rerank agent 在 2026-08-16 08:16:14(+01:00) 重编译了 target/classes，而本轮评测的窗口是 08:06:27–08:23:20，重编译落在窗口内。本实例的 JVM 08:05 就已启动，已加载的类不会被替换，但 08:16 之后才首次被引用的类会来自新构建——这是一个真实的可复现性风险，必须记录而不是忽略。",
+      "queries_processed_after_recompile": 284,
+      "inert_among_them": 210,
+      "inert_among_them_with_nonzero_delta": 0,
+      "verdict": "重编译之后仍有 210 条未改写/降级的查询，它们交给 ES 的是原查询，四项指标与 06:58 产出的 baseline-v7-holdout.json 逐位相等，无一例外。因此检索与打分路径在整个窗口内没有发生可观测的漂移，本轮的配对差值可以归因到查询改写本身。"
+    }
+  },
+  "power": {
+    "observed_sd_of_paired_ndcg10_diff": 0.1145314156083542,
+    "min_detectable_mean_delta_alpha0.05_power0.80": 0.013092031295424704,
+    "reference_sd_from_splits_py": 0.1374,
+    "reference_min_detectable_delta_holdout": 0.0157,
+    "note": "口径与 splits.py 的功效估算一致（2.80·sd/√n）。实测 sd=0.1145，小于 splits.py 用结构性权重改动量到的 0.1374，因为 536/600 条查询的配对差值恒为 0（改写没触发，或触发了也没换动 top-10 的排布）——大量结构性零把 sd 压小、把 CI 做窄。所以'CI 只有 ±0.009'并不表示'测得很准'，它同时也是'绝大多数查询根本没被这个功能碰到'的直接后果。真正需要检出的效应集中在 152 条 APPLIED 上，在那个子集上 CI 宽达 ±0.036。"
+  },
+  "qualitative": {
+    "note": "只看 ndcg10 真正变动的 64 条。收益与损失是同一种行为的两面：模型在纠正商家/型号拼写时赢，在把不认识的词猜成一个真实品牌时输。提示词第 6 条明确写了 'Never add brands'，但它并不被稳定遵守。",
+    "top_gains": [
+      {
+        "ndcg10_delta": 1.0,
+        "query": "eora 3d builds iphone-powered 3d laser scanner",
+        "rewritten_query": "eora 3d laser scanner"
+      },
+      {
+        "ndcg10_delta": 0.8262346571285599,
+        "query": "rockshocks front fork",
+        "rewritten_query": "rockshox front fork"
+      },
+      {
+        "ndcg10_delta": 0.5693758836134329,
+        "query": "drive belt troybuilt riding mower 46 inch lawn tractor",
+        "rewritten_query": "drive belt troy bilt 46 inch riding mower lawn tractor"
+      },
+      {
+        "ndcg10_delta": 0.5574212882428793,
+        "query": "the ultimate body bar this is not soap",
+        "rewritten_query": "the ultimate body bar not soap"
+      },
+      {
+        "ndcg10_delta": 0.5,
+        "query": "movie frozen 2 dvd",
+        "rewritten_query": "frozen 2 dvd"
+      },
+      {
+        "ndcg10_delta": 0.48761101794951506,
+        "query": "iphone 11 pro case ring",
+        "rewritten_query": "iphone 11 pro case with ring"
+      },
+      {
+        "ndcg10_delta": 0.48538004546068164,
+        "query": "zenphone 6",
+        "rewritten_query": "asus zenphone 6"
+      },
+      {
+        "ndcg10_delta": 0.3690702464285426,
+        "query": "eye eyeglasses case",
+        "rewritten_query": "eyeglasses case"
+      }
+    ],
+    "top_losses": [
+      {
+        "ndcg10_delta": -0.7965220398513284,
+        "query": "k cliffs heavy duty clear backpack",
+        "rewritten_query": "Klean Kanteen heavy duty clear water bottle"
+      },
+      {
+        "ndcg10_delta": -0.783665987676367,
+        "query": "baby doll body",
+        "rewritten_query": "babydoll body shaper"
+      },
+      {
+        "ndcg10_delta": -0.7637850064432175,
+        "query": "band w tow and stow 2 1/2",
+        "rewritten_query": "band winch tow and stow 2.5 inch"
+      },
+      {
+        "ndcg10_delta": -0.7109351736821121,
+        "query": "auto muffler bandage",
+        "rewritten_query": "auto muffler wrap"
+      },
+      {
+        "ndcg10_delta": -0.5,
+        "query": "goumikids mittens",
+        "rewritten_query": "goumi kids mittens"
+      },
+      {
+        "ndcg10_delta": -0.3690702464285426,
+        "query": "playstation classic crash game",
+        "rewritten_query": "playstation classic crash bandicoot"
+      },
+      {
+        "ndcg10_delta": -0.36034433104172015,
+        "query": "women tennis polo",
+        "rewritten_query": "women tennis polo shirt"
+      },
+      {
+        "ndcg10_delta": -0.3154648767857287,
+        "query": "frozen hoodie blanket",
+        "rewritten_query": "fleece hoodie blanket"
+      }
+    ],
+    "negation_guard_fired": 0,
+    "query_syntax_stripped": 1,
+    "catastrophic_drops_gt_0.30": 9,
+    "catastrophic_drop_gate_limit": "10% of queries"
+  },
+  "conclusion": {
+    "verdict": "NOT_PROVEN_NO_EFFECT",
+    "one_line": "在干净的 600 条留出集上，查询改写把 NDCG@10 从 0.4720 抬到 0.4745（Δ+0.0025，95% CI [-0.0067, +0.0118]，p=0.5942），CI 跨零、效应量 negligible，门禁判 BLOCK。方向由旧切片的 -0.0061 翻成 +0.0025，但两次都不显著，因此不能说'改写有效'，也不能说'改写有害'——只能说这份实现的效应小到测不出来。",
+    "why_the_old_number_should_not_be_cited": "旧结论跑在 queries.jsonl 前 200 行的有偏切片上，而那批查询的失败模式又正是提示词的设计依据，存在选择偏差；本次是种子 20260816 的哈希确定性随机划分，改写提示词未针对它调过一个字。",
+    "dominant_reason_for_the_null": "覆盖率而不是改写质量：600 条里 419 条模型主动选择不改（NO_CHANGE），29 条降级（24 TIMEOUT + 5 TRANSPORT_ERROR），只有 152 条真的被改写；而这 152 条里又有 88 条改了查询但 top-10 的标注指标一动不动。最终只有 64/600（10.7%）条查询的 ndcg10 发生变化，其中 37 条上升、27 条下降。整体均值差因此几乎全部由这 64 条决定，被 536 条恒零差值稀释。"
+  }
+}

@@ -6,11 +6,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lab.searchops.config.RerankProperties;
 import lab.searchops.domain.ApiModels.EvaluationQuery;
 import lab.searchops.domain.ApiModels.EvaluationRequest;
 import lab.searchops.domain.ApiModels.EvaluationResult;
 import lab.searchops.domain.ApiModels.QueryMetric;
 import lab.searchops.domain.ApiModels.SearchOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,14 +31,31 @@ public class EvaluationService {
     /** EvaluationResult.strategy_source 在候选配置评测时的取值；已发布策略评测时该字段为 null。 */
     public static final String CANDIDATE_STRATEGY_SOURCE = "candidate";
 
+    /** 评测固定 k=10，因此本页窗口恒为 10；候选深度的下限由它决定。 */
+    private static final int EVALUATION_PAGE_SIZE = 10;
+
     private final ProductSearchService search;
     private final StrategyService strategies;
     private final JdbcTemplate jdbc;
+    private final RerankProperties rerankProperties;
 
-    public EvaluationService(ProductSearchService search, StrategyService strategies, JdbcTemplate jdbc) {
+    @Autowired
+    public EvaluationService(ProductSearchService search, StrategyService strategies,
+            JdbcTemplate jdbc, RerankProperties rerankProperties) {
         this.search = search;
         this.strategies = strategies;
         this.jdbc = jdbc;
+        this.rerankProperties = rerankProperties;
+    }
+
+    /**
+     * 兼容构造器：重排配置取默认值。
+     *
+     * <p>只影响结果里回显的 rerank_depth（请求没显式指定深度时回显服务端默认值），
+     * 不影响任何指标计算——真正决定检索深度的是 ProductSearchService 那条链路上的配置。
+     */
+    public EvaluationService(ProductSearchService search, StrategyService strategies, JdbcTemplate jdbc) {
+        this(search, strategies, jdbc, RerankProperties.defaults());
     }
 
     @Transactional
@@ -63,9 +82,14 @@ public class EvaluationService {
             // 第 11 个实参是 SearchOptions.useAi。原来这里写死 false，配合 AiAdapterClient
             // 里的 `!aiEnabled() || !useAi()` 短路，导致 AI_ENABLED=true 也测不到 AI。
             // 现在跟随请求；请求缺省仍是 false，无 AI 基线因此保持可复现。
+            // 第 11 个实参是 useAi，第 14/15 个是重排开关与候选深度。
+            // 评测走的是 page=0 + size=10 + relevance 排序，正好落在重排生效的条件里
+            // （见 AiAdapterClient.rerankPlan）：取回 N 条候选、重排、截回 10 条，
+            // 于是 NDCG@10 / Recall@10 量到的就是重排对 top-10 的真实影响。
             var options = new SearchOptions(query.query(), "en-US", 0, 10, null, null,
                     null, null, null, "relevance", request.useAi(),
-                    "evaluation-" + query.queryId(), false);
+                    "evaluation-" + query.queryId(), false,
+                    request.useRerank(), request.rerankDepth());
             // 候选配置走 ProductSearchService 的 override 重载——也就是 /strategies/preview
             // 干跑用的那条编译路径（SearchQueryCompiler.compile(options, config, rewritten)），
             // 不另起一套编译逻辑，preview 与离线评测因此不可能对同一份配置得出不同的查询。
@@ -88,7 +112,16 @@ public class EvaluationService {
                 average(metrics, QueryMetric::mrr10),
                 average(metrics, QueryMetric::ndcg10),
                 average(metrics, metric -> metric.zeroResult() ? 1.0 : 0.0),
-                metrics, request.useAi(), OffsetDateTime.now());
+                metrics, request.useAi(),
+                // 重排关闭时这两个键在响应里整体消失（non_null inclusion），
+                // 既有产物的 JSON 形状因此逐字节不变；开启时它们让产物自证条件。
+                request.useRerank() ? Boolean.TRUE : null,
+                // 回显**实际生效**的深度而不是请求里那个可能为 null 的值：产物要能自证条件，
+                // "没写深度"和"深度 50"必须在归档里看得出区别。
+                request.useRerank()
+                        ? rerankProperties.effectiveDepth(request.rerankDepth(), EVALUATION_PAGE_SIZE)
+                        : null,
+                OffsetDateTime.now());
         if (persist) {
             jdbc.update("""
                     INSERT INTO evaluation_runs
@@ -118,7 +151,16 @@ public class EvaluationService {
      * 保证 /evaluations/run 与 /evaluations/query 两条入口对 useAi 的处理完全一致。
      */
     public EvaluationResult runOne(EvaluationQuery query, boolean useAi) {
-        return run(new EvaluationRequest(List.of(query), 10, false, useAi));
+        return runOne(query, useAi, false);
+    }
+
+    /**
+     * 单条评测，可分别开关改写与重排。
+     *
+     * <p>两个开关刻意分开：只有能跑出"只开重排"这一组，重排的收益才是可归因的。
+     */
+    public EvaluationResult runOne(EvaluationQuery query, boolean useAi, boolean useRerank) {
+        return run(new EvaluationRequest(List.of(query), 10, false, useAi, null, useRerank, null));
     }
 
     /**

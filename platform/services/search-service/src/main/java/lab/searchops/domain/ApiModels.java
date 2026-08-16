@@ -55,7 +55,33 @@ public final class ApiModels {
             // 实际生效的 provider 名（mock / langchain / …）。未调用或调用失败时为 null，
             // 受 spring.jackson.default-property-inclusion=non_null 影响该字段会被整体省略。
             @JsonProperty("ai_provider") String aiProvider,
-            @JsonProperty("data_notice") String dataNotice) {}
+            // 候选集重排是否真的改变了本页顺序。与 ai_applied 一样，只有"确实产生了差异"
+            // 才是 true；调用成功但顺序没变是 false + rerank_status=NO_CHANGE。
+            @JsonProperty("rerank_applied") boolean rerankApplied,
+            // 本次重排的确定性结果；降级时即降级原因，永不为 null。与 ai_status 分开两个字段，
+            // 理由见 AiRerankStatus 的类注释——同一次请求可以是"改写成功 + 重排超时"。
+            @JsonProperty("rerank_status") AiRerankStatus rerankStatus,
+            // 重排实际生效的 provider 名；未调用或调用失败时为 null（该键被整体省略）。
+            @JsonProperty("rerank_provider") String rerankProvider,
+            // 实际送去重排的候选条数（BM25 取回的 N，可能少于配置的深度）。未调用时省略。
+            // 没有它就无法从响应侧确认 rerank_depth 到底生效了没有。
+            @JsonProperty("rerank_candidates") Integer rerankCandidates,
+            @JsonProperty("data_notice") String dataNotice) {
+
+        /**
+         * 兼容构造器：不带任何重排信息 == 本次请求没有走重排链路。
+         *
+         * <p>保留它是为了让既有构造点源码不变；重排字段填成"未请求"的中性值。
+         */
+        public SearchResponse(String requestId, String originalQuery, String effectiveQuery,
+                long total, int page, int size, long latencyMs, int strategyVersion,
+                List<Product> products, Map<String, List<FacetBucket>> facets, boolean aiApplied,
+                AiRewriteStatus aiStatus, String aiProvider, String dataNotice) {
+            this(requestId, originalQuery, effectiveQuery, total, page, size, latencyMs,
+                    strategyVersion, products, facets, aiApplied, aiStatus, aiProvider,
+                    false, AiRerankStatus.NOT_REQUESTED, null, null, dataNotice);
+        }
+    }
 
     public record SearchOptions(
             String query,
@@ -70,7 +96,33 @@ public final class ApiModels {
             String sort,
             boolean useAi,
             String requestId,
-            boolean logRequest) {}
+            boolean logRequest,
+            // 是否请求候选集重排。与 useAi 完全独立：可以只开改写、只开重排、或两者都开。
+            boolean useRerank,
+            // 候选深度 N 的请求级覆盖；null 表示用服务端配置的默认值。
+            Integer rerankDepth) {
+
+        /** 兼容构造器：不带重排参数 == 不重排。既有构造点（含 explain / preview）行为不变。 */
+        public SearchOptions(String query, String locale, int page, int size, String brand,
+                String category, Integer priceMin, Integer priceMax, Boolean inStock, String sort,
+                boolean useAi, String requestId, boolean logRequest) {
+            this(query, locale, page, size, brand, category, priceMin, priceMax, inStock, sort,
+                    useAi, requestId, logRequest, false, null);
+        }
+
+        /**
+         * 换一个检索深度的副本，其余分量原样。
+         *
+         * <p>重排需要先取 N 条再截断到 size，而 SearchQueryCompiler 只认 options.size()。
+         * 与其给编译器加一个"候选深度"参数（那会让所有不重排的调用都要传一个多余的值，
+         * 且很容易出现深度与是否重排不一致），不如在这里造一个只改 size 的副本：
+         * 不重排时压根不会调用它，编译出的查询体因此与改动前逐字节相同。
+         */
+        public SearchOptions withSize(int newSize) {
+            return new SearchOptions(query, locale, page, newSize, brand, category, priceMin,
+                    priceMax, inStock, sort, useAi, requestId, logRequest, useRerank, rerankDepth);
+        }
+    }
 
     public record Strategy(
             UUID id,
@@ -152,9 +204,26 @@ public final class ApiModels {
             // 类型上是对象（而非 primitive），Jackson 3 的 FAIL_ON_NULL_FOR_PRIMITIVES
             // 陷阱（见上面 use_ai 的注释）不适用；缺省即 null，null 就是"用已发布策略"。
             // 注意：候选配置评测**强制不落库**，理由见 EvaluationService.run 的注释。
-            @JsonProperty("strategy_config") @Valid StrategyConfig strategyConfig) {
+            @JsonProperty("strategy_config") @Valid StrategyConfig strategyConfig,
+            // 评测是否走候选集重排路径。
+            //
+            // 为什么是独立字段而不是复用 use_ai：
+            // 1) 改写与重排是两条可以独立开关的链路，复用一个开关就没法只测其中一条；
+            // 2) 更要命的是归因——若 use_ai 同时打开改写和重排，测出来的 ΔNDCG@10 是两者
+            //    的合力，无法回答"重排本身值不值得"这个唯一重要的问题。留出集基线
+            //    （NDCG@10 0.4720）是无 AI 条件下产生的，只有 use_rerank 单独可控，
+            //    "只开重排"这一组才能与它直接相减。
+            //
+            // 与 use_ai 同样用包装类型 Boolean：Jackson 3 的 FAIL_ON_NULL_FOR_PRIMITIVES
+            // 默认为 true，primitive 字段缺省会 400，而既有评测脚本的 payload 里没有这个键。
+            // 默认 false，因此所有既有基线复现链路一个字节都不受影响。
+            @JsonProperty("use_rerank") Boolean useRerank,
+            // 候选深度 N 的覆盖；null 表示用服务端配置的默认值（lab.search.rerank.depth）。
+            @JsonProperty("rerank_depth") @Min(1) @Max(200) Integer rerankDepth) {
         public EvaluationRequest {
             useAi = Boolean.TRUE.equals(useAi);
+            useRerank = Boolean.TRUE.equals(useRerank);
+            // rerankDepth 保持 null 语义：null == 用服务端默认深度。
             // strategyConfig 保持 null 语义：null == 评测当前已发布策略。
             // 这里刻意不填默认值，"没传候选配置"与"传了一个空候选配置"必须是两件事
             // ——后者会被 StrategyConfig 的紧凑构造器补成 baseline 权重，是一次真实的候选评测。
@@ -167,7 +236,13 @@ public final class ApiModels {
          * 新增的第 5 个分量对它们完全不可见。
          */
         public EvaluationRequest(List<EvaluationQuery> queries, int k, boolean persist, Boolean useAi) {
-            this(queries, k, persist, useAi, null);
+            this(queries, k, persist, useAi, null, false, null);
+        }
+
+        /** 五参构造器：带候选配置但不重排。同样只为让既有调用点源码不变。 */
+        public EvaluationRequest(List<EvaluationQuery> queries, int k, boolean persist,
+                Boolean useAi, StrategyConfig strategyConfig) {
+            this(queries, k, persist, useAi, strategyConfig, false, null);
         }
     }
 
@@ -204,6 +279,14 @@ public final class ApiModels {
             // 回显本次评测是否开启了 AI。评测结果会被落到 data/processed/evaluation-latest.json，
             // 没有这个标记就无法区分基线跑和 AI 候选跑，对比毫无意义。
             @JsonProperty("use_ai") boolean useAi,
+            // 回显本次评测是否开启了重排，以及实际用的候选深度。同理：没有这两个标记，
+            // 一份 experiments/*.json 就无法自证它是哪一组条件跑出来的。
+            //
+            // 为什么是包装类型：重排关闭时填 null，受 non_null inclusion 影响这两个键会
+            // 整体消失，于是既有产物（baselines/、experiments/ 下的归档）的 JSON 形状
+            // 与新增这两个字段之前逐字节一致，新旧结果仍可直接 diff。
+            @JsonProperty("use_rerank") Boolean useRerank,
+            @JsonProperty("rerank_depth") Integer rerankDepth,
             @JsonProperty("generated_at") OffsetDateTime generatedAt) {}
 
     public record ErrorResponse(

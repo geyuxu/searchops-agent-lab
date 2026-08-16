@@ -39,9 +39,18 @@ public class SearchController {
             @RequestParam(name = "price_max", required = false) @Min(0) Integer priceMax,
             @RequestParam(name = "in_stock", required = false) Boolean inStock,
             @RequestParam(defaultValue = "relevance") String sort,
-            @RequestParam(name = "use_ai", defaultValue = "false") boolean useAi) {
+            @RequestParam(name = "use_ai", defaultValue = "false") boolean useAi,
+            // 重排开关，与 use_ai 完全独立：可以只开其中一个。默认 false，
+            // 因此不带这个参数的既有调用方（前台、后台、评测脚本）行为一个字节都没变。
+            @RequestParam(name = "rerank", defaultValue = "false") boolean rerank,
+            // 候选深度 N 的请求级覆盖，缺省用 lab.search.rerank.depth（默认 50）。
+            // 上限 200 是 AI 适配器 RerankRequest.candidates 的契约上限，超了会被 422。
+            // 注意它与 size 是两回事：size 仍是对外返回的条数（上限 100），
+            // 重排先取 N 条候选、重排、再截断到 size，分页语义不受影响。
+            @RequestParam(name = "rerank_depth", required = false) @Min(1) @Max(200)
+                    Integer rerankDepth) {
         return search.search(new SearchOptions(query, locale, page, size, brand, category,
-                priceMin, priceMax, inStock, sort, useAi, requestId(), true));
+                priceMin, priceMax, inStock, sort, useAi, requestId(), true, rerank, rerankDepth));
     }
 
     @GetMapping("/products/{productId}")

@@ -1,0 +1,639 @@
+{
+  "question": "在干净留出集（n=600）上，LLM 重排相对 v7 BM25 基线的真实效果是多少？候选深度 N 有多大影响？",
+  "setup": {
+    "split": "holdout 600 条，种子 20260816，manifest experiments/split-manifest.json",
+    "baseline": "experiments/baseline-v7-holdout.json（NDCG@10 0.4720，无 AI）",
+    "condition": "use_ai=false + use_rerank=true —— 只开重排，是唯一可与 v7 基线直接相减的一组",
+    "k": 10,
+    "strategy_config": "v7 字段权重（title 4.0 / brand 2.5 / bullet_point 1.5 / description 1.0 / category 1.2），候选评测强制不落库",
+    "ai": {
+      "adapter_url": "http://127.0.0.1:8010",
+      "adapter_venv": "scratchpad 独立 venv，pin 取自 services/ai-adapter/requirements.txt (langchain-core 1.5.5 / langchain-openai 1.5.1 / openai 3.1.0 / tiktoken 0.13.0)",
+      "provider": "app.providers.langchain_rerank:LangChainRerankProvider",
+      "provider_name_reported": "langchain-rerank",
+      "model": "qwen3.7-flash-2026-07-15",
+      "api_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_env": "DASHSCOPE_API_KEY (值从不落盘/不打印)",
+      "temperature": 0.0,
+      "max_retries": 0,
+      "max_tokens": "provider 默认，按 top_k 推导 = max(256, 64+8*10) = 256",
+      "structured_output_method": "function_calling",
+      "extra_body": {
+        "enable_thinking": false
+      },
+      "provider_request_timeout_ms": 12000,
+      "AI_RERANK_TOP_K": 10,
+      "AI_RERANK_TITLE_CHARS": 120,
+      "AI_RERANK_BRAND_CHARS": 40,
+      "AI_RERANK_DESCRIPTION_CHARS": 0,
+      "AI_RERANK_MAX_CANDIDATES": 0,
+      "prompt_source": "platform/services/ai-adapter/app/providers/langchain_rerank.py LangChainRerankProvider._SYSTEM_PROMPT (未改动)",
+      "java_service": "独立实例 :8081，跑 target/classes 于 08:33 的快照副本",
+      "java_rerank_timeout_ms": 15000,
+      "java_ai_connect_timeout_ms": 1000,
+      "java_rerank_max_concurrency": 32,
+      "java_ai_enabled": true,
+      "java_rerank_enabled": true,
+      "use_ai_rewrite": false
+    },
+    "chunking": "600 条切成 24 个 25 条的候选评测请求，并发 8；顶层均值 = 逐查询指标的算术平均，与 EvaluationService.run 同算法。等价性由下面的 control 实证。"
+  },
+  "headline": "三档深度全部显著提升且全部通过门禁。N=50 的 NDCG@10 从 0.4720 提升到 0.5926 （Δ+0.1207，95% CI [+0.1006, +0.1416]，p=0.0001）。效应随候选深度单调增长，与「57.6% 的彻底失败是排序问题」的诊断一致。",
+  "depths": {
+    "n20": {
+      "candidate_depth_N": 20,
+      "artifact": "experiments/rerank-holdout-n20.json",
+      "alignment": "baseline 600 条 / candidate 600 条 / 共同 600 条（仅 baseline 0，仅 candidate 0）",
+      "metrics": [
+        {
+          "metric": "ndcg10",
+          "n": 600,
+          "baseline_mean": 0.4719617990561964,
+          "candidate_mean": 0.5687340698741845,
+          "delta": 0.09677227081798818,
+          "ci95_low": 0.07958297424969435,
+          "ci95_high": 0.1144400368651732,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.2916666666666667,
+          "effect_label": "small",
+          "summary": "ndcg10: 0.4720 → 0.5687 (Δ+0.0968, 95% CI [+0.0796, +0.1144], p=0.0001, 显著, 效应量 small)"
+        },
+        {
+          "metric": "recall10",
+          "n": 600,
+          "baseline_mean": 0.5801349206349206,
+          "candidate_mean": 0.617829365079365,
+          "delta": 0.03769444444444445,
+          "ci95_low": 0.022361111111111113,
+          "ci95_high": 0.05369513888888888,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.07,
+          "effect_label": "negligible",
+          "summary": "recall10: 0.5801 → 0.6178 (Δ+0.0377, 95% CI [+0.0224, +0.0537], p=0.0001, 显著, 效应量 negligible)"
+        },
+        {
+          "metric": "precision10",
+          "n": 600,
+          "baseline_mean": 0.10849999999999999,
+          "candidate_mean": 0.11599999999999999,
+          "delta": 0.0075,
+          "ci95_low": 0.004833333333333334,
+          "ci95_high": 0.010333333333333335,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.07,
+          "effect_label": "negligible",
+          "summary": "precision10: 0.1085 → 0.1160 (Δ+0.0075, 95% CI [+0.0048, +0.0103], p=0.0001, 显著, 效应量 negligible)"
+        },
+        {
+          "metric": "mrr10",
+          "n": 600,
+          "baseline_mean": 0.5043511904761905,
+          "candidate_mean": 0.6238068783068782,
+          "delta": 0.11945568783068784,
+          "ci95_low": 0.09511914682539684,
+          "ci95_high": 0.14485593584656084,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.195,
+          "effect_label": "small",
+          "summary": "mrr10: 0.5044 → 0.6238 (Δ+0.1195, 95% CI [+0.0951, +0.1449], p=0.0001, 显著, 效应量 small)"
+        }
+      ],
+      "gate": {
+        "promote": true,
+        "reasons": [
+          "全部判据通过；发布仍需人类审批与令牌，Agent 到此为止"
+        ]
+      },
+      "coverage": {
+        "APPLIED": 487,
+        "NO_CHANGE": 99,
+        "TRANSPORT_ERROR": 10,
+        "NOT_APPLICABLE(no-call)": 4
+      },
+      "win_loss_tie": {
+        "win": 228,
+        "loss": 53,
+        "tie": 319
+      },
+      "catastrophic_drop_gt_0.30": 12,
+      "wall_seconds": 159.3,
+      "adapter_latency_ms": {
+        "n": 596,
+        "p50_ms": 1676,
+        "p90_ms": 2696,
+        "p95_ms": 3219,
+        "max_ms": 7566,
+        "mean_ms": 1870
+      }
+    },
+    "n50": {
+      "candidate_depth_N": 50,
+      "artifact": "experiments/rerank-holdout-n50.json",
+      "alignment": "baseline 600 条 / candidate 600 条 / 共同 600 条（仅 baseline 0，仅 candidate 0）",
+      "metrics": [
+        {
+          "metric": "ndcg10",
+          "n": 600,
+          "baseline_mean": 0.4719617990561964,
+          "candidate_mean": 0.5926459148106948,
+          "delta": 0.12068411575449843,
+          "ci95_low": 0.10060683081267609,
+          "ci95_high": 0.14156124107472054,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.31833333333333336,
+          "effect_label": "small",
+          "summary": "ndcg10: 0.4720 → 0.5926 (Δ+0.1207, 95% CI [+0.1006, +0.1416], p=0.0001, 显著, 效应量 small)"
+        },
+        {
+          "metric": "recall10",
+          "n": 600,
+          "baseline_mean": 0.5801349206349206,
+          "candidate_mean": 0.654611111111111,
+          "delta": 0.07447619047619049,
+          "ci95_low": 0.05280496031746031,
+          "ci95_high": 0.09708819444444444,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.13,
+          "effect_label": "negligible",
+          "summary": "recall10: 0.5801 → 0.6546 (Δ+0.0745, 95% CI [+0.0528, +0.0971], p=0.0001, 显著, 效应量 negligible)"
+        },
+        {
+          "metric": "precision10",
+          "n": 600,
+          "baseline_mean": 0.10849999999999999,
+          "candidate_mean": 0.12533333333333332,
+          "delta": 0.016833333333333332,
+          "ci95_low": 0.012333333333333333,
+          "ci95_high": 0.021500000000000005,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.13,
+          "effect_label": "negligible",
+          "summary": "precision10: 0.1085 → 0.1253 (Δ+0.0168, 95% CI [+0.0123, +0.0215], p=0.0001, 显著, 效应量 negligible)"
+        },
+        {
+          "metric": "mrr10",
+          "n": 600,
+          "baseline_mean": 0.5043511904761905,
+          "candidate_mean": 0.6384292328042327,
+          "delta": 0.13407804232804235,
+          "ci95_low": 0.1080659556878307,
+          "ci95_high": 0.1611580687830688,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.21333333333333335,
+          "effect_label": "small",
+          "summary": "mrr10: 0.5044 → 0.6384 (Δ+0.1341, 95% CI [+0.1081, +0.1612], p=0.0001, 显著, 效应量 small)"
+        }
+      ],
+      "gate": {
+        "promote": true,
+        "reasons": [
+          "全部判据通过；发布仍需人类审批与令牌，Agent 到此为止"
+        ]
+      },
+      "coverage": {
+        "APPLIED": 505,
+        "NO_CHANGE": 85,
+        "TRANSPORT_ERROR": 6,
+        "NOT_APPLICABLE(no-call)": 4
+      },
+      "win_loss_tie": {
+        "win": 255,
+        "loss": 64,
+        "tie": 281
+      },
+      "catastrophic_drop_gt_0.30": 15,
+      "wall_seconds": 159.8,
+      "adapter_latency_ms": {
+        "n": 596,
+        "p50_ms": 1740,
+        "p90_ms": 2694,
+        "p95_ms": 3185,
+        "max_ms": 5382,
+        "mean_ms": 1907
+      }
+    },
+    "n100": {
+      "candidate_depth_N": 100,
+      "artifact": "experiments/rerank-holdout-n100.json",
+      "alignment": "baseline 600 条 / candidate 600 条 / 共同 600 条（仅 baseline 0，仅 candidate 0）",
+      "metrics": [
+        {
+          "metric": "ndcg10",
+          "n": 600,
+          "baseline_mean": 0.4719617990561964,
+          "candidate_mean": 0.60683878899532,
+          "delta": 0.13487698993912356,
+          "ci95_low": 0.11332186796310219,
+          "ci95_high": 0.1569897514065194,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.3333333333333333,
+          "effect_label": "medium",
+          "summary": "ndcg10: 0.4720 → 0.6068 (Δ+0.1349, 95% CI [+0.1133, +0.1570], p=0.0001, 显著, 效应量 medium)"
+        },
+        {
+          "metric": "recall10",
+          "n": 600,
+          "baseline_mean": 0.5801349206349206,
+          "candidate_mean": 0.6800277777777778,
+          "delta": 0.09989285714285714,
+          "ci95_low": 0.07530942460317461,
+          "ci95_high": 0.12522628968253968,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.16333333333333333,
+          "effect_label": "small",
+          "summary": "recall10: 0.5801 → 0.6800 (Δ+0.0999, 95% CI [+0.0753, +0.1252], p=0.0001, 显著, 效应量 small)"
+        },
+        {
+          "metric": "precision10",
+          "n": 600,
+          "baseline_mean": 0.10849999999999999,
+          "candidate_mean": 0.12933333333333336,
+          "delta": 0.020833333333333332,
+          "ci95_low": 0.015833333333333335,
+          "ci95_high": 0.025999999999999995,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.16333333333333333,
+          "effect_label": "small",
+          "summary": "precision10: 0.1085 → 0.1293 (Δ+0.0208, 95% CI [+0.0158, +0.0260], p=0.0001, 显著, 效应量 small)"
+        },
+        {
+          "metric": "mrr10",
+          "n": 600,
+          "baseline_mean": 0.5043511904761905,
+          "candidate_mean": 0.6493088624338624,
+          "delta": 0.14495767195767195,
+          "ci95_low": 0.11766618716931218,
+          "ci95_high": 0.17328859126984125,
+          "ci_excludes_zero": true,
+          "p_value_permutation": 9.999000099990002e-05,
+          "bh_pass_at_0.05": true,
+          "cliffs_delta": 0.22333333333333333,
+          "effect_label": "small",
+          "summary": "mrr10: 0.5044 → 0.6493 (Δ+0.1450, 95% CI [+0.1177, +0.1733], p=0.0001, 显著, 效应量 small)"
+        }
+      ],
+      "gate": {
+        "promote": true,
+        "reasons": [
+          "全部判据通过；发布仍需人类审批与令牌，Agent 到此为止"
+        ]
+      },
+      "coverage": {
+        "APPLIED": 517,
+        "NO_CHANGE": 70,
+        "TRANSPORT_ERROR": 9,
+        "NOT_APPLICABLE(no-call)": 4
+      },
+      "win_loss_tie": {
+        "win": 273,
+        "loss": 73,
+        "tie": 254
+      },
+      "catastrophic_drop_gt_0.30": 18,
+      "wall_seconds": 207.3,
+      "adapter_latency_ms": {
+        "n": 596,
+        "p50_ms": 2339,
+        "p90_ms": 3579,
+        "p95_ms": 4228,
+        "max_ms": 6921,
+        "mean_ms": 2546
+      }
+    }
+  },
+  "depth_ladder": {
+    "n20_to_n50": [
+      {
+        "metric": "ndcg10",
+        "n": 600,
+        "baseline_mean": 0.5687340698741845,
+        "candidate_mean": 0.5926459148106948,
+        "delta": 0.023911844936510256,
+        "ci95_low": 0.010611454675907576,
+        "ci95_high": 0.03776682732153811,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.0005999400059994001,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.05,
+        "effect_label": "negligible",
+        "summary": "ndcg10: 0.5687 → 0.5926 (Δ+0.0239, 95% CI [+0.0106, +0.0378], p=0.0006, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "recall10",
+        "n": 600,
+        "baseline_mean": 0.617829365079365,
+        "candidate_mean": 0.654611111111111,
+        "delta": 0.03678174603174603,
+        "ci95_low": 0.01741607142857143,
+        "ci95_high": 0.05651299603174602,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 9.999000099990002e-05,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.07666666666666666,
+        "effect_label": "negligible",
+        "summary": "recall10: 0.6178 → 0.6546 (Δ+0.0368, 95% CI [+0.0174, +0.0565], p=0.0001, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "precision10",
+        "n": 600,
+        "baseline_mean": 0.11599999999999999,
+        "candidate_mean": 0.12533333333333332,
+        "delta": 0.009333333333333332,
+        "ci95_low": 0.005666666666666666,
+        "ci95_high": 0.013333333333333334,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 9.999000099990002e-05,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.07666666666666666,
+        "effect_label": "negligible",
+        "summary": "precision10: 0.1160 → 0.1253 (Δ+0.0093, 95% CI [+0.0057, +0.0133], p=0.0001, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "mrr10",
+        "n": 600,
+        "baseline_mean": 0.6238068783068782,
+        "candidate_mean": 0.6384292328042327,
+        "delta": 0.014622354497354498,
+        "ci95_low": 6.585648148148004e-05,
+        "ci95_high": 0.02994556878306877,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.055194480551944806,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.018333333333333333,
+        "effect_label": "negligible",
+        "summary": "mrr10: 0.6238 → 0.6384 (Δ+0.0146, 95% CI [+0.0001, +0.0299], p=0.0552, 显著, 效应量 negligible)"
+      }
+    ],
+    "n50_to_n100": [
+      {
+        "metric": "ndcg10",
+        "n": 600,
+        "baseline_mean": 0.5926459148106948,
+        "candidate_mean": 0.60683878899532,
+        "delta": 0.0141928741846251,
+        "ci95_low": 0.0025318392460570707,
+        "ci95_high": 0.026604025771508763,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.019498050194980503,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.03,
+        "effect_label": "negligible",
+        "summary": "ndcg10: 0.5926 → 0.6068 (Δ+0.0142, 95% CI [+0.0025, +0.0266], p=0.0195, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "recall10",
+        "n": 600,
+        "baseline_mean": 0.654611111111111,
+        "candidate_mean": 0.6800277777777778,
+        "delta": 0.025416666666666667,
+        "ci95_low": 0.009138888888888889,
+        "ci95_high": 0.042138888888888885,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.0018998100189981002,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.043333333333333335,
+        "effect_label": "negligible",
+        "summary": "recall10: 0.6546 → 0.6800 (Δ+0.0254, 95% CI [+0.0091, +0.0421], p=0.0019, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "precision10",
+        "n": 600,
+        "baseline_mean": 0.12533333333333332,
+        "candidate_mean": 0.12933333333333336,
+        "delta": 0.004000000000000001,
+        "ci95_low": 0.001166666666666667,
+        "ci95_high": 0.006833333333333333,
+        "ci_excludes_zero": true,
+        "p_value_permutation": 0.006099390060993901,
+        "bh_pass_at_0.05": true,
+        "cliffs_delta": 0.043333333333333335,
+        "effect_label": "negligible",
+        "summary": "precision10: 0.1253 → 0.1293 (Δ+0.0040, 95% CI [+0.0012, +0.0068], p=0.0061, 显著, 效应量 negligible)"
+      },
+      {
+        "metric": "mrr10",
+        "n": 600,
+        "baseline_mean": 0.6384292328042327,
+        "candidate_mean": 0.6493088624338624,
+        "delta": 0.010879629629629628,
+        "ci95_low": -0.002814533730158731,
+        "ci95_high": 0.02507248677248677,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.1212878712128787,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.011666666666666667,
+        "effect_label": "negligible",
+        "summary": "mrr10: 0.6384 → 0.6493 (Δ+0.0109, 95% CI [-0.0028, +0.0251], p=0.1213, 不显著, 效应量 negligible)"
+      }
+    ]
+  },
+  "run_to_run_nondeterminism": {
+    "design": "同一配置（N=50）跑两次，temperature=0 但 LLM 仍非确定",
+    "metrics": [
+      {
+        "metric": "ndcg10",
+        "n": 600,
+        "baseline_mean": 0.5926459148106948,
+        "candidate_mean": 0.5932452396497331,
+        "delta": 0.000599324839038316,
+        "ci95_low": -0.00579213191527711,
+        "ci95_high": 0.007176153181522392,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.8558144185581442,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.0016666666666666668,
+        "effect_label": "negligible",
+        "summary": "ndcg10: 0.5926 → 0.5932 (Δ+0.0006, 95% CI [-0.0058, +0.0072], p=0.8558, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "recall10",
+        "n": 600,
+        "baseline_mean": 0.654611111111111,
+        "candidate_mean": 0.6595555555555556,
+        "delta": 0.004944444444444445,
+        "ci95_low": -0.0029729166666666667,
+        "ci95_high": 0.0135,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.2602739726027397,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.0033333333333333335,
+        "effect_label": "negligible",
+        "summary": "recall10: 0.6546 → 0.6596 (Δ+0.0049, 95% CI [-0.0030, +0.0135], p=0.2603, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "precision10",
+        "n": 600,
+        "baseline_mean": 0.12533333333333332,
+        "candidate_mean": 0.12566666666666668,
+        "delta": 0.0003333333333333334,
+        "ci95_low": -0.0011666666666666663,
+        "ci95_high": 0.0018333333333333335,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.6638336166383362,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.0033333333333333335,
+        "effect_label": "negligible",
+        "summary": "precision10: 0.1253 → 0.1257 (Δ+0.0003, 95% CI [-0.0012, +0.0018], p=0.6638, 不显著, 效应量 negligible)"
+      },
+      {
+        "metric": "mrr10",
+        "n": 600,
+        "baseline_mean": 0.6384292328042327,
+        "candidate_mean": 0.6394708994708995,
+        "delta": 0.0010416666666666675,
+        "ci95_low": -0.007666666666666666,
+        "ci95_high": 0.009750347222222218,
+        "ci_excludes_zero": false,
+        "p_value_permutation": 0.8175182481751825,
+        "bh_pass_at_0.05": false,
+        "cliffs_delta": 0.0033333333333333335,
+        "effect_label": "negligible",
+        "summary": "mrr10: 0.6384 → 0.6395 (Δ+0.0010, 95% CI [-0.0077, +0.0098], p=0.8175, 不显著, 效应量 negligible)"
+      }
+    ],
+    "per_query": {
+      "queries_with_different_ndcg10": 49,
+      "share": 0.0817,
+      "mean_abs_delta_over_differing": 0.196,
+      "max_abs_delta": 1.0,
+      "reading": "聚合层面两次跑几乎一致（ΔNDCG@10 +0.0006，p=0.8558），但逐查询层面有 8.2% 的查询结果不同、且这些查询上的差异并不小（绝对值均值 0.196）。也就是说：报告里的均值可以复现，任何一条具体查询的结果不保证复现。"
+    }
+  },
+  "consistency_checks": {
+    "chunked_control_reproduces_baseline": {
+      "design": "用同一条分批 + 并发路径跑 use_rerank=false，与 experiments/baseline-v7-holdout.json 对账",
+      "per_query_rows_differing_bitwise": 0,
+      "query_id_fingerprint_match": true,
+      "top_level_ndcg10_equal": true,
+      "verdict": "600/600 逐查询指标逐位相等 → 分批与并发对指标零影响；同时证明 :8081 独立实例、target/classes 快照副本、v7 权重三者都与产出基线时的条件一致。顶层均值有 1e-16 量级差异，纯粹是求和次序造成的浮点差，配对检验只读逐查询值，不受影响。"
+    },
+    "untouched_queries_equal_baseline": {
+      "design": "凡是本页顺序没有真正改变的查询（NO_CHANGE / 降级 / 未调用），交给 ES 的查询与排序都等同基线，四项指标必须逐位相等",
+      "result": "三档全部 0 例外（逐档明细见各产物的 coverage.consistency_violations）",
+      "why_it_matters": "这一条一次性排除缓存漂移、索引漂移、权重错配三类混淆——如果这些混淆存在，未被重排的查询也会跟基线对不上。",
+      "per_depth": {
+        "n20": {
+          "untouched_queries": 113,
+          "violations": 0
+        },
+        "n50": {
+          "untouched_queries": 95,
+          "violations": 0
+        },
+        "n100": {
+          "untouched_queries": 83,
+          "violations": 0
+        },
+        "n50-rerun": {
+          "untouched_queries": 91,
+          "violations": 0
+        }
+      }
+    },
+    "document_set_preserved": {
+      "design": "对 6 条查询取 size=50 的 BM25 结果与 size=50&rerank=true&rerank_depth=50 的结果，逐条比较文档多重集",
+      "result": "6/6 重排结果是 BM25 候选集的严格排列（集合相同、长度相同、无重复），moved@50 分别为 50/19/12/41/5/47",
+      "why_it_matters": "重排不对召回负责。若它能让文档消失，故障形状与「BM25 没召回」完全一致，归因会落到索引和查询编译上。"
+    },
+    "mechanism_traced_end_to_end": {
+      "win": "'ping pong tables'：唯一的 E 标注商品在 BM25 排第 29 位，重排后排第 1 位，ndcg10 0.000 → 1.000。这正是诊断里「相关商品在 11-50 位」那 30.3% 的靶心。",
+      "loss": "'apple pres'：E 标注商品原本在 BM25 第 1 位，重排后掉出 top-10，ndcg10 1.000 → 0.000。",
+      "loss2": "'outdoor pillows not covers'：两条标注（第 1 位的 E 与第 8 位的 S）双双掉出 top-10，ndcg10 0.852 → 0.000。否定语义守卫在这条上没有救回来。"
+    }
+  },
+  "cost": {
+    "depth20": {
+      "adapter_latency_ms": {
+        "n": 596,
+        "p50_ms": 1676,
+        "p90_ms": 2696,
+        "p95_ms": 3219,
+        "max_ms": 7566,
+        "mean_ms": 1870
+      },
+      "tokens_measured_sample": 1814.0,
+      "input_tokens_mean": 1804.5,
+      "output_tokens_mean": 67.2,
+      "reasoning_tokens_total": 0,
+      "full_run_input_tokens_est": 1075482,
+      "full_run_output_tokens_est": 40051,
+      "wall_seconds_at_concurrency_8": 159.3
+    },
+    "depth50": {
+      "adapter_latency_ms": {
+        "n": 596,
+        "p50_ms": 1740,
+        "p90_ms": 2694,
+        "p95_ms": 3185,
+        "max_ms": 5382,
+        "mean_ms": 1907
+      },
+      "tokens_measured_sample": 2784.5,
+      "input_tokens_mean": 2800.7,
+      "output_tokens_mean": 74.4,
+      "reasoning_tokens_total": 0,
+      "full_run_input_tokens_est": 1669217,
+      "full_run_output_tokens_est": 44342,
+      "wall_seconds_at_concurrency_8": 159.8
+    },
+    "depth100": {
+      "adapter_latency_ms": {
+        "n": 596,
+        "p50_ms": 2339,
+        "p90_ms": 3579,
+        "p95_ms": 4228,
+        "max_ms": 6921,
+        "mean_ms": 2546
+      },
+      "tokens_measured_sample": 4319.0,
+      "input_tokens_mean": 4318.3,
+      "output_tokens_mean": 97,
+      "reasoning_tokens_total": 0,
+      "full_run_input_tokens_est": 2573707,
+      "full_run_output_tokens_est": 57812,
+      "wall_seconds_at_concurrency_8": 207.3
+    }
+  },
+  "caveats": [
+    "标注极稀疏，这是最重要的一条：本 holdout 每查询平均 1.93 条 E/S 标注（中位数 2，最小 1，最大 7），每查询总标注 2.31 条；top-10 中约 12% 的位置有人工标注，未标注文档一律记 gain 0。后果有两面：(a) 重排把未标注商品换进 top-10 是 0 分换 0 分，因此 186/505 条 APPLIED 的查询指标纹丝不动，真实效应被系统性**低估**；(b) 单条查询的 NDCG@10 常常只由一两个标注商品决定，所以逐查询增益呈现极端的双峰（127 条涨幅 ≥0.30，15 条跌幅 ≥0.30），指标本身很粗。",
+    "holdout n=600 在 α=0.05 / power=0.80 下的最小可检出差约 0.0157（NDCG@10，见 splits.py 的功效计算）。本次观察到的 +0.0968 / +0.1207 / +0.1349 分别是它的 6.2 / 7.7 / 8.6 倍，远在可检出范围内——这与改写那一轮 +0.0025（不到最小可检出差的 1/6）是完全不同的处境。但 N=50→N=100 的增量 +0.0142 只勉强越过这条线（CI [+0.0025, +0.0266]，p=0.0195），该增量的结论比主结论弱得多。",
+    "跨运行非确定性：temperature=0 下 N=50 跑了两次，600 条里有 49 条（8.2%）的 ndcg10 不同，这些查询上的差异绝对值均值 0.196、最大 1.000。聚合差只有 +0.0006（p=0.8558，不显著），即**均值可复现、单条查询不可复现**。三档深度各只跑了一次（N=50 跑了两次），因此各档的点估计本身带有约 ±0.006 量级的运行间噪声——这不足以改变任何一档的结论方向。",
+    "**数据污染风险（未能排除）**：ESCI（shopping_queries_dataset）是公开数据集，本次用的 qwen3.7-flash 训练数据可能包含它。提示词里不含 product_id（模型只看到候选编号、标题、品牌），所以无法直接套用记住的 ASIN 标注；但「某查询的 Exact 商品标题长什么样」这类关联仍可能被记住。**我没有办法在本环境里证伪这一点**。若成立，这里量到的增益会高于该重排在一份全新目录上的表现。",
+    "提示词是照着评测口径写的：_SYSTEM_PROMPT 显式给出 ESCI 的 E/S/C/I 四档并声明只有 E/S 算相关，而评测的 relevant() 用的正是同一把尺子。这不是作弊（重排本来就该对齐业务的相关性定义），但意味着这里量到的是「对齐了这套口径之后能拿多少」，换一套相关性定义需要重测。",
+    "调用降级会稀释效应，且降级率不稳定：N=20 第一次跑撞上上游连接挂起，600 条里 80 条 TIMEOUT + 3 条 TRANSPORT_ERROR（13.8%），NDCG@10 只有 0.5572；重跑后降级降到 10 条（1.7%），NDCG@10 变成 0.5687（两者配对差 +0.0115，p=0.0010）。两份产物都保留（rerank-holdout-n20.json 是干净的那次，rerank-holdout-n20-run1-degraded.json 是撞上上游故障的那次）。降级的查询拿到的是纯 BM25 结果，因此降级只会**低估**收益，不会造假。",
+    "provider 自己的 12000ms 超时并不能约束这类挂起：实测挂起调用的 wall 约 48s（远超 12s），真正兜住的是 Java 侧 15000ms 读超时。也就是说 Java 的读超时是这条链路唯一有效的时间闸门。",
+    "我没有覆盖的部分（如实列出）：(1) 没在 train(1400) 上跑任何一档——本次是一次性的 holdout 验收，没有做任何基于结果的调参；(2) 没跑 use_ai=true 与 use_rerank=true 的组合，因此「改写+重排」是否叠加未知；(3) 没做 N=200（契约上限）那一档；(4) 没跑 mvn test，Java 侧既有测试是否仍全绿未经验证；(5) 没测前台 /api/v1/search 在真实并发下的线程占用，只在评测路径上跑（并发 8，RERANK_MAX_CONCURRENCY=32，全程 0 次 OVERLOADED）；(6) 没换第二个模型做对照，因此结论只覆盖 qwen3.7-flash-2026-07-15 加这一版未改动的提示词；(7) 分页不一致（page>0 不重排）这个已知代价没有在评测里体现，因为评测恒为 page=0。",
+    "成本必须与收益一起读：N=50 单次调用适配器侧 p50 1740ms / p90 2694ms，整轮 600 条在并发 8 下 160s，输入 token 约 167 万 / 输出约 4.4 万；N=100 是 p50 2339ms、输入约 257 万 token。相比之下 BM25 基线整轮只要 3.3s、零 token。把重排接进真实前台流量还需要先解决同步阻塞占线程的问题（见 Java 侧交付说明的风险清单）。"
+  ],
+  "conclusion": {
+    "verdict": "PROVEN_EFFECTIVE_OFFLINE",
+    "primary": "N=50：NDCG@10 0.4720 → 0.5926，Δ+0.1207，95% CI [+0.1006, +0.1416]，置换检验 p=0.0001，BH 校正后仍显著，Cliff's δ=+0.3183（small）。门禁 PROMOTE。",
+    "depth_effect": "存在且单调：N=20 Δ+0.0968 → N=50 Δ+0.1207 → N=100 Δ+0.1349。N=20→N=50 的增量 +0.0239（p=0.0006）比 N=50→N=100 的 +0.0142（p=0.0195）更大，边际收益递减；与「相关商品 11-50 位占 30.3%、51-200 位占 27.3%」的分布一致，但 51-200 段要多花 54% 的输入 token 才换到不到一半的增量。",
+    "recommended_depth": "N=50。理由：拿到 N=100 增益的 89%，输入 token 少 35%，p50 延迟低 26%。",
+    "not_explainable_by_tuning": "218 组 BM25 配置扫描在同一 holdout 上最多 +0.0035（p=0.1202，不显著）。重排的 +0.1207 比调参上限高约 34 倍，且方向与失败诊断预测的一致（Recall@10 同步涨 +0.0745——重排不改候选集，Recall@10 涨只可能来自把 11-N 位的相关商品拉进 top-10）。",
+    "honest_negative": "收益不是单调的：N=50 上 64 条查询变差，其中 15 条跌幅超过 0.30（2.5%，门禁上限是 10%）。已定位到具体失败形状：原本排第 1 的已标注商品被挤出 top-10（'apple pres'、'outdoor pillows not covers'）。",
+    "what_would_falsify_this": "在一份模型不可能见过的目录/标注上重测；或换一个未在 ESCI 上训练过的模型。本环境无法完成这两件事之一，因此数据污染风险保持开放。"
+  }
+}

@@ -1,0 +1,5561 @@
+{
+  "run_id": "29956488-635a-498e-89df-1d38527c8bcd",
+  "strategy_version": -1,
+  "query_count": 600,
+  "precision10": 0.12533333333333346,
+  "recall10": 0.6546111111111114,
+  "mrr10": 0.6384292328042328,
+  "ndcg10": 0.5926459148106947,
+  "zero_result_rate": 0.006666666666666667,
+  "queries": [
+    {
+      "query_id": 16139,
+      "query": "birthday present for 8 year old boy",
+      "precision10": 0.1,
+      "recall10": 0.25,
+      "mrr10": 0.2,
+      "ndcg10": 0.18953423522962917,
+      "zero_result": false
+    },
+    {
+      "query_id": 82189,
+      "query": "pool vacuums for inground pools",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 57744,
+      "query": "kids clarisonic",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 2171,
+      "query": "15 mm watch strap",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8854598815714874,
+      "zero_result": false
+    },
+    {
+      "query_id": 91583,
+      "query": "seinhauser earbuds",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 15502,
+      "query": "bicycle seat",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.7967075809905066,
+      "zero_result": false
+    },
+    {
+      "query_id": 16536,
+      "query": "black friday deals now",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 113590,
+      "query": "wood wall mounted planter",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 88640,
+      "query": "rose pots garden",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5701406500739014,
+      "zero_result": false
+    },
+    {
+      "query_id": 66419,
+      "query": "matte gold sequins sew on",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.5,
+      "ndcg10": 0.23981246656813146,
+      "zero_result": false
+    },
+    {
+      "query_id": 49769,
+      "query": "headphones without microphone",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 4800,
+      "query": "5x flip magnifying glass",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8451850618939637,
+      "zero_result": false
+    },
+    {
+      "query_id": 91452,
+      "query": "secret lives of monarchs",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5701406500739014,
+      "zero_result": false
+    },
+    {
+      "query_id": 59163,
+      "query": "kubota mower 60” deck",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 92465,
+      "query": "shelf and bracket",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.7415914148287854,
+      "zero_result": false
+    },
+    {
+      "query_id": 51051,
+      "query": "homecoming dresses short tight sparkles",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.35195904451706733,
+      "zero_result": false
+    },
+    {
+      "query_id": 44997,
+      "query": "german food",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 99336,
+      "query": "super nes wires",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 55976,
+      "query": "jibbitz bracelet adult",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0829414668794317,
+      "zero_result": false
+    },
+    {
+      "query_id": 76644,
+      "query": "outdoor pillows not covers",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 73564,
+      "query": "nike headband cooling",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7232329748419101,
+      "zero_result": false
+    },
+    {
+      "query_id": 19520,
+      "query": "brass male clamp coupling",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8553927462844795,
+      "zero_result": false
+    },
+    {
+      "query_id": 65827,
+      "query": "mario and luigi costumes for boys",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 9780,
+      "query": "apple pres",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 102232,
+      "query": "the new kosher",
+      "precision10": 0.2,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6960169063757299,
+      "zero_result": false
+    },
+    {
+      "query_id": 69278,
+      "query": "ming clan",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 74201,
+      "query": "non damaging eyelash glue",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.125,
+      "ndcg10": 0.3154648767857287,
+      "zero_result": false
+    },
+    {
+      "query_id": 72244,
+      "query": "narwhal cake",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 10118,
+      "query": "arc notebook system planners",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 51097,
+      "query": "honda fit key",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 16173,
+      "query": "bissell mini carpet cleaner",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 98963,
+      "query": "sugar bear hair vitamins",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7486750120363043,
+      "zero_result": false
+    },
+    {
+      "query_id": 17476,
+      "query": "blue sneakers",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 40153,
+      "query": "fierce conversations",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 5259,
+      "query": "8 gb usb thumb drives with physical write protect switch",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 73216,
+      "query": "newborn boy costume halloween",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.19004688335796713,
+      "zero_result": false
+    },
+    {
+      "query_id": 90275,
+      "query": "samsung s6 screen protector",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 95895,
+      "query": "solaray mega multi mineral without iron",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9060254355346823,
+      "zero_result": false
+    },
+    {
+      "query_id": 24945,
+      "query": "charcuterie board cook books",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 40110,
+      "query": "fiberware air fryer toaster oven combo",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.7903864795495061,
+      "zero_result": false
+    },
+    {
+      "query_id": 42876,
+      "query": "fruit of loom size 5",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 51174,
+      "query": "honeywell motorized valve",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 11257,
+      "query": "autism water bottle",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 7255,
+      "query": "air compressor clutch coil",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 74482,
+      "query": "note 8 back glass",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 82955,
+      "query": "powersteering belt",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9397260442949865,
+      "zero_result": false
+    },
+    {
+      "query_id": 23953,
+      "query": "catapillar costume alice in wonderland",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 81842,
+      "query": "polaris outlaw 50 headlight bulb",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.3562071871080222,
+      "zero_result": false
+    },
+    {
+      "query_id": 95003,
+      "query": "smart door",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.1,
+      "ndcg10": 0.2890648263178878,
+      "zero_result": false
+    },
+    {
+      "query_id": 36872,
+      "query": "eko stethoscope duo",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.5525004989384911,
+      "zero_result": false
+    },
+    {
+      "query_id": 37521,
+      "query": "emerson glasses",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584,
+      "zero_result": false
+    },
+    {
+      "query_id": 112818,
+      "query": "womens army cargo pants with pockets",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9764717729212657,
+      "zero_result": false
+    },
+    {
+      "query_id": 105129,
+      "query": "trecking gear backpack with back support system",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 32359,
+      "query": "denon 9.2 receiver 4k dolby atmos",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 22496,
+      "query": "canon webcam kit",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 53218,
+      "query": "infiniti hot rollers",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 24607,
+      "query": "chair mat for carpeted floors 48 x 60",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8654524460756203,
+      "zero_result": false
+    },
+    {
+      "query_id": 23798,
+      "query": "cat eye lace mask",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 51209,
+      "query": "hoodie backpack",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 27836,
+      "query": "color contacts lenses for eyes non prescription",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.2,
+      "ndcg10": 0.33220066438082313,
+      "zero_result": false
+    },
+    {
+      "query_id": 105261,
+      "query": "triggered donald trump jr",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.125,
+      "ndcg10": 0.3154648767857287,
+      "zero_result": false
+    },
+    {
+      "query_id": 5719,
+      "query": "I would replace it with a soft gray wool sweater. The sweater should be warm but functional in all weather. The jacket should also be fashionable. ",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 66041,
+      "query": "mary jane shoes for girls dr martens",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 87346,
+      "query": "return a gift",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 87964,
+      "query": "roberts power stretcher",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 51612,
+      "query": "how to buy books on audible",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 71479,
+      "query": "mulberry silk bra",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 2757,
+      "query": "20 amp male to 30 amp female",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 38643,
+      "query": "exhaust heat wrap cara",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 58684,
+      "query": "kitchenaid cutlery set",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 16448,
+      "query": "black cumberbund",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 82187,
+      "query": "pool vacuum",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9674679834891694,
+      "zero_result": false
+    },
+    {
+      "query_id": 114093,
+      "query": "writing without tears kindergarten kit",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.7233590921914534,
+      "zero_result": false
+    },
+    {
+      "query_id": 57538,
+      "query": "khaki high waisted shorts",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7653606369886218,
+      "zero_result": false
+    },
+    {
+      "query_id": 107727,
+      "query": "valentine shirt plus size",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 43693,
+      "query": "futuro back support for men",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 5629,
+      "query": "A standard new laptop that is budget friendly and which has internet access, a windows operating system, large clean screen and user friendly ",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 16053,
+      "query": "bird sounds book",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 75,
+      "query": "$13 bb guns without a yellow tube",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 26730,
+      "query": "clear iphone 6plus phone case",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 77629,
+      "query": "paparika",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 108460,
+      "query": "vibe mattress",
+      "precision10": 0.2,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6532518542286053,
+      "zero_result": false
+    },
+    {
+      "query_id": 104344,
+      "query": "toss bouquet rustic",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 73010,
+      "query": "neuroquell for neuropathy",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 86844,
+      "query": "releev cold sore treatment",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 79429,
+      "query": "philips hair styling set",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5701406500739014,
+      "zero_result": false
+    },
+    {
+      "query_id": 7243,
+      "query": "air bed without pump",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114969,
+      "query": "yeti slim can koozie",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.7244131064628506,
+      "zero_result": false
+    },
+    {
+      "query_id": 33171,
+      "query": "different colored hydro flask",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 104408,
+      "query": "touchnew",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5701406500739014,
+      "zero_result": false
+    },
+    {
+      "query_id": 28795,
+      "query": "cool head s",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 26609,
+      "query": "classroom tweezers",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.2,
+      "ndcg10": 0.38685280723454163,
+      "zero_result": false
+    },
+    {
+      "query_id": 96533,
+      "query": "sparkling cider mini bottles",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6256646589861505,
+      "zero_result": false
+    },
+    {
+      "query_id": 2341,
+      "query": "18 month coat boy",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.44412286644879784,
+      "zero_result": false
+    },
+    {
+      "query_id": 78281,
+      "query": "pbt98 pyle",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 20972,
+      "query": "byredo hair perfume",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 58509,
+      "query": "kitchen 6 light fixtures",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 106081,
+      "query": "twin sheet set",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9060254355346824,
+      "zero_result": false
+    },
+    {
+      "query_id": 58364,
+      "query": "king size platform bed frame",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 113838,
+      "query": "work will suck without you water bottle",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.125,
+      "ndcg10": 0.31385555049102837,
+      "zero_result": false
+    },
+    {
+      "query_id": 26112,
+      "query": "chrome",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 108214,
+      "query": "ventis mx4",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 4340,
+      "query": "4k 2mp action camera",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 77197,
+      "query": "paint brush container",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 30517,
+      "query": "cuadros electricos",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114964,
+      "query": "yeti mug",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 62976,
+      "query": "little mermaid merchandise for women",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 95162,
+      "query": "smile line",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 32384,
+      "query": "dental picks",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 75173,
+      "query": "office chair 350lbs",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9072278740982787,
+      "zero_result": false
+    },
+    {
+      "query_id": 83002,
+      "query": "pray 4 love hoodie",
+      "precision10": 0.1,
+      "recall10": 0.25,
+      "mrr10": 1.0,
+      "ndcg10": 0.489938890671454,
+      "zero_result": false
+    },
+    {
+      "query_id": 5426,
+      "query": "8x8 grow tent",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 58659,
+      "query": "kitchen trash can without lid",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8710785440003369,
+      "zero_result": false
+    },
+    {
+      "query_id": 53019,
+      "query": "india maharathi",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9197207891481876,
+      "zero_result": false
+    },
+    {
+      "query_id": 56934,
+      "query": "kansas city chiefs cups plastic",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.52129602861432,
+      "zero_result": false
+    },
+    {
+      "query_id": 87672,
+      "query": "rihanna book",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 37672,
+      "query": "energizer aa rechargeable batteries",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9723946422478804,
+      "zero_result": false
+    },
+    {
+      "query_id": 67791,
+      "query": "mens pendants for necklaces",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.14285714285714285,
+      "ndcg10": 0.20438239758848614,
+      "zero_result": false
+    },
+    {
+      "query_id": 102457,
+      "query": "the ultimate body bar this is not soap",
+      "precision10": 0.1,
+      "recall10": 0.25,
+      "mrr10": 0.14285714285714285,
+      "ndcg10": 0.16331296355715133,
+      "zero_result": false
+    },
+    {
+      "query_id": 86428,
+      "query": "red nike men shoes",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.44412286644879784,
+      "zero_result": false
+    },
+    {
+      "query_id": 56072,
+      "query": "jock itch cream",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 80131,
+      "query": "ping pong tables",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 12236,
+      "query": "baby thermometer forehead and ear iproven",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 17766,
+      "query": "board games for kids",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.3562071871080222,
+      "zero_result": false
+    },
+    {
+      "query_id": 97566,
+      "query": "stanford t shirt youth girls",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 19689,
+      "query": "bremont watches for men",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 110383,
+      "query": "webcaster glow dark gun sticks",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 4404,
+      "query": "4mm 3 strand macrame cord",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9197207891481876,
+      "zero_result": false
+    },
+    {
+      "query_id": 83409,
+      "query": "printed vinyl",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 73187,
+      "query": "new york and company gift card",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.5307212739772434,
+      "zero_result": false
+    },
+    {
+      "query_id": 22591,
+      "query": "capezio girls tap shoes",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 100473,
+      "query": "talkback turtle beach",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.8593298699328812,
+      "zero_result": false
+    },
+    {
+      "query_id": 28106,
+      "query": "comic disney",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 71746,
+      "query": "mustard tote bags for women",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 54032,
+      "query": "iphone 11 green unlocked",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.7907011610735165,
+      "zero_result": false
+    },
+    {
+      "query_id": 81332,
+      "query": "playstation classic crash game",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114029,
+      "query": "wrench arborist",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 8584,
+      "query": "amazon music app for pc windows 10",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7232329748419101,
+      "zero_result": false
+    },
+    {
+      "query_id": 44687,
+      "query": "ge mswf",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 43568,
+      "query": "funny men's police woman halloween costumes",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.2960819109658652,
+      "zero_result": false
+    },
+    {
+      "query_id": 8539,
+      "query": "amazon echo dot",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5580886631890041,
+      "zero_result": false
+    },
+    {
+      "query_id": 45469,
+      "query": "girl size 8 tennis shoes",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 60969,
+      "query": "led lights multi pack",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 83910,
+      "query": "ps4 capture card",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 19471,
+      "query": "bralette plus size neck",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5069520518174072,
+      "zero_result": false
+    },
+    {
+      "query_id": 46755,
+      "query": "googles for toddlers",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114894,
+      "query": "yellow shag pillow",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.4117682472755954,
+      "zero_result": false
+    },
+    {
+      "query_id": 21883,
+      "query": "camera control cable",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.8303010754742701,
+      "zero_result": false
+    },
+    {
+      "query_id": 74845,
+      "query": "nuwave bravo 10 qaurt",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6934264036172708,
+      "zero_result": false
+    },
+    {
+      "query_id": 87565,
+      "query": "rice cooker japanese",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9151505377371351,
+      "zero_result": false
+    },
+    {
+      "query_id": 7604,
+      "query": "airsoft gear and equipment",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 47461,
+      "query": "grey bench with storage",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 113517,
+      "query": "wood glass vase",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 85589,
+      "query": "raptor fender",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 113210,
+      "query": "womens sandals espadrilles black es",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 13811,
+      "query": "bathtub grippers",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 62389,
+      "query": "lighted makeup mirror 10x magnification",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 94884,
+      "query": "small sackpack front flag",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 76098,
+      "query": "organic cotton baby clothes",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 67147,
+      "query": "men bubble coats",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 3074,
+      "query": "25 dollar visa gift card",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.8303010754742701,
+      "zero_result": false
+    },
+    {
+      "query_id": 5823,
+      "query": "a gaming set up",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.13216105048695953,
+      "zero_result": false
+    },
+    {
+      "query_id": 56292,
+      "query": "jordan jersey",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 92496,
+      "query": "shelving for laundry room",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 30138,
+      "query": "crimper hair iron hot tools",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.23463936301137822,
+      "zero_result": false
+    },
+    {
+      "query_id": 5177,
+      "query": "72” arched gate",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 80930,
+      "query": "planter edge",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 2660,
+      "query": "2 seater stroller",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 93357,
+      "query": "silk screen drying rack",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.46927872602275644,
+      "zero_result": false
+    },
+    {
+      "query_id": 42153,
+      "query": "forever stamps disney",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9777813616305049,
+      "zero_result": false
+    },
+    {
+      "query_id": 104576,
+      "query": "toyota camry console panel",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8262346571285599,
+      "zero_result": false
+    },
+    {
+      "query_id": 82738,
+      "query": "potato shreds",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 74326,
+      "query": "normal people sally rooney",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5701406500739014,
+      "zero_result": false
+    },
+    {
+      "query_id": 26144,
+      "query": "chromecast",
+      "precision10": 0.2,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7244131064628505,
+      "zero_result": false
+    },
+    {
+      "query_id": 56333,
+      "query": "journal with mountain cover",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 30673,
+      "query": "cuisinart broiler pan",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.4749950106150897,
+      "zero_result": false
+    },
+    {
+      "query_id": 115624,
+      "query": "zenphone 6",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 19809,
+      "query": "bright not broken",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 66624,
+      "query": "mb series massage chair",
+      "precision10": 0.6,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6575928993598714,
+      "zero_result": false
+    },
+    {
+      "query_id": 24668,
+      "query": "chamarra polo hombre",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 95534,
+      "query": "soaking bin for sink",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 40493,
+      "query": "fire stick remote",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9220370325520013,
+      "zero_result": false
+    },
+    {
+      "query_id": 90444,
+      "query": "sandisk 2 in 1 usb",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 51162,
+      "query": "honeymoon adventures couple shirt",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 97535,
+      "query": "standard pillow sham navy coral",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6787622294601761,
+      "zero_result": false
+    },
+    {
+      "query_id": 25022,
+      "query": "charm star hoops",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9777813616305049,
+      "zero_result": false
+    },
+    {
+      "query_id": 56894,
+      "query": "kamado joe jr",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 57084,
+      "query": "kayak anchor",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8212377705398237,
+      "zero_result": false
+    },
+    {
+      "query_id": 90117,
+      "query": "samsung galaxy s10e 128gb+6gb ram international",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 20205,
+      "query": "bts life size cardboard cutouts",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9298593499260985,
+      "zero_result": false
+    },
+    {
+      "query_id": 102428,
+      "query": "the summer is ended and we are not yet saved",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 26057,
+      "query": "christmas throw pillows",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.2,
+      "ndcg10": 0.38685280723454163,
+      "zero_result": false
+    },
+    {
+      "query_id": 68104,
+      "query": "mercedes benz bumper protector",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.52129602861432,
+      "zero_result": false
+    },
+    {
+      "query_id": 95919,
+      "query": "sole inserts men",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6934264036172708,
+      "zero_result": false
+    },
+    {
+      "query_id": 2545,
+      "query": "2 gallon water bottle",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.19004688335796713,
+      "zero_result": false
+    },
+    {
+      "query_id": 94872,
+      "query": "small reinassance costumes for women",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 61456,
+      "query": "lemon yellow blouse",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 73400,
+      "query": "night quil cold and flu",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9035099417625011,
+      "zero_result": false
+    },
+    {
+      "query_id": 67404,
+      "query": "mens 2 color long sleeve shirt",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 1398,
+      "query": "100 games board games",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 58052,
+      "query": "kids toys age 10",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 43978,
+      "query": "galaxy railways",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 98116,
+      "query": "sticker red bull racing",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.7939219842957241,
+      "zero_result": false
+    },
+    {
+      "query_id": 2978,
+      "query": "24 deep shelves",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 41602,
+      "query": "flush mount ceiling fans without lights",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 0.25,
+      "ndcg10": 0.45820333400969837,
+      "zero_result": false
+    },
+    {
+      "query_id": 24680,
+      "query": "champagne love seat cover",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.46927872602275644,
+      "zero_result": false
+    },
+    {
+      "query_id": 27331,
+      "query": "coconut shoes for women",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 38894,
+      "query": "eye eyeglasses case",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 981,
+      "query": "1.4 inch tube medical syringe without needle",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.25,
+      "ndcg10": 0.3031610197508214,
+      "zero_result": false
+    },
+    {
+      "query_id": 64332,
+      "query": "luxury socks",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 50989,
+      "query": "home health",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.7724397457735779,
+      "zero_result": false
+    },
+    {
+      "query_id": 75342,
+      "query": "okc thunder outfit for toddlers",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8262346571285599,
+      "zero_result": false
+    },
+    {
+      "query_id": 112090,
+      "query": "wire rectangular basket large",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9060254355346823,
+      "zero_result": false
+    },
+    {
+      "query_id": 34885,
+      "query": "doorbell camer",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8212377705398237,
+      "zero_result": false
+    },
+    {
+      "query_id": 16992,
+      "query": "blacks law dictionary 4th edition",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 82764,
+      "query": "potty seat proof latch",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 4526,
+      "query": "5 inch hitch extension",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.6651640917528849,
+      "zero_result": false
+    },
+    {
+      "query_id": 72988,
+      "query": "nets hats for men",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 83473,
+      "query": "privacy window film see out not in",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 1587,
+      "query": "10k yellow gold biblical circle pendant without chain",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.6845602750203054,
+      "zero_result": false
+    },
+    {
+      "query_id": 17293,
+      "query": "blu-ray citrus",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 13,
+      "query": "#1 rated resveratrol supplement without tea leaves",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 108584,
+      "query": "video intercom 3 monitors",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 106601,
+      "query": "under armour breathe lacr",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8519590445170672,
+      "zero_result": false
+    },
+    {
+      "query_id": 99341,
+      "query": "super red riding hood",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 67759,
+      "query": "mens nike gym shorts",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6112833214150001,
+      "zero_result": false
+    },
+    {
+      "query_id": 31937,
+      "query": "death wish coffee",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.8724703940062511,
+      "zero_result": false
+    },
+    {
+      "query_id": 110895,
+      "query": "whisk made in usa",
+      "precision10": 0.4,
+      "recall10": 0.8,
+      "mrr10": 1.0,
+      "ndcg10": 0.8539316501572934,
+      "zero_result": false
+    },
+    {
+      "query_id": 3071,
+      "query": "25 amp power swith",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.7262287617954056,
+      "zero_result": false
+    },
+    {
+      "query_id": 616,
+      "query": "1 1/2 black drain without overflow",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 12984,
+      "query": "banding straps",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 73018,
+      "query": "neutral paintings for bedroom",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8854598815714874,
+      "zero_result": false
+    },
+    {
+      "query_id": 52047,
+      "query": "humidity probe",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 31462,
+      "query": "dana buchman",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 28735,
+      "query": "cookie run",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6934264036172708,
+      "zero_result": false
+    },
+    {
+      "query_id": 9907,
+      "query": "apple watch series 5",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.39748952229168844,
+      "zero_result": false
+    },
+    {
+      "query_id": 73852,
+      "query": "nintendo lanyard",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 100006,
+      "query": "systane balance eye drops for dry eyes",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.986243285258093,
+      "zero_result": false
+    },
+    {
+      "query_id": 55215,
+      "query": "izod american chino classic fit",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5826334368159319,
+      "zero_result": false
+    },
+    {
+      "query_id": 97368,
+      "query": "stackable steps",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 105322,
+      "query": "triton boat decals",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 61717,
+      "query": "levis boys",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 219,
+      "query": "+dark chocolate peanuts covered not milk",
+      "precision10": 0.4,
+      "recall10": 0.8,
+      "mrr10": 0.5,
+      "ndcg10": 0.5183876717858906,
+      "zero_result": false
+    },
+    {
+      "query_id": 41494,
+      "query": "flow snowboard boots",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 34693,
+      "query": "doll house kit beach",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 3492,
+      "query": "3.5 ft christmas tree with lights",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.956993457308443,
+      "zero_result": false
+    },
+    {
+      "query_id": 70097,
+      "query": "modem router combo xfinity",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 101402,
+      "query": "tempered glass galaxy note 10",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 109473,
+      "query": "wall cubes",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 56777,
+      "query": "k cliffs heavy duty clear backpack",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114949,
+      "query": "yeti boomer",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.5,
+      "ndcg10": 0.4298593499260986,
+      "zero_result": false
+    },
+    {
+      "query_id": 34174,
+      "query": "doc mcstuffins bag",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9298593499260985,
+      "zero_result": false
+    },
+    {
+      "query_id": 293,
+      "query": "- wood hanging do not enter",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.37407553318330194,
+      "zero_result": false
+    },
+    {
+      "query_id": 363,
+      "query": ".8 beading wire plastic not stretchy",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5069520518174072,
+      "zero_result": false
+    },
+    {
+      "query_id": 108491,
+      "query": "vibration sensor connect to phone",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584,
+      "zero_result": false
+    },
+    {
+      "query_id": 9974,
+      "query": "aprs radio",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 99639,
+      "query": "swarovski crystal cross ornament",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 80981,
+      "query": "plastic 2 pocket folders without prongs",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.932521091954824,
+      "zero_result": false
+    },
+    {
+      "query_id": 85332,
+      "query": "raid deep reach fogger",
+      "precision10": 0.5,
+      "recall10": 0.8333333333333334,
+      "mrr10": 1.0,
+      "ndcg10": 0.8950814072917678,
+      "zero_result": false
+    },
+    {
+      "query_id": 54304,
+      "query": "iphone 8 case horse",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 104710,
+      "query": "tractor implements",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114126,
+      "query": "ww2 german legos",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 103792,
+      "query": "toddler toys for girls age 2",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 79949,
+      "query": "pilates for dummies",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.44412286644879784,
+      "zero_result": false
+    },
+    {
+      "query_id": 41708,
+      "query": "foam insulation boards",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 84990,
+      "query": "queen trifold mattress",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.86034433104172,
+      "zero_result": false
+    },
+    {
+      "query_id": 3324,
+      "query": "3 day refresh beachbody without shakeology",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 39341,
+      "query": "fake carnations yello",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 39436,
+      "query": "fall clothes for women",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 95387,
+      "query": "snow boots with heels for women",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 93034,
+      "query": "shredded mini wheats",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 35972,
+      "query": "dunking booth",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 61389,
+      "query": "lego technic sets cars tranprter",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 112887,
+      "query": "womens business bodysuit",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.5,
+      "ndcg10": 0.3597186998521971,
+      "zero_result": false
+    },
+    {
+      "query_id": 87987,
+      "query": "robo interactive ir control robot",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.43559309614952185,
+      "zero_result": false
+    },
+    {
+      "query_id": 49456,
+      "query": "hatsune miku school outfit",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6992594192834368,
+      "zero_result": false
+    },
+    {
+      "query_id": 27143,
+      "query": "co2 canister chain",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 288,
+      "query": "- w nest cam iq outdoor security camera without the magnet",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5049211793563422,
+      "zero_result": false
+    },
+    {
+      "query_id": 16236,
+      "query": "black & decker polisher pads",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 91356,
+      "query": "sear burner",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 35546,
+      "query": "drink your water right meow",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.19004688335796713,
+      "zero_result": false
+    },
+    {
+      "query_id": 79244,
+      "query": "pet nc hip joint",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 2056,
+      "query": "134a refrigerant automotive",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 46822,
+      "query": "gorilla glass samsung s9 plus screen protector",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 75694,
+      "query": "oneill hybrid shorts men",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 46474,
+      "query": "gold ring for wedding",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 82629,
+      "query": "post driver manual",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 4962,
+      "query": "60\" round dining table",
+      "precision10": 0.1,
+      "recall10": 0.25,
+      "mrr10": 0.14285714285714285,
+      "ndcg10": 0.10887530903810089,
+      "zero_result": false
+    },
+    {
+      "query_id": 89733,
+      "query": "saitek wheel and foot petal",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 62665,
+      "query": "lingerie for women for plus size",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 42842,
+      "query": "frozen hoodie blanket",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 98826,
+      "query": "subway tot",
+      "precision10": 0.4,
+      "recall10": 0.8,
+      "mrr10": 1.0,
+      "ndcg10": 0.8687949224876581,
+      "zero_result": false
+    },
+    {
+      "query_id": 75681,
+      "query": "one wheel pint",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 28364,
+      "query": "computer is not a typewriter",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.30044493247382464,
+      "zero_result": false
+    },
+    {
+      "query_id": 47279,
+      "query": "green bay packers",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 75529,
+      "query": "omega 3 without fish oil",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.6800123887341547,
+      "zero_result": false
+    },
+    {
+      "query_id": 56225,
+      "query": "jojo siwa toys",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 26029,
+      "query": "christmas star decor wall",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 53546,
+      "query": "insured shipping labels",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 37831,
+      "query": "eora 3d builds iphone-powered 3d laser scanner",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 18898,
+      "query": "bottle drying rack",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 84424,
+      "query": "pure cotton polo shirts",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.3065735963827292,
+      "zero_result": false
+    },
+    {
+      "query_id": 2200,
+      "query": "150 watt high pressure sodium light fixture",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9777813616305049,
+      "zero_result": false
+    },
+    {
+      "query_id": 111741,
+      "query": "wilson federer tennis bag",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 46615,
+      "query": "golf tools ladies",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9134015924715543,
+      "zero_result": false
+    },
+    {
+      "query_id": 33988,
+      "query": "dixit revelations expansion",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 54057,
+      "query": "iphone 11 pro case ring",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 89165,
+      "query": "running machine with tv screen bluetooth",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 28813,
+      "query": "cool stuff to draw easy step by step",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 7104,
+      "query": "african wedding dress nigerian fashion ghana",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7653606369886218,
+      "zero_result": false
+    },
+    {
+      "query_id": 47876,
+      "query": "gucci slides",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9060254355346823,
+      "zero_result": false
+    },
+    {
+      "query_id": 91387,
+      "query": "seat bra",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 55111,
+      "query": "its always sunny in philadelphia",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 36056,
+      "query": "dutch oven cleaner",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 104256,
+      "query": "torchier lamp bowl replacement",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 92471,
+      "query": "shelf for 13x13 cube",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 6426,
+      "query": "acrylic powder",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.2,
+      "ndcg10": 0.39332802513601256,
+      "zero_result": false
+    },
+    {
+      "query_id": 56605,
+      "query": "jumper sleepwear for women",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 48957,
+      "query": "handson bathing/grooming/sheddinggloves",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 54221,
+      "query": "iphone 7 case lego",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 19015,
+      "query": "bowtie",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7653606369886218,
+      "zero_result": false
+    },
+    {
+      "query_id": 74548,
+      "query": "novacide",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": true
+    },
+    {
+      "query_id": 115552,
+      "query": "zebco bite alert",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 63434,
+      "query": "long brown human hair wig",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.1,
+      "ndcg10": 0.2890648263178878,
+      "zero_result": false
+    },
+    {
+      "query_id": 74947,
+      "query": "oak leaf 30 led fairy string lights",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 29917,
+      "query": "crayons big pack",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 75354,
+      "query": "oktoberfest decoration",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 104569,
+      "query": "toy ukulele soprano 21 inch",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 64828,
+      "query": "magic without tears",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 935,
+      "query": "1+ phone",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 50222,
+      "query": "henry and the kite dragon",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 110247,
+      "query": "wax without strips for hair removal",
+      "precision10": 0.5,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9733983476116026,
+      "zero_result": false
+    },
+    {
+      "query_id": 63006,
+      "query": "little trees fresh shave",
+      "precision10": 0.7,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.896304700645557,
+      "zero_result": false
+    },
+    {
+      "query_id": 115097,
+      "query": "yoshi 10 inch black trays",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 101172,
+      "query": "tecnu wipes",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 115336,
+      "query": "z900",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9055866445611575,
+      "zero_result": false
+    },
+    {
+      "query_id": 28403,
+      "query": "computer without monitor",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 83692,
+      "query": "propane tank 2 small",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 11837,
+      "query": "baby bum rash cream",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 6815,
+      "query": "adj bed frame queen",
+      "precision10": 0.2,
+      "recall10": 0.4,
+      "mrr10": 0.25,
+      "ndcg10": 0.1903398998665214,
+      "zero_result": false
+    },
+    {
+      "query_id": 105359,
+      "query": "trolling motor mount",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.41311732856427996,
+      "zero_result": false
+    },
+    {
+      "query_id": 102235,
+      "query": "the next millionaire next door",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 51779,
+      "query": "hp towers with windows 10 new",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 88110,
+      "query": "rockshocks front fork",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 93524,
+      "query": "silver hair gema",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.1,
+      "ndcg10": 0.13565197343244775,
+      "zero_result": false
+    },
+    {
+      "query_id": 52538,
+      "query": "i7 wireless",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 93570,
+      "query": "silver tour pack for mtorcycle",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8174935137996165,
+      "zero_result": false
+    },
+    {
+      "query_id": 87775,
+      "query": "ring without doorbell wiring",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.1,
+      "ndcg10": 0.2890648263178878,
+      "zero_result": false
+    },
+    {
+      "query_id": 48640,
+      "query": "halloween sexy bodysuit",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 79612,
+      "query": "phone with headset",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.4321106657033608,
+      "zero_result": false
+    },
+    {
+      "query_id": 88578,
+      "query": "rose gold birthday candles",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 67912,
+      "query": "mens socks size 9-11",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 25694,
+      "query": "chizuru mizuhara figure",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 50466,
+      "query": "high back chair under 100",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 35564,
+      "query": "drip pan fridge",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 104577,
+      "query": "toyota camry cover",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 73789,
+      "query": "ninja cat glove",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.3065735963827292,
+      "zero_result": false
+    },
+    {
+      "query_id": 75416,
+      "query": "old town vapor 10 kayak",
+      "precision10": 0.5,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9751127072666446,
+      "zero_result": false
+    },
+    {
+      "query_id": 99418,
+      "query": "superpower short",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 11274,
+      "query": "auto muffler bandage",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 5841,
+      "query": "a laptop in pink, with a high processor, plenty of memory, ram and usb ports.top of the range model",
+      "precision10": 0.1,
+      "recall10": 0.25,
+      "mrr10": 0.5,
+      "ndcg10": 0.3091170235564137,
+      "zero_result": false
+    },
+    {
+      "query_id": 76859,
+      "query": "over-ear headphones",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.25,
+      "ndcg10": 0.3031610197508214,
+      "zero_result": false
+    },
+    {
+      "query_id": 104435,
+      "query": "tow hitch",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.878961873034099,
+      "zero_result": false
+    },
+    {
+      "query_id": 82860,
+      "query": "power pruning saw",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114794,
+      "query": "yeah no not happening",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 104839,
+      "query": "trampoline 15 ft square",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9060254355346823,
+      "zero_result": false
+    },
+    {
+      "query_id": 82961,
+      "query": "powervision powerray",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 38936,
+      "query": "eyebrow razor gold",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9904436061045989,
+      "zero_result": false
+    },
+    {
+      "query_id": 99086,
+      "query": "summer dresses for women maxi",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 38497,
+      "query": "ever after",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 82614,
+      "query": "posh moomy",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 37588,
+      "query": "emt pants",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 41646,
+      "query": "fly shotgun salt",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 52020,
+      "query": "humanrace shoes men",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.5,
+      "ndcg10": 0.23981246656813146,
+      "zero_result": false
+    },
+    {
+      "query_id": 84872,
+      "query": "quant revolution",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 62485,
+      "query": "lightweight running shoes for men",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 115100,
+      "query": "yosposs",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": true
+    },
+    {
+      "query_id": 95176,
+      "query": "smithsonian stem",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 7531,
+      "query": "airpod2 wireless",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.5,
+      "ndcg10": 0.5248827916050821,
+      "zero_result": false
+    },
+    {
+      "query_id": 11889,
+      "query": "baby doll body",
+      "precision10": 0.4,
+      "recall10": 0.8,
+      "mrr10": 1.0,
+      "ndcg10": 0.7380656328757262,
+      "zero_result": false
+    },
+    {
+      "query_id": 92853,
+      "query": "short sleeve slim fit maxi dresses for women",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 88042,
+      "query": "rock and roll centerpieces",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 51227,
+      "query": "hooey hats for men",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 61248,
+      "query": "lego cars for adults",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 56780,
+      "query": "k cup classic",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 104791,
+      "query": "train table with storage",
+      "precision10": 0.4,
+      "recall10": 0.8,
+      "mrr10": 1.0,
+      "ndcg10": 0.9036222888992599,
+      "zero_result": false
+    },
+    {
+      "query_id": 75317,
+      "query": "oil rubbed bronze tub spout without diverter",
+      "precision10": 0.6,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.983201305675524,
+      "zero_result": false
+    },
+    {
+      "query_id": 90007,
+      "query": "samsung curved tv 55 inch 4k",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.6787956981029196,
+      "zero_result": false
+    },
+    {
+      "query_id": 75727,
+      "query": "onezee for 3 years old",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 87575,
+      "query": "richard murano",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 81300,
+      "query": "playset parts roof",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 92680,
+      "query": "shoe dresser",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 53146,
+      "query": "infant boy white shorts",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 49232,
+      "query": "hario v60",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 113127,
+      "query": "womens one piece tummy control swimsuits",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.1111111111111111,
+      "ndcg10": 0.3010299956639812,
+      "zero_result": false
+    },
+    {
+      "query_id": 51981,
+      "query": "hulberts story of the bible",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 67895,
+      "query": "mens small christmas pajamas",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.2,
+      "ndcg10": 0.38685280723454163,
+      "zero_result": false
+    },
+    {
+      "query_id": 96117,
+      "query": "sony fe 50mm f/1.8 lens",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8710785440003369,
+      "zero_result": false
+    },
+    {
+      "query_id": 46244,
+      "query": "god gave us you book",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9049765583210164,
+      "zero_result": false
+    },
+    {
+      "query_id": 96482,
+      "query": "spanish speaking singing elmo",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 5365,
+      "query": "86 inch tv",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 88863,
+      "query": "royal blue sanding sugar edible",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 86165,
+      "query": "reclining couch covers",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 79397,
+      "query": "pharm cy products",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 2920,
+      "query": "22 gold chain for men",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.7060750916717355,
+      "zero_result": false
+    },
+    {
+      "query_id": 42123,
+      "query": "ford window sun shade",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 29719,
+      "query": "cowgirl boot covers",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 29652,
+      "query": "cover up for dresses",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 63025,
+      "query": "liu wei di huang pian",
+      "precision10": 0.2,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6357429506707164,
+      "zero_result": false
+    },
+    {
+      "query_id": 111828,
+      "query": "window mount planter",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8262346571285599,
+      "zero_result": false
+    },
+    {
+      "query_id": 33731,
+      "query": "disinfectant wipes",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6359208071540459,
+      "zero_result": false
+    },
+    {
+      "query_id": 98738,
+      "query": "sturdy salt mill",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 55730,
+      "query": "jeep power wheels",
+      "precision10": 0.1,
+      "recall10": 0.2,
+      "mrr10": 0.2,
+      "ndcg10": 0.1557828846724865,
+      "zero_result": false
+    },
+    {
+      "query_id": 22828,
+      "query": "car seat mickey mouse",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7625024946924551,
+      "zero_result": false
+    },
+    {
+      "query_id": 76219,
+      "query": "ori hoffmekler",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 66500,
+      "query": "mavic air",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8262346571285599,
+      "zero_result": false
+    },
+    {
+      "query_id": 57203,
+      "query": "ken barbie",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 50155,
+      "query": "helmet detachable chin",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 44564,
+      "query": "gas can without safety spout",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9355222664672846,
+      "zero_result": false
+    },
+    {
+      "query_id": 11058,
+      "query": "auburn tigers womens apparel",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 34029,
+      "query": "dj scrim with totem",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 67603,
+      "query": "mens fish bracelet",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 13859,
+      "query": "batman nightfall catwoman figure",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8167448055966118,
+      "zero_result": false
+    },
+    {
+      "query_id": 107580,
+      "query": "uv resin lamp",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 34831,
+      "query": "door hand print shield",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 42254,
+      "query": "fortnite suit for boys",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 12732,
+      "query": "balios",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 76465,
+      "query": "otterbox symmetry iphone 7",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 70290,
+      "query": "mom poster",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 108732,
+      "query": "vintage chicago cubs canvas poster",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 97117,
+      "query": "spring time gel polish",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 94325,
+      "query": "sleeping do not disturb sign",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 17508,
+      "query": "blue wedge heels for women size 9",
+      "precision10": 0.1,
+      "recall10": 0.25,
+      "mrr10": 1.0,
+      "ndcg10": 0.489938890671454,
+      "zero_result": false
+    },
+    {
+      "query_id": 113278,
+      "query": "womens slip on shoes",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 20331,
+      "query": "buffalo bills hats kids",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 43949,
+      "query": "galaxy note 10 case black",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 51716,
+      "query": "hp laptop case",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 29948,
+      "query": "cream rinse",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 71045,
+      "query": "mounting football tee",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 41321,
+      "query": "floating dolphin decoy for pool",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 1055,
+      "query": "1/2 horsepower garbage disposal without power cord",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.46927872602275644,
+      "zero_result": false
+    },
+    {
+      "query_id": 85414,
+      "query": "rainbow dress for women",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 112916,
+      "query": "womens coat w detachable hood",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9134015924715543,
+      "zero_result": false
+    },
+    {
+      "query_id": 91053,
+      "query": "scoring her max monroe",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 100272,
+      "query": "tablets on sale prime",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584,
+      "zero_result": false
+    },
+    {
+      "query_id": 8777,
+      "query": "american express black card",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.6885288809404666,
+      "zero_result": false
+    },
+    {
+      "query_id": 91695,
+      "query": "sen mai posture corrector",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 71115,
+      "query": "movie frozen 2 dvd",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 45693,
+      "query": "girls star wars shirts youth",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 2605,
+      "query": "2 oz enfamil gentlease",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5191194994832696,
+      "zero_result": false
+    },
+    {
+      "query_id": 104237,
+      "query": "tops for women sexy elegant",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584,
+      "zero_result": false
+    },
+    {
+      "query_id": 5780,
+      "query": "a 6 motels",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 22421,
+      "query": "canon battery rp",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 51947,
+      "query": "huggies diapers overnight size 4",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9060254355346823,
+      "zero_result": false
+    },
+    {
+      "query_id": 3220,
+      "query": "2mm diamond necklace",
+      "precision10": 0.5,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8701410859081885,
+      "zero_result": false
+    },
+    {
+      "query_id": 57180,
+      "query": "kego infinity gauntlet",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 33935,
+      "query": "disposable toothbrushes without paste",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.6904407032588902,
+      "zero_result": false
+    },
+    {
+      "query_id": 10990,
+      "query": "atn binox 4k 4-16x",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 48638,
+      "query": "halloween serving decor",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 99601,
+      "query": "sversa 2",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9515234565959557,
+      "zero_result": false
+    },
+    {
+      "query_id": 73117,
+      "query": "new born clothes for boy",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 60138,
+      "query": "large roll plastic wrap with cutter box",
+      "precision10": 0.4,
+      "recall10": 0.8,
+      "mrr10": 1.0,
+      "ndcg10": 0.8153225004907431,
+      "zero_result": false
+    },
+    {
+      "query_id": 85679,
+      "query": "rattlesnake toy",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 1536,
+      "query": "105 cm belt strap without buckle",
+      "precision10": 0.2,
+      "recall10": 0.4,
+      "mrr10": 1.0,
+      "ndcg10": 0.5605487304766885,
+      "zero_result": false
+    },
+    {
+      "query_id": 26786,
+      "query": "clear yellow iphone xr case",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 94379,
+      "query": "slides ofr girls",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 46421,
+      "query": "gold hoop earrings for women",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 35572,
+      "query": "drive belt troybuilt riding mower 46 inch lawn tractor",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 91525,
+      "query": "seed organizer",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584,
+      "zero_result": false
+    },
+    {
+      "query_id": 114005,
+      "query": "wrap shoes",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 110731,
+      "query": "wet food caps",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 115576,
+      "query": "zeiss batis 85mm f/1.8",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 73942,
+      "query": "nipple shields for nursing newborn 27mm",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 60922,
+      "query": "led headlights kits civic 05",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 66157,
+      "query": "masking tape sensitive",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9049765583210164,
+      "zero_result": false
+    },
+    {
+      "query_id": 27113,
+      "query": "clue jr",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 15955,
+      "query": "biobricks",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": true
+    },
+    {
+      "query_id": 101719,
+      "query": "thackeray greek grammar",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 39227,
+      "query": "face shine spray",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 60655,
+      "query": "learn to tell time",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.25,
+      "ndcg10": 0.20210734650054757,
+      "zero_result": false
+    },
+    {
+      "query_id": 698,
+      "query": "1 cc tuberculin syringe without needle",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 67637,
+      "query": "mens grizzley bear hat",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 76140,
+      "query": "organic multivitamin without biotin",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.25,
+      "ndcg10": 0.3031610197508214,
+      "zero_result": false
+    },
+    {
+      "query_id": 104290,
+      "query": "torpedo candelabra filament led bulb",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8854598815714874,
+      "zero_result": false
+    },
+    {
+      "query_id": 32538,
+      "query": "design hoodies for boys",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 30439,
+      "query": "crystal long chandelier",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.44876780023132046,
+      "zero_result": false
+    },
+    {
+      "query_id": 18410,
+      "query": "books by janet frame",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 75054,
+      "query": "ocim bandage",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 102335,
+      "query": "the purge mask led",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.44412286644879784,
+      "zero_result": false
+    },
+    {
+      "query_id": 8063,
+      "query": "all boots",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 35209,
+      "query": "dr. greger how not to diet cookbook",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9134015924715543,
+      "zero_result": false
+    },
+    {
+      "query_id": 115702,
+      "query": "zinc 15 pure encapsulations",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8077641213816276,
+      "zero_result": false
+    },
+    {
+      "query_id": 69657,
+      "query": "minnie mouse shirts for women",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 30898,
+      "query": "cushion seat covers 20x20",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 1551,
+      "query": "10awg extension cord cable without ends",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.07450170829356123,
+      "zero_result": false
+    },
+    {
+      "query_id": 96497,
+      "query": "spanx yoga pants for women",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 100259,
+      "query": "tabletop english bulldog christmas tree",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 42733,
+      "query": "froggtoggs ultralite poncho",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 26325,
+      "query": "cinnimin curtain panels",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8710785440003369,
+      "zero_result": false
+    },
+    {
+      "query_id": 110095,
+      "query": "watermelon iphone xs case",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.86034433104172,
+      "zero_result": false
+    },
+    {
+      "query_id": 48763,
+      "query": "hammocks for outside without stand",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7653606369886218,
+      "zero_result": false
+    },
+    {
+      "query_id": 112572,
+      "query": "women new balance running white shoes",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 57735,
+      "query": "kids character towels",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 101181,
+      "query": "ted.taylor",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": true
+    },
+    {
+      "query_id": 71964,
+      "query": "n scale trucks and trailer",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584,
+      "zero_result": false
+    },
+    {
+      "query_id": 109773,
+      "query": "washable russian hat men",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5701406500739014,
+      "zero_result": false
+    },
+    {
+      "query_id": 75316,
+      "query": "oil rubbed bronze tub faucet without diverter",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.7045057227504283,
+      "zero_result": false
+    },
+    {
+      "query_id": 104374,
+      "query": "tote set",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 60021,
+      "query": "large chicken coop for 5 chickens",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9649996673743393,
+      "zero_result": false
+    },
+    {
+      "query_id": 110665,
+      "query": "wellness senior grain free dog food",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8156868628654561,
+      "zero_result": false
+    },
+    {
+      "query_id": 5864,
+      "query": "a me without we",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 69528,
+      "query": "mini solar panel kit with battery",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 70487,
+      "query": "monster energy drink 24 pack",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 87259,
+      "query": "resveratrol complex 60 caps",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9060254355346823,
+      "zero_result": false
+    },
+    {
+      "query_id": 15583,
+      "query": "big bang theory season 12 dvd",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 82783,
+      "query": "pout pout fish toy",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 41284,
+      "query": "flip cover welding helmet",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9131210744214262,
+      "zero_result": false
+    },
+    {
+      "query_id": 14231,
+      "query": "beads for weighted blankets",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 73735,
+      "query": "nikon 2x7x32 scope",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.6826791589866313,
+      "zero_result": false
+    },
+    {
+      "query_id": 1349,
+      "query": "10.1 tablet without lock screen ads",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 5731,
+      "query": "It is a navy blue twill fabric and is a typical single breasted blazer style with three buttons and lapels in a deeper blue twill fabric.",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 69261,
+      "query": "minecraft plush ender dragon",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 112673,
+      "query": "women tennis polo",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 73681,
+      "query": "nike sweatpants women",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 49350,
+      "query": "harry potter large dog collar and leash",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 89368,
+      "query": "rx phos bind",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 67802,
+      "query": "mens polyester green polo shirt",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.16716045496620227,
+      "zero_result": false
+    },
+    {
+      "query_id": 44725,
+      "query": "geekey multitool key",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 5449,
+      "query": "9 month baby dress",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 83604,
+      "query": "programador de llaves de carro",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 84429,
+      "query": "pure encapsulation l-theanine",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 884,
+      "query": "1 step motorhome cleaner without washing",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 45218,
+      "query": "gift victor franko",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 62827,
+      "query": "liquid hand soap caldrea",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 7718,
+      "query": "aladdin loxon mantle",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 60967,
+      "query": "led lights for bedroom without plug in",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 74157,
+      "query": "noir hand sanitizer for men",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.6699195738729921,
+      "zero_result": false
+    },
+    {
+      "query_id": 20706,
+      "query": "burn to brown maui",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5701406500739014,
+      "zero_result": false
+    },
+    {
+      "query_id": 102411,
+      "query": "the spruce best home by kilz",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 74624,
+      "query": "nude liquid lip",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 40505,
+      "query": "fire tablet 10 without ads",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7112458488441695,
+      "zero_result": false
+    },
+    {
+      "query_id": 31785,
+      "query": "days gone xbox one",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 44699,
+      "query": "ge stove knobs black 4 pack",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 70417,
+      "query": "monkey face the book",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 65174,
+      "query": "makeup vanity table without mirror",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.31674480559661183,
+      "zero_result": false
+    },
+    {
+      "query_id": 107655,
+      "query": "vacation tops for women beach",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 110668,
+      "query": "welsh spoon",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8229944305028294,
+      "zero_result": false
+    },
+    {
+      "query_id": 37176,
+      "query": "electrical milwaukee battery power supply for phones",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 62816,
+      "query": "liquid eyeliner waterproof",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 44072,
+      "query": "galaxy watch active band",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 1276,
+      "query": "10 oz mason jars without lids with handle",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 26601,
+      "query": "classroom friendly supplies pencil sharpener",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.41311732856427996,
+      "zero_result": false
+    },
+    {
+      "query_id": 60777,
+      "query": "leather slipper aocks",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 95345,
+      "query": "snipper",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 54145,
+      "query": "iphone 6 battery charger",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 78190,
+      "query": "paul knox geography",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 10565,
+      "query": "artificial plants indoor large",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 115842,
+      "query": "zoo med repti calcium without d3",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 66919,
+      "query": "meet addy american girl books",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 38582,
+      "query": "exam gloves large cheap",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.14285714285714285,
+      "ndcg10": 0.3826803184943108,
+      "zero_result": false
+    },
+    {
+      "query_id": 46910,
+      "query": "goumikids mittens",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 84694,
+      "query": "puto mold cups",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 51527,
+      "query": "house on balloons",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 704,
+      "query": "1 coco wire plant holder without basket",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7338381252682711,
+      "zero_result": false
+    },
+    {
+      "query_id": 12943,
+      "query": "band w tow and stow 2 1/2",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9397260442949865,
+      "zero_result": false
+    },
+    {
+      "query_id": 66182,
+      "query": "mason jar sealer",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.46927872602275644,
+      "zero_result": false
+    },
+    {
+      "query_id": 89770,
+      "query": "salems lot hardcover",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 31578,
+      "query": "dark grey dress shoes men",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 43515,
+      "query": "funky glasses for parties",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 15848,
+      "query": "bill browder book red notice",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 17306,
+      "query": "blue and brown wall decor",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7171809907403115,
+      "zero_result": false
+    },
+    {
+      "query_id": 46440,
+      "query": "gold men's ring diamonds",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9134015924715543,
+      "zero_result": false
+    },
+    {
+      "query_id": 59565,
+      "query": "ladies green shirt with collar 2xl",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 86389,
+      "query": "red hydrogen one",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 46472,
+      "query": "gold ribbon 2.5 inch wide",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 68979,
+      "query": "midi flowy dress",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584,
+      "zero_result": false
+    },
+    {
+      "query_id": 85867,
+      "query": "rc led lights green",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 71527,
+      "query": "multi-disc cd player",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 13294,
+      "query": "barrel burner",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 13608,
+      "query": "bath colors for toddlers non toxic",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114954,
+      "query": "yeti coffee travel mug",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.39748952229168844,
+      "zero_result": false
+    },
+    {
+      "query_id": 1101,
+      "query": "1/3 stockings without feet",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 64317,
+      "query": "lux skin laser hair removal",
+      "precision10": 0.7,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9725969584517647,
+      "zero_result": false
+    },
+    {
+      "query_id": 695,
+      "query": "1 carry-on bag not exceeding 22 x 16 x 10 in",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 66975,
+      "query": "meiomi pinot noir red wine",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 38003,
+      "query": "es shoes skateboard",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 1896,
+      "query": "12 volt drill driver",
+      "precision10": 0.2,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6357429506707164,
+      "zero_result": false
+    },
+    {
+      "query_id": 21127,
+      "query": "cable crossover machine",
+      "precision10": 0.4,
+      "recall10": 0.8,
+      "mrr10": 1.0,
+      "ndcg10": 0.7948199600281751,
+      "zero_result": false
+    },
+    {
+      "query_id": 678,
+      "query": "1 big box of kleenex tissues not cube",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.5,
+      "ndcg10": 0.518149817909464,
+      "zero_result": false
+    },
+    {
+      "query_id": 67775,
+      "query": "mens omega watch",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 89273,
+      "query": "rustler classic men's regular 5 pocket jean",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 57446,
+      "query": "key locks for kids",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.16716045496620227,
+      "zero_result": false
+    },
+    {
+      "query_id": 52214,
+      "query": "hydrasense baby nasal care",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 48596,
+      "query": "halloween gifts",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 78444,
+      "query": "peanut m&m 1.69",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 26032,
+      "query": "christmas stikers for cookies",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 39007,
+      "query": "ez brew tea and coffee maker",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 38181,
+      "query": "essential oil diffuser and humidifier",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.2,
+      "ndcg10": 0.2205605109996152,
+      "zero_result": false
+    },
+    {
+      "query_id": 76856,
+      "query": "over under game",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 57730,
+      "query": "kids cattle toys",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    }
+  ],
+  "generated_at": "2026-08-16T08:37:03.086993+01:00",
+  "strategy_source": "candidate",
+  "weights_from_strategy_version": 7,
+  "field_weights": {
+    "title": 4.0,
+    "brand": 2.5,
+    "bullet_point": 1.5,
+    "description": 1.0,
+    "category": 1.2
+  },
+  "split": "holdout",
+  "split_seed": 20260816,
+  "split_total": 2000,
+  "query_ids_sha256": "d284958e3c09d92c1f267318a0c1829b4250c6d4f10a8efc360892dd611f0ebd",
+  "use_ai": false,
+  "use_rerank": true,
+  "rerank_depth_requested": 50,
+  "rerank_depth_effective": 50,
+  "label": "holdout rerank depth=50 run1",
+  "wall_seconds": 159.8,
+  "chunking": {
+    "chunk_size": 25,
+    "chunks": 24,
+    "concurrency": 8,
+    "note": "顶层均值 = 逐查询指标的算术平均，与 EvaluationService.run 同算法"
+  },
+  "chunk_wall_seconds": [
+    49.68,
+    48.45,
+    47.8,
+    47.36,
+    44.38,
+    47.13,
+    44.3,
+    47.95,
+    50.38,
+    46.31,
+    44.0,
+    43.5,
+    52.46,
+    39.12,
+    47.22,
+    46.63,
+    47.68,
+    57.6,
+    43.81,
+    53.09,
+    50.57,
+    53.85,
+    42.45,
+    59.46
+  ],
+  "ai_feature": "llm-rerank",
+  "rerank_depth": 50,
+  "ai": {
+    "adapter_url": "http://127.0.0.1:8010",
+    "adapter_venv": "scratchpad 独立 venv，pin 取自 services/ai-adapter/requirements.txt (langchain-core 1.5.5 / langchain-openai 1.5.1 / openai 3.1.0 / tiktoken 0.13.0)",
+    "provider": "app.providers.langchain_rerank:LangChainRerankProvider",
+    "provider_name_reported": "langchain-rerank",
+    "model": "qwen3.7-flash-2026-07-15",
+    "api_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key_env": "DASHSCOPE_API_KEY (值从不落盘/不打印)",
+    "temperature": 0.0,
+    "max_retries": 0,
+    "max_tokens": "provider 默认，按 top_k 推导 = max(256, 64+8*10) = 256",
+    "structured_output_method": "function_calling",
+    "extra_body": {
+      "enable_thinking": false
+    },
+    "provider_request_timeout_ms": 12000,
+    "AI_RERANK_TOP_K": 10,
+    "AI_RERANK_TITLE_CHARS": 120,
+    "AI_RERANK_BRAND_CHARS": 40,
+    "AI_RERANK_DESCRIPTION_CHARS": 0,
+    "AI_RERANK_MAX_CANDIDATES": 0,
+    "prompt_source": "platform/services/ai-adapter/app/providers/langchain_rerank.py LangChainRerankProvider._SYSTEM_PROMPT (未改动)",
+    "java_service": "独立实例 :8081，跑 target/classes 于 08:33 的快照副本",
+    "java_rerank_timeout_ms": 15000,
+    "java_ai_connect_timeout_ms": 1000,
+    "java_rerank_max_concurrency": 32,
+    "java_ai_enabled": true,
+    "java_rerank_enabled": true,
+    "use_ai_rewrite": false
+  },
+  "coverage": {
+    "rerank_status_counts": {
+      "APPLIED": 505,
+      "NO_CHANGE": 85,
+      "TRANSPORT_ERROR": 6,
+      "NOT_APPLICABLE(no-call)": 4
+    },
+    "candidates_sent_distribution": {
+      "50": 592,
+      "None": 4,
+      "2": 1,
+      "29": 1,
+      "7": 1,
+      "8": 1
+    },
+    "win_loss_tie_ndcg10": {
+      "win": 255,
+      "loss": 64,
+      "tie": 281
+    },
+    "applied": 505,
+    "applied_but_metric_unchanged": 186,
+    "mean_gain_over_wins": 0.3332027069374022,
+    "mean_loss_over_losses": -0.19619095025528757,
+    "catastrophic_drop_gt_0.30": 15,
+    "ndcg10_delta_buckets": {
+      "<=-0.30": 15,
+      "-0.30..-0.10": 23,
+      "-0.10..0": 26,
+      "0": 281,
+      "0..0.10": 48,
+      "0.10..0.30": 80,
+      ">=0.30": 127
+    },
+    "consistency_check_untouched_equals_baseline": true,
+    "consistency_violations": [],
+    "source": "search-service AiAdapterClient DEBUG 日志，按 request_id=evaluation-<query_id> 解析"
+  },
+  "cost": {
+    "wall_seconds_total": 159.8,
+    "concurrency": 8,
+    "adapter_latency_ms": {
+      "n": 596,
+      "p50_ms": 1740,
+      "p90_ms": 2694,
+      "p95_ms": 3185,
+      "max_ms": 5382,
+      "mean_ms": 1907
+    },
+    "tokens_measured_sample": {
+      "n": 12,
+      "input_tokens_median": 2784.5,
+      "input_tokens_mean": 2800.7,
+      "output_tokens_median": 80.0,
+      "output_tokens_mean": 74.4,
+      "reasoning_tokens_total": 0,
+      "note": "模型回报的真实 usage（非估算公式），样本为 holdout 前 12 条查询的真实候选"
+    },
+    "tokens_estimated_full_run": {
+      "calls": 596,
+      "input_tokens": 1669217,
+      "output_tokens": 44342,
+      "note": "596 = 600 条 holdout 减去 4 条零结果查询（无候选，不发起调用）"
+    }
+  }
+}

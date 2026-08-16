@@ -119,7 +119,13 @@ public class SearchQueryCompiler {
         return String.join(" ", expanded);
     }
 
-    private boolean isRelevanceSort(String sort) {
+    /**
+     * 是否按相关性排序。
+     *
+     * <p>从私有实例方法改成 public static：重排也必须回答同一个问题（用户显式按价格排序时
+     * 不能用相关性重排），两处各写一份判定迟早会分叉。这里是唯一定义。
+     */
+    public static boolean isRelevanceSort(String sort) {
         return sort == null || sort.isBlank() || "relevance".equals(sort);
     }
 

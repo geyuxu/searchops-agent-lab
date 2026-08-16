@@ -5,3 +5,18 @@ prometheus-client==0.26.0
 langchain-core==1.5.5
 langchain-openai==1.5.1
 
+# langchain-openai 的两个传递依赖, 在这里显式钉死。它们本来会被 pip 解析成"当时的最新版", 而这两个
+# 恰好都是行为承载方, 不是纯实现细节:
+#
+# openai   —— ``extra_body`` 透传到请求体**顶层**是这个客户端的行为, 不是 LangChain 的。整条
+#             ``enable_thinking=false`` 的关思考路径依赖它; 一旦它变成嵌套或被丢弃, 症状不是报错
+#             而是延迟从 2s 涨到十几秒, 或者 DashScope 直接 400
+#             ("The tool_choice parameter does not support being set to required or object in
+#             thinking mode" —— 本次实测复现过)。这类回归在 CI 里完全看不见。
+# tiktoken —— langchain-openai 用它做本地 token 计数, 换版本会换编码表。重排的提示词长度是本次
+#             要交付的核心数字之一 (N=50 约 2.8k input token), 计数口径浮动会让后续对账对不上。
+#
+# 版本取自本次实测跑通 rerank 链路的环境, 与上面两个 langchain 包同一次解析结果。
+openai==3.1.0
+tiktoken==0.13.0
+

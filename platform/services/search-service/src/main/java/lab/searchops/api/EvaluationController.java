@@ -26,14 +26,15 @@ public class EvaluationController {
     }
 
     /**
-     * use_ai 走查询参数而不是请求体：EvaluationQuery 的请求体形状已经冻结在
-     * searchops-tools.openapi.json 里，加可选查询参数不动契约。默认 false，
-     * 与 /run 以及 SearchController 的 use_ai 参数保持同一套默认语义。
+     * use_ai / use_rerank 走查询参数而不是请求体：EvaluationQuery 的请求体形状已经冻结在
+     * searchops-tools.openapi.json 里，加可选查询参数不动契约。两者默认 false 且互相独立，
+     * 与 /run 以及 SearchController 的 use_ai / rerank 参数保持同一套默认语义。
      */
     @PostMapping("/query")
     public EvaluationResult runOne(@Valid @RequestBody EvaluationQuery query,
-            @RequestParam(name = "use_ai", defaultValue = "false") boolean useAi) {
-        return evaluations.runOne(query, useAi);
+            @RequestParam(name = "use_ai", defaultValue = "false") boolean useAi,
+            @RequestParam(name = "use_rerank", defaultValue = "false") boolean useRerank) {
+        return evaluations.runOne(query, useAi, useRerank);
     }
 }
 

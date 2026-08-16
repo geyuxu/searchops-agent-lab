@@ -42,9 +42,29 @@ public class ProductSearchService {
         var active = strategies.current();
         var strategy = override == null ? active.config() : override;
         var rewrite = ai.rewrite(options);
-        var compiled = compiler.compile(options, strategy, rewrite.query());
+
+        // 检索后重排：先按候选深度 N 取回 BM25 结果，重排这 N 条，再截断到 size。
+        //
+        // 分页语义：plan 只在 page==0 时 active（判定见 AiAdapterClient.rerankPlan），
+        // 因此 page>0 时 retrieval 与 options 是同一个对象，编译出的查询体与改动前逐字节相同，
+        // 第 2 页起完全是原来的 BM25 分页。已知代价：第 1 页被重排后，它与第 2 页之间可能
+        // 出现重复或遗漏（某条被从第 30 位提到第 3 位，它仍会按 BM25 顺序出现在第 2 页）。
+        // 接受这个代价的理由：(a) 要根治必须缓存"本次候选集的重排结果"并让后续页从缓存切片，
+        // 而 LLM 重排不保证确定性，没有缓存层时逐页重排只会让分页更乱；(b) 重排的价值窗口
+        // 就是 top-10（NDCG@10 只看第一页，用户绝大多数也只看第一页）；(c) 只动第一页
+        // 意味着对外分页契约、size 上限 100 的校验、from/size 的计算全部原封不动。
+        var plan = ai.rerankPlan(options);
+        var retrieval = plan.active() ? options.withSize(plan.depth()) : options;
+        var compiled = compiler.compile(retrieval, strategy, rewrite.query());
         var raw = elasticsearch.search(compiled.body());
-        var products = products(raw.path("hits").path("hits"));
+        var candidates = products(raw.path("hits").path("hits"));
+
+        // 送去重排的是 effective query——也就是真正把这批候选检索出来的那段文本
+        // （经过策略改写规则与 AI 改写）。用别的文本给候选排序，等于让重排在评价
+        // 一个它没见过的检索意图。
+        var rerank = ai.rerank(plan, compiled.effectiveQuery(), candidates, options.requestId());
+        var products = page(rerank.products(), options.size());
+
         var total = raw.path("hits").path("total").path("value").asLong();
         var latency = Math.max(0, (System.nanoTime() - started) / 1_000_000);
         var version = override == null ? active.version() : -1;
@@ -52,7 +72,9 @@ public class ProductSearchService {
         // AI 调用成功但没动查询会是 false + status=NO_CHANGE，调用失败则是 false + 具体降级原因。
         var response = new SearchResponse(options.requestId(), options.query(), compiled.effectiveQuery(),
                 total, options.page(), options.size(), latency, version, products, facets(raw),
-                rewrite.applied(), rewrite.status(), rewrite.provider(), DATA_NOTICE);
+                rewrite.applied(), rewrite.status(), rewrite.provider(),
+                rerank.applied(), rerank.status(), rerank.provider(), rerank.candidateCount(),
+                DATA_NOTICE);
         if (options.logRequest() && override == null) {
             analytics.record(options, compiled.effectiveQuery(), total, latency,
                     products.stream().map(Product::productId).limit(10).toList(), version);
@@ -84,6 +106,17 @@ public class ProductSearchService {
 
     public Map<String, Object> rebuild(String path) {
         return elasticsearch.rebuild(path);
+    }
+
+    /**
+     * 截断到本页要返回的条数。
+     *
+     * <p>不重排时 ES 取回的就是 size 条，这里是恒等操作——所以不重排的响应形状与内容
+     * 与改动前完全一致。重排时才真正把 N 条候选切回 size 条。
+     */
+    private List<Product> page(List<Product> products, int size) {
+        var limit = Math.max(0, size);
+        return products.size() <= limit ? products : List.copyOf(products.subList(0, limit));
     }
 
     private List<Product> products(JsonNode hits) {
