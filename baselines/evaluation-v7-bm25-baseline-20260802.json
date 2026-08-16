@@ -1,0 +1,1813 @@
+{
+  "run_id": "17cb3708-8eea-431a-9db6-3e4a9bc9966a",
+  "strategy_version": 7,
+  "query_count": 200,
+  "precision10": 0.1115,
+  "recall10": 0.5484880952380952,
+  "mrr10": 0.4516765873015873,
+  "ndcg10": 0.43262945073988457,
+  "zero_result_rate": 0.0,
+  "queries": [
+    {
+      "query_id": 1,
+      "query": "!awnmower tires without rims",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 2,
+      "query": "!qscreen fence without holes",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.559082887522636,
+      "zero_result": false
+    },
+    {
+      "query_id": 5,
+      "query": "# 10 self-seal envelopes without window",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 0.5,
+      "ndcg10": 0.4986512587860429,
+      "zero_result": false
+    },
+    {
+      "query_id": 6,
+      "query": "# 2 pencils not sharpened",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.14285714285714285,
+      "ndcg10": 0.38162168437253385,
+      "zero_result": false
+    },
+    {
+      "query_id": 9,
+      "query": "# mom life",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 13,
+      "query": "#1 rated resveratrol supplement without tea leaves",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9674679834891694,
+      "zero_result": false
+    },
+    {
+      "query_id": 25,
+      "query": "#15 charm",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 30,
+      "query": "#20 paper bags without handle",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.6415792518566794,
+      "zero_result": false
+    },
+    {
+      "query_id": 46,
+      "query": "#9x5\" wood screws",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 51,
+      "query": "#i may not look like diesel decals",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 59,
+      "query": "$1 dollar toys not fidgets",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 62,
+      "query": "$1 million that look real but that is not it",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 71,
+      "query": "$10 stuff not books",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 72,
+      "query": "$100 things that are not electronics",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 74,
+      "query": "$12 label maker that\u2019s not a cheap one",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 75,
+      "query": "$13 bb guns without a yellow tube",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 97,
+      "query": "$4 worthy items not books",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 100,
+      "query": "$5 items",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 105,
+      "query": "$60 ps4 that\u2019s not gonna be on amazon",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 114,
+      "query": "&#34;we're in the army not in the navy&#34;",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 127,
+      "query": "'deliveries and packages not accepted' sign",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 136,
+      "query": "'i'm tired' 'i'm not tired' tshirts",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9049765583210164,
+      "zero_result": false
+    },
+    {
+      "query_id": 137,
+      "query": "'is everyone hanging out without me?",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 138,
+      "query": "'it's not a diet.' davinia taylor",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 141,
+      "query": "'love not perfect inspirational family' canvas",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.4879324590115489,
+      "zero_result": false
+    },
+    {
+      "query_id": 157,
+      "query": "'thou shalt not try me' relaxed-fit tee - women & plus",
+      "precision10": 0.1,
+      "recall10": 0.25,
+      "mrr10": 1.0,
+      "ndcg10": 0.489938890671454,
+      "zero_result": false
+    },
+    {
+      "query_id": 161,
+      "query": "'you're not 40' - funny birthday card",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 165,
+      "query": "(8 pck, one without packaging ) umbra single",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 166,
+      "query": "(can not use in the usa) european 220voltage hair tools",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 171,
+      "query": "(hearing aid not amplifer)",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.5823364452342223,
+      "zero_result": false
+    },
+    {
+      "query_id": 172,
+      "query": "(hue2 lighting controller not included)",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 174,
+      "query": "(if you\u2019re not in it for love) i\u2019m outta here!",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 178,
+      "query": "(print on back) we are not descended from fearful men decal",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 179,
+      "query": "(pvc not wood) peel and stick banding",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 184,
+      "query": "(thermos funtainer without the handle on the lid) - 2 pack",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 195,
+      "query": "** m'renee allen | do not disturb",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 201,
+      "query": "*i'm not skilled but my dog thinks so*",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 205,
+      "query": "*return--patron does not need* dimensions of ring theory /",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 207,
+      "query": "+ 200 bifocal glasses without line for men",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 211,
+      "query": "+3/4 sleeve for women not plus",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.961999147059583,
+      "zero_result": false
+    },
+    {
+      "query_id": 217,
+      "query": "+crunchy peanuts not butter",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 218,
+      "query": "+dark +chocolate +peanuts not milk",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.14285714285714285,
+      "ndcg10": 0.3333333333333333,
+      "zero_result": false
+    },
+    {
+      "query_id": 219,
+      "query": "+dark chocolate peanuts covered not milk",
+      "precision10": 0.3,
+      "recall10": 0.6,
+      "mrr10": 1.0,
+      "ndcg10": 0.7212313833338113,
+      "zero_result": false
+    },
+    {
+      "query_id": 224,
+      "query": "+maintained foot switch not piggyback",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.1111111111111111,
+      "ndcg10": 0.3010299956639812,
+      "zero_result": false
+    },
+    {
+      "query_id": 227,
+      "query": "+proofer for yogourt -brod and not frozen and not automatic",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 229,
+      "query": "+women red shoes without lacies",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.2,
+      "ndcg10": 0.2205605109996152,
+      "zero_result": false
+    },
+    {
+      "query_id": 230,
+      "query": ", 1, skullcandy jib wired in-earphone without mic (black)",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 240,
+      "query": ", fidget do not yell at that cost $1",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 242,
+      "query": ", funny cat suits are not repeated a week",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 247,
+      "query": ", pharmaton without yinseng",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5090967735771897,
+      "zero_result": false
+    },
+    {
+      "query_id": 275,
+      "query": "- hanging do not enter",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 277,
+      "query": "- horn button without tilt",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 284,
+      "query": "- mini display iphone to hdmi without bluetooth",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 288,
+      "query": "- w nest cam iq outdoor security camera without the magnet",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.41311732856427996,
+      "zero_result": false
+    },
+    {
+      "query_id": 289,
+      "query": "- wash non-chlorine bleach. tumble dry low. do not iron.",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 291,
+      "query": "- what i have ordered not what i can order",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 293,
+      "query": "- wood hanging do not enter",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.5994698826381685,
+      "zero_result": false
+    },
+    {
+      "query_id": 297,
+      "query": "-10an with 1/8 not hole",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 299,
+      "query": "-3.50 not reading glasses",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8262346571285599,
+      "zero_result": false
+    },
+    {
+      "query_id": 304,
+      "query": "-headphones without mic",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 319,
+      "query": ". iced tea without sucralose without aspartame",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 327,
+      "query": ".030 lincoln flux core",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 333,
+      "query": ".177 caliber pellet gun without break barrow",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 337,
+      "query": ".22 pellets not lead",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 339,
+      "query": ".24 to .65 not fitting",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 340,
+      "query": ".25 ml syringe without needle",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 342,
+      "query": ".25 syringe without needle",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5363433650638435,
+      "zero_result": false
+    },
+    {
+      "query_id": 343,
+      "query": ".2mm magnetic lashes without eyeliner",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.6364391809889588,
+      "zero_result": false
+    },
+    {
+      "query_id": 350,
+      "query": ".5 female not fitting plastic",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.2507406824493034,
+      "zero_result": false
+    },
+    {
+      "query_id": 357,
+      "query": ".5mm derma rollers not china",
+      "precision10": 0.4,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.7516516512435919,
+      "zero_result": false
+    },
+    {
+      "query_id": 358,
+      "query": ".625 width 20 gal metal strapping without holes",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 360,
+      "query": ".68 paintballs not reusable",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8005562232320607,
+      "zero_result": false
+    },
+    {
+      "query_id": 363,
+      "query": ".8 beading wire plastic not stretchy",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.5992429307166866,
+      "zero_result": false
+    },
+    {
+      "query_id": 368,
+      "query": ".baby girl tshirt with they did not social distance",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 387,
+      "query": ".weapon of warfare are not carn\u00e0l scripture",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 389,
+      "query": "/ machine wash low bleach iron do not dry clean. suggested",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 392,
+      "query": "/were not kidding album",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 396,
+      "query": "0 cal water inhancer without sugar",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 399,
+      "query": "0 dollar toys for big girl not for baby",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 409,
+      "query": "0-3 month boy fall clothes",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 412,
+      "query": "0-3 months boy sleepers without feet",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.44412286644879784,
+      "zero_result": false
+    },
+    {
+      "query_id": 430,
+      "query": "0.30 cotton thread for beads without wax",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 435,
+      "query": "0.3cc syringe without needle",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.2,
+      "ndcg10": 0.3379680345449382,
+      "zero_result": false
+    },
+    {
+      "query_id": 441,
+      "query": "0.5 cc syringes without needle",
+      "precision10": 0.3,
+      "recall10": 0.6,
+      "mrr10": 1.0,
+      "ndcg10": 0.46110299329823135,
+      "zero_result": false
+    },
+    {
+      "query_id": 444,
+      "query": "0.5 lead pencil without grip",
+      "precision10": 0.4,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.5917224453821636,
+      "zero_result": false
+    },
+    {
+      "query_id": 463,
+      "query": "0.9%sodium chloride without any preservatives",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 469,
+      "query": "00 gauge funny christmas",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 475,
+      "query": "000 black jeans not ripped",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 476,
+      "query": "000 days without dad jokes shirt",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 481,
+      "query": "007 shaken but not stirred",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 483,
+      "query": "00m vesa mounting pattern mounting bracket not included",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 486,
+      "query": "01 ford ranger headlights not smoke lens",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 489,
+      "query": "01 polaris scrambler 500 pull start without case",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 496,
+      "query": "02 ford sport trac disc brakes",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 501,
+      "query": "02cool water bottle mist and sip without lid purple",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 1.0,
+      "ndcg10": 0.5701406500739014,
+      "zero_result": false
+    },
+    {
+      "query_id": 503,
+      "query": "03 dodge tow mirrors without spot mirror",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 504,
+      "query": "03 durango front calipers without pads",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 512,
+      "query": "04 f150 black beadlight without amber",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.5,
+      "ndcg10": 0.2960819109658652,
+      "zero_result": false
+    },
+    {
+      "query_id": 517,
+      "query": "04 nissan titan fender flares without box",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 522,
+      "query": "05 colorado seats not covers",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.3562071871080222,
+      "zero_result": false
+    },
+    {
+      "query_id": 526,
+      "query": "05 nissan titan f r not strut mount",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 530,
+      "query": "05 syringe without needle",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6312824342599506,
+      "zero_result": false
+    },
+    {
+      "query_id": 536,
+      "query": "06 chevy colorado driver side window regulator without motor",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6934264036172708,
+      "zero_result": false
+    },
+    {
+      "query_id": 540,
+      "query": "06 f150 door handle without keyless entry",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 544,
+      "query": "06 saturn ion fuel pump assembly without pump without pump",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.44442799261065036,
+      "zero_result": false
+    },
+    {
+      "query_id": 547,
+      "query": "06 suzuki 600 side fairing not painted",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 550,
+      "query": "06 titan trans oil cooler line not adapter",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 559,
+      "query": "07 honda odyssey sliding door lock not electronic",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 560,
+      "query": "07 jeep hitch",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.6874847125494647,
+      "zero_result": false
+    },
+    {
+      "query_id": 562,
+      "query": "07 passat front bumper grille trim without fog lights",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 564,
+      "query": "07 volume eyelash extensions not easy fan",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.7219233861326709,
+      "zero_result": false
+    },
+    {
+      "query_id": 565,
+      "query": "07 zx6r plastics unpainted without abs",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 567,
+      "query": "08 chevy silverado led headlights",
+      "precision10": 0.2,
+      "recall10": 0.5,
+      "mrr10": 0.16666666666666666,
+      "ndcg10": 0.2775587619530413,
+      "zero_result": false
+    },
+    {
+      "query_id": 568,
+      "query": "08 chevy tahoe wheel not cover",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 569,
+      "query": "08 chevy tailgate without emblem",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 572,
+      "query": "08 do not disturb",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.5797748398812457,
+      "zero_result": false
+    },
+    {
+      "query_id": 580,
+      "query": "09 g6 wheel not cover grey",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.4465398223011217,
+      "zero_result": false
+    },
+    {
+      "query_id": 591,
+      "query": "0g earrings not tapered",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.2,
+      "ndcg10": 0.272312688806029,
+      "zero_result": false
+    },
+    {
+      "query_id": 593,
+      "query": "0o days without sarcasm shirt",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 598,
+      "query": "0rganic potting without fertelizer for roses",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 611,
+      "query": "1 '' leather belts without buckles",
+      "precision10": 0.3,
+      "recall10": 0.6,
+      "mrr10": 0.5,
+      "ndcg10": 0.5043776700708298,
+      "zero_result": false
+    },
+    {
+      "query_id": 615,
+      "query": "1 0z plastic containers without lids",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 616,
+      "query": "1 1/2 black drain without overflow",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 617,
+      "query": "1 1/2 hp pool pump without skimmer",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 620,
+      "query": "1 1/2 leather belts without buckle",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 623,
+      "query": "1 1/2 sink without overflo pop up",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 625,
+      "query": "1 1/2 year old girl toys",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.7039180890341347,
+      "zero_result": false
+    },
+    {
+      "query_id": 626,
+      "query": "1 1/2\u201d wide mens belt without buckle",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.14285714285714285,
+      "ndcg10": 0.19004688335796713,
+      "zero_result": false
+    },
+    {
+      "query_id": 629,
+      "query": "1 1/4 mini metal rustic barn star without hole for the",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.46927872602275644,
+      "zero_result": false
+    },
+    {
+      "query_id": 633,
+      "query": "1 1/4 sink drain without overflow",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 635,
+      "query": "1 1/4 well strainer for water well without foot valve",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8262346571285599,
+      "zero_result": false
+    },
+    {
+      "query_id": 639,
+      "query": "1 1/8 not threads anode rod for rv",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 640,
+      "query": "1 1/8 skinny leather belts without buckles",
+      "precision10": 0.3,
+      "recall10": 0.6,
+      "mrr10": 0.5,
+      "ndcg10": 0.4908093751061525,
+      "zero_result": false
+    },
+    {
+      "query_id": 644,
+      "query": "1 16oz glass jar with lid",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 645,
+      "query": "1 2 without both battery switch",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 646,
+      "query": "1 20 volt extension cord no it's not what i",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 650,
+      "query": "1 3/4 mens leather belt strap without buckle",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.1111111111111111,
+      "ndcg10": 0.21190045928974346,
+      "zero_result": false
+    },
+    {
+      "query_id": 655,
+      "query": "1 32 cars not pullback",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.5,
+      "ndcg10": 0.3597186998521971,
+      "zero_result": false
+    },
+    {
+      "query_id": 658,
+      "query": "1 5/8 copper sink drain without overflow",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8264608000364082,
+      "zero_result": false
+    },
+    {
+      "query_id": 664,
+      "query": "1 7/8 wood hole saw without arbor",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.2,
+      "ndcg10": 0.272312688806029,
+      "zero_result": false
+    },
+    {
+      "query_id": 666,
+      "query": "1 acre bug zapper outdoor without octenal attractant",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.5,
+      "ndcg10": 0.4298593499260986,
+      "zero_result": false
+    },
+    {
+      "query_id": 667,
+      "query": "1 airpod not charging case",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.1,
+      "ndcg10": 0.2890648263178878,
+      "zero_result": false
+    },
+    {
+      "query_id": 678,
+      "query": "1 big box of kleenex tissues not cube",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.5,
+      "ndcg10": 0.518149817909464,
+      "zero_result": false
+    },
+    {
+      "query_id": 681,
+      "query": "1 black small notebook without lines",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.5,
+      "ndcg10": 0.49511083133137285,
+      "zero_result": false
+    },
+    {
+      "query_id": 690,
+      "query": "1 bushel laundry basket",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6787622294601761,
+      "zero_result": false
+    },
+    {
+      "query_id": 691,
+      "query": "1 by one, amplified, outdoor hdtv antenna",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 695,
+      "query": "1 carry-on bag not exceeding 22 x 16 x 10 in",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 698,
+      "query": "1 cc tuberculin syringe without needle",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.35195904451706733,
+      "zero_result": false
+    },
+    {
+      "query_id": 704,
+      "query": "1 coco wire plant holder without basket",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.7338381252682711,
+      "zero_result": false
+    },
+    {
+      "query_id": 706,
+      "query": "1 cordless telephone without answering capability",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 707,
+      "query": "1 corinthians without love wall art",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.5,
+      "ndcg10": 0.41144190398773733,
+      "zero_result": false
+    },
+    {
+      "query_id": 710,
+      "query": "1 cu ft mini fridge without freezer",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.25,
+      "ndcg10": 0.24554621279155467,
+      "zero_result": false
+    },
+    {
+      "query_id": 711,
+      "query": "1 cup coffee maker without water reservoir",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.5584822446541475,
+      "zero_result": false
+    },
+    {
+      "query_id": 716,
+      "query": "1 curtain rings without clips",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 723,
+      "query": "1 dollor toys",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 728,
+      "query": "1 elastic bands for sewing white",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9424890210124037,
+      "zero_result": false
+    },
+    {
+      "query_id": 730,
+      "query": "1 fake hawaiian foam flower not clip for ear",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.8395700624665824,
+      "zero_result": false
+    },
+    {
+      "query_id": 733,
+      "query": "1 fl oz hand sanitizer bulk spread love not germa",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 735,
+      "query": "1 fluid ounce empty mini sauce bottles (sauce not included)",
+      "precision10": 0.2,
+      "recall10": 0.5,
+      "mrr10": 0.14285714285714285,
+      "ndcg10": 0.2532778777010655,
+      "zero_result": false
+    },
+    {
+      "query_id": 743,
+      "query": "1 gallon brown glass bottle",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.35195904451706733,
+      "zero_result": false
+    },
+    {
+      "query_id": 745,
+      "query": "1 gallon ziplock bags the kind without the zip clip",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584,
+      "zero_result": false
+    },
+    {
+      "query_id": 746,
+      "query": "1 gallon ziplock bags the king without the zip clip",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.46927872602275644,
+      "zero_result": false
+    },
+    {
+      "query_id": 748,
+      "query": "1 generation ipad air keyboard case without an apple penicil",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.25,
+      "ndcg10": 0.4306765580733931,
+      "zero_result": false
+    },
+    {
+      "query_id": 749,
+      "query": "1 gpm propane water heater not adapter",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 752,
+      "query": "1 hole kitchen faucet without sprayer",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 754,
+      "query": "1 hp garbage disposal without power cord",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 755,
+      "query": "1 hp pool pump without filter",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.3931350805767307,
+      "zero_result": false
+    },
+    {
+      "query_id": 761,
+      "query": "1 in curtain rod black without brackets",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 1.0,
+      "ndcg10": 0.4945133916623382,
+      "zero_result": false
+    },
+    {
+      "query_id": 764,
+      "query": "1 in. mens western belts leather without buckle",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.25,
+      "ndcg10": 0.16369747519436975,
+      "zero_result": false
+    },
+    {
+      "query_id": 773,
+      "query": "1 inch heels shoes wide width",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 781,
+      "query": "1 inch paint brushes for acrylic painting",
+      "precision10": 0.4,
+      "recall10": 0.8,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5342710881625681,
+      "zero_result": false
+    },
+    {
+      "query_id": 784,
+      "query": "1 inch rear leveling kit",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 790,
+      "query": "1 inch wooden beads for crafts without holes",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 798,
+      "query": "1 large white silk gardenia without stem",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 800,
+      "query": "1 lb sack of forget me not seeds",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 801,
+      "query": "1 light switch dimmer without plate",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 803,
+      "query": "1 liter glass water bottle",
+      "precision10": 0.1,
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.46927872602275644,
+      "zero_result": false
+    },
+    {
+      "query_id": 812,
+      "query": "1 me without needle syringes",
+      "precision10": 0.2,
+      "recall10": 0.5,
+      "mrr10": 0.25,
+      "ndcg10": 0.26123865987538103,
+      "zero_result": false
+    },
+    {
+      "query_id": 817,
+      "query": "1 ml 28 gauge 1/2 inch attached needle without safety",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.1,
+      "ndcg10": 0.2890648263178878,
+      "zero_result": false
+    },
+    {
+      "query_id": 818,
+      "query": "1 ml bdsyringe without needles with lure-lok tip",
+      "precision10": 0.5,
+      "recall10": 0.7142857142857143,
+      "mrr10": 0.5,
+      "ndcg10": 0.5199793854786253,
+      "zero_result": false
+    },
+    {
+      "query_id": 819,
+      "query": "1 ml blister pack luer lock tip without safety",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.3333333333333333,
+      "ndcg10": 0.5,
+      "zero_result": false
+    },
+    {
+      "query_id": 822,
+      "query": "1 ml medical grade syringes without needles",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 825,
+      "query": "1 ml syringes without the needle with caps",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.5,
+      "ndcg10": 0.2960819109658653,
+      "zero_result": false
+    },
+    {
+      "query_id": 826,
+      "query": "1 ml vet syringe without needle with cap",
+      "precision10": 0.1,
+      "recall10": 0.3333333333333333,
+      "mrr10": 0.5,
+      "ndcg10": 0.3212043018970804,
+      "zero_result": false
+    },
+    {
+      "query_id": 827,
+      "query": "1 mlsyringe without rubber plunger",
+      "precision10": 0.1,
+      "recall10": 0.2,
+      "mrr10": 0.5,
+      "ndcg10": 0.25143829456895006,
+      "zero_result": false
+    },
+    {
+      "query_id": 829,
+      "query": "1 month baby not real baby sufft",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 830,
+      "query": "1 month baby photography props",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 834,
+      "query": "1 mtb stem",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 837,
+      "query": "1 ounce containers with lids not plastic",
+      "precision10": 0.1,
+      "recall10": 0.25,
+      "mrr10": 0.125,
+      "ndcg10": 0.15455851177820684,
+      "zero_result": false
+    },
+    {
+      "query_id": 838,
+      "query": "1 ounce plastic disposable portion cups without lids",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714574,
+      "zero_result": false
+    },
+    {
+      "query_id": 839,
+      "query": "1 oz amber bottles without lid",
+      "precision10": 0.3,
+      "recall10": 1.0,
+      "mrr10": 0.5,
+      "ndcg10": 0.6097186998521972,
+      "zero_result": false
+    },
+    {
+      "query_id": 845,
+      "query": "1 oz tin without lid",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.6913401592471553,
+      "zero_result": false
+    },
+    {
+      "query_id": 846,
+      "query": "1 pack blue braiding hair pre stretched",
+      "precision10": 0.2,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 0.9385574520455129,
+      "zero_result": false
+    },
+    {
+      "query_id": 857,
+      "query": "1 person sofa without arms",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 858,
+      "query": "1 peter jen wilkin",
+      "precision10": 0.1,
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 861,
+      "query": "1 pint mason jars without words",
+      "precision10": 0.2,
+      "recall10": 0.6666666666666666,
+      "mrr10": 0.25,
+      "ndcg10": 0.3431162134593794,
+      "zero_result": false
+    },
+    {
+      "query_id": 867,
+      "query": "1 pound grain scoop",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    },
+    {
+      "query_id": 870,
+      "query": "1 pvc slip coupling without stop",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.7185431582983953,
+      "zero_result": false
+    },
+    {
+      "query_id": 872,
+      "query": "1 quart stainless steel saucepan without lid",
+      "precision10": 0.3,
+      "recall10": 0.75,
+      "mrr10": 1.0,
+      "ndcg10": 0.8593298699328812,
+      "zero_result": false
+    },
+    {
+      "query_id": 884,
+      "query": "1 step motorhome cleaner without washing",
+      "precision10": 0.0,
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0,
+      "zero_result": false
+    }
+  ],
+  "generated_at": "2026-08-02T01:35:51.566988126Z"
+}
