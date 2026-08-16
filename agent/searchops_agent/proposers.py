@@ -7,15 +7,53 @@
 - `LLMProposer` 用 LangChain 让模型基于同样的诊断证据提案，受同一套 schema 约束。
 
 两者输出同一种 `Proposal`，因此可以在同一门禁下直接比较。
+
+
+LLMProposer 的三条设计选择（写在这里，免得后面靠猜）
+====================================================
+
+**(1) 模型够不着 `field_weights` / `brand_boosts`——它们根本不在结构化输出的 schema 里。**
+这不是"提示词里请求模型别调权重"，是结构上不给它这个字段。理由是三条实测结论：
+218 组权重配置的扫描在 holdout 上只剩 +0.0035（p=0.1202，门禁 BLOCK）；`category` 字段
+单桶 `Other`/20000 篇，IDF≈0，扫遍 18 档指标逐位不变；`best_fields` 无 `tie_breaker` 时
+等比放大权重向量是恒等变换。也就是说连续空间的头部已经被数值搜索搜干净了，让 LLM 继续
+拧权重只会产出必然被拦下的提案，而那会把"这条路本来就走到头了"误读成"LLM 没用"。
+LLM 唯一可能还有增量的地方是符号空间：`synonyms` 与 `rewrite_rules`。
+代价说清楚：如果日后想让模型重新参与权重，改一处（给 schema 加字段）即可，
+约束只有这一个落点，不会散落在提示词的若干行里等着被模型忽略。
+
+**(2) 引用与可行性由代码校验，不由提示词承诺。**
+提示词可以要求"必须引用给定证据里的查询"，但只有代码能保证。`_Compiler` 逐条检查：
+引用的 `query_id` 是否真在本轮诊断里（凭空捏造 → 整条提案作废）；同义词的 term 是否
+真的能在某条证据查询里子串命中（`expandSynonyms` 的触发条件就是子串包含）；rewrite 的
+`match` 归一化后是否真的等于某条证据查询（`applyRewrite` 是整串相等比较，不是模式匹配）。
+被判掉的条目一律记进 `Proposal.guard_notes` 并打 WARN——是可见的，不是静默的。
+特别说明否定守卫：与 `platform/services/ai-adapter` 的 `LangChainRewriteProvider` 同源同
+词表。一条把 `without` 删掉的整串改写，交给 `operator=or` 的 `multi_match` 之后正好召回
+用户想排除的商品，这是本数据集上最容易发生也最伤指标的一种"看起来合理"的改动。
+
+**(3) 缺 key 在构造函数里抛异常，绝不退化成 RuleProposer。**
+`cli.py` 的 `--proposer llm` 走到这里，如果静默退化，产出的报告会说"LLM 提案器跑了、
+指标没提升"，而真相是模型压根没被调用。那份报告会进对照结论，比服务起不来坏得多。
+代价：`import searchops_agent` 时 `__init__.py` 会导入本模块，所以 LangChain 的导入必须
+延迟到 `__init__` 里做——没装 llm 附加依赖的人仍然可以跑规则基线。
 """
 
 from __future__ import annotations
 
+import json
+import logging
+import os
 import re
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Any, ClassVar, Protocol
+
+from pydantic import BaseModel, Field
 
 from .models import StrategyConfig
+from .prompts import MAX_PROPOSALS, NEGATION_CUES, SYSTEM_PROMPT, USER_TEMPLATE
+
+logger = logging.getLogger("searchops-agent")
 
 _TOKEN = re.compile(r"[a-z0-9]+")
 
@@ -27,6 +65,17 @@ class Proposal:
     rationale: str
     evidence: list[str] = field(default_factory=list)
     origin: str = "unknown"
+    model: str | None = None
+    """实际产出这条提案的模型名；规则提案器为 None。
+
+    为什么每条提案都要带：产物 JSON 里 `model` 只在 run 级别记一次
+    （`loop._artifact`），而提案是逐条归档的。一份只在顶层写了模型名的产物，在提案被
+    摘出来单独引用时就再也说不清是谁提的——这个可复现性缺口在本项目已经出现过两次。
+    同样的理由，`origin` 也带上模型名（见 `LLMProposer.origin`），因为 `loop.py` 的
+    逐提案产物字段里恰好有 `origin` 而没有 `model`。
+    """
+    guard_notes: list[str] = field(default_factory=list)
+    """被守卫判掉的条目及原因。空列表表示模型的输出原样通过。"""
 
 
 class Proposer(Protocol):
@@ -104,56 +153,686 @@ class RuleProposer:
         return proposals
 
 
-class LLMProposer:
-    """LangChain 提案者。模型只能产出结构化的 StrategyConfig，不能自由写字段。
+# --- 结构化输出 schema --------------------------------------------------------
+#
+# 为什么不让模型直接吐一整份 StrategyConfig（旧实现的做法）：
+#   * 一份完整配置里，模型够得着的只有两个字段，其余六个字段它只能原样抄回来。让它抄
+#     一遍，就是给它六个抄错的机会（实测里模型很爱"顺手优化"一下权重）。
+#   * `dict[str, list[str]]` 这种"任意键"的映射在 tool-calling 的 JSON Schema 里要靠
+#     `additionalProperties`，兼容端点对它的支持参差；而"对象数组"是所有端点都稳的形状。
+# 所以模型产出的是**增量**，由 `_Compiler` 合并到 `current` 之上，再整体过一次契约校验。
+#
+# Field(description=...) 会进 tool schema，模型看得到——这些描述是提示词的一部分，
+# 承担的是"这个字段到底怎么被引擎消费"的说明，与 prompts.py 里的长文互补而不重复。
 
-    未配置模型时构造即失败，绝不静默退化成规则提案——否则对照实验会被污染。
+
+class _SynonymEntry(BaseModel):
+    term: str = Field(
+        description=(
+            "The trigger term, lowercase. The engine fires this entry when the lowercased "
+            "query CONTAINS this term as a substring, so it must be distinctive enough not "
+            "to fire on unrelated words."
+        )
+    )
+    expansions: list[str] = Field(
+        description=(
+            "Words appended to the query when the term fires. Each entry adds tokens the "
+            "shopper did not type, such as a canonical brand or the standard retail noun. "
+            "Never a respelling of a word already in the query: fuzziness AUTO covers that."
+        )
+    )
+    evidence_query_ids: list[int] = Field(
+        description="query_id values from the evidence that this entry is meant to fix."
+    )
+
+
+class _RewriteRuleEntry(BaseModel):
+    match: str = Field(
+        description=(
+            "The complete query this rule replaces, copied verbatim from the evidence. The "
+            "engine compares it for equality against the whole lowercased query, so anything "
+            "that is not exactly one of the evidence queries can never fire."
+        )
+    )
+    rewrite: str = Field(
+        description=(
+            "The query sent to the engine instead. Plain search words separated by single "
+            "spaces, no operators, no field syntax. If the matched query excludes something, "
+            "the negation cue and the excluded noun must survive here verbatim."
+        )
+    )
+    evidence_query_ids: list[int] = Field(
+        description="query_id values from the evidence that this rule is meant to fix."
+    )
+
+
+class _ProposedChange(BaseModel):
+    name: str = Field(description="Short English name for this candidate strategy.")
+    rationale: str = Field(
+        description=(
+            "Why this change should raise NDCG@10, argued only from the evidence given, in "
+            "at most three sentences. State no catalogue fact that is not visible in the "
+            "evidence."
+        )
+    )
+    synonyms: list[_SynonymEntry] = Field(
+        default_factory=list, description="Synonym entries added by this proposal."
+    )
+    rewrite_rules: list[_RewriteRuleEntry] = Field(
+        default_factory=list, description="Rewrite rules added by this proposal."
+    )
+
+
+class _ProposalBatch(BaseModel):
+    proposals: list[_ProposedChange] = Field(
+        description=(
+            "At most three candidate changes, each aimed at one identifiable failure "
+            "pattern. An empty list is a valid answer when no change would survive the gate."
+        )
+    )
+
+
+# --- 证据与守卫 ---------------------------------------------------------------
+
+
+def _normalize_query(value: str) -> str:
+    """与 Java 侧 `SearchQueryCompiler.applyRewrite` 的归一化逐字一致。
+
+    那边是 `String.join(" ", query.trim().split("\\s+")).toLowerCase()`。这里必须同口径，
+    否则"这条 rewrite 规则会不会触发"的判断在两侧会给出不同答案。
+    """
+    return " ".join(str(value).split()).lower()
+
+
+def _negates(value: str) -> bool:
+    """这段文本是否还在表达"排除"。只查词表，不做句法分析——够用，且不会误伤。"""
+    return bool(NEGATION_CUES & {tok.strip(".,;:!?") for tok in str(value).lower().split()})
+
+
+def _metric(value: Any) -> str:
+    try:
+        return f"{float(value):.3f}"
+    except (TypeError, ValueError):
+        return "n/a"
+
+
+@dataclass(frozen=True)
+class _Evidence:
+    """本轮诊断里模型可以引用的全部事实。超出这个集合的引用一律判为捏造。"""
+
+    by_id: dict[int, str]
+    """query_id → 归一化后的查询串。"""
+
+    rendered_low: str
+    rendered_zero: str
+
+    @property
+    def queries(self) -> set[str]:
+        return set(self.by_id.values())
+
+    @classmethod
+    def build(cls, diagnosis: dict[str, Any], max_low: int, max_zero: int) -> _Evidence:
+        by_id: dict[int, str] = {}
+
+        def render(items: Any, limit: int) -> str:
+            lines: list[str] = []
+            for item in list(items or [])[:limit]:
+                query = str(item.get("query", ""))
+                if not query.strip():
+                    continue
+                try:
+                    qid = int(item.get("query_id"))
+                except (TypeError, ValueError):
+                    continue
+                by_id[qid] = _normalize_query(query)
+                flag = " [NEGATION]" if _negates(query) else ""
+                lines.append(
+                    f"- query_id={qid} ndcg@10={_metric(item.get('ndcg10'))} "
+                    f"recall@10={_metric(item.get('recall10'))}{flag} query={query!r}"
+                )
+            return "\n".join(lines) or "(none)"
+
+        # 查询串用 repr 渲染：本数据集里前导标点（'!awnmower' / '# 2 pencils'）是真实信号，
+        # 裸着打印会让模型看不出首尾空白与标点的确切位置。
+        low = render(diagnosis.get("low_quality_queries"), max_low)
+        zero = render(diagnosis.get("zero_result_queries"), max_zero)
+        return cls(by_id=by_id, rendered_low=low, rendered_zero=zero)
+
+
+class _Compiler:
+    """把模型的增量编译成合法的 `StrategyConfig`，并逐条执行守卫。
+
+    守卫全部是**机械可判定**的，没有一条依赖对语义的主观判断：要么对照证据集合查存在性，
+    要么对照 `SearchQueryCompiler` 的触发条件查可行性，要么查契约上下界。
+    """
+
+    #: 契约上界，抄自 platform 的 `lab.searchops.domain.StrategyConfig` 注解。
+    #: 超限时服务端返回 400，所以在这里先截断/拒绝，而不是把一份注定被拒的提案送出去。
+    MAX_SYNONYM_KEYS: ClassVar[int] = 100
+    MAX_SYNONYM_VALUES: ClassVar[int] = 20
+    MAX_REWRITE_RULES: ClassVar[int] = 100
+    MAX_RULE_CHARS: ClassVar[int] = 500
+    MAX_FIELD_WEIGHTS: ClassVar[int] = 10
+    FIELD_WEIGHT_RANGE: ClassVar[tuple[float, float]] = (0.0, 20.0)
+    BRAND_BOOST_RANGE: ClassVar[tuple[float, float]] = (0.0, 100.0)
+
+    def __init__(self, evidence: _Evidence, current: StrategyConfig) -> None:
+        self.evidence = evidence
+        self.current = current
+        #: 只累计**存活下来的**条目所引用的 query_id。被守卫判掉的条目不算数——
+        #: 否则一条被丢弃的规则会把它引用的查询写进 `Proposal.evidence`，
+        #: 让产物声称"这条提案针对 query 17"，而实际配置里根本没有任何东西碰 query 17。
+        self.cited: list[int] = []
+
+    def _credit(self, ids: list[int]) -> None:
+        for qid in ids:
+            if qid not in self.cited:
+                self.cited.append(qid)
+
+    # -- 引用校验 ---------------------------------------------------------
+
+    def _cited(self, ids: list[int], notes: list[str], what: str) -> list[int] | None:
+        """返回被引用且真实存在的 query_id；捏造或缺失引用则返回 None（该条目作废）。"""
+        if not ids:
+            notes.append(f"丢弃 {what}：没有引用任何证据查询")
+            return None
+        unknown = [q for q in ids if int(q) not in self.evidence.by_id]
+        if unknown:
+            notes.append(f"丢弃 {what}：引用了本轮证据里不存在的 query_id {unknown}")
+            return None
+        return [int(q) for q in ids]
+
+    # -- 两个旋钮 ---------------------------------------------------------
+
+    def _synonyms(self, entries: list[_SynonymEntry], notes: list[str]) -> dict[str, list[str]]:
+        out: dict[str, list[str]] = {}
+        for entry in entries:
+            term = _normalize_query(entry.term)
+            label = f"同义词 {term!r}"
+            if not term:
+                notes.append("丢弃同义词：term 为空")
+                continue
+            cited = self._cited(entry.evidence_query_ids, notes, label)
+            if cited is None:
+                continue
+            # `expandSynonyms` 的触发条件是 `query.toLowerCase().contains(term)`。term 若在
+            # 任何一条证据查询里都不出现，这条同义词对本轮证据一定不触发——它不是保守的提案，
+            # 是空提案，而空提案会被评测记成"LLM 没有收益"。
+            if not any(term in q for q in self.evidence.queries):
+                notes.append(f"丢弃 {label}：不是任何证据查询的子串，按引擎的子串触发条件永不生效")
+                continue
+            values: list[str] = []
+            for raw in entry.expansions:
+                value = " ".join(str(raw).split())
+                if not value or value.lower() == term:
+                    continue  # 把 term 自己加回查询是恒等操作
+                if value not in values:
+                    values.append(value)
+            if not values:
+                notes.append(f"丢弃 {label}：没有有效的展开项")
+                continue
+            if len(values) > self.MAX_SYNONYM_VALUES:
+                notes.append(f"{label}：展开项 {len(values)} 条超过契约上限，截断到 {self.MAX_SYNONYM_VALUES}")
+                values = values[: self.MAX_SYNONYM_VALUES]
+            out[term] = values
+            self._credit(cited)
+        return out
+
+    def _rewrite_rules(self, entries: list[_RewriteRuleEntry], notes: list[str]) -> list[dict[str, str]]:
+        out: list[dict[str, str]] = []
+        seen: set[str] = set()
+        for entry in entries:
+            match = _normalize_query(entry.match)
+            rewrite = " ".join(str(entry.rewrite).split())
+            label = f"改写规则 {match!r}"
+            if not match or not rewrite:
+                notes.append("丢弃改写规则：match 或 rewrite 为空")
+                continue
+            cited = self._cited(entry.evidence_query_ids, notes, label)
+            if cited is None:
+                continue
+            # `applyRewrite` 是整串相等比较。match 不是证据里的某条查询 → 规则永不触发，
+            # 同时也意味着模型凭空写了一条查询（违反"不得凭空发明"）。
+            if match not in self.evidence.queries:
+                notes.append(f"丢弃 {label}：与任何证据查询都不逐字相等，按整串相等的触发条件永不生效")
+                continue
+            if _normalize_query(rewrite) == match:
+                notes.append(f"丢弃 {label}：rewrite 与 match 归一化后相同，是恒等改写")
+                continue
+            # 否定守卫。与 ai-adapter 的 LangChainRewriteProvider 同源：整串替换一旦丢掉
+            # 否定词，交给 operator=or 的 multi_match 之后正好召回用户要排除的商品。
+            if _negates(match) and not _negates(rewrite):
+                notes.append(f"丢弃 {label}：原查询表达排除而改写把否定丢了（→ {rewrite!r}）")
+                continue
+            if len(match) > self.MAX_RULE_CHARS or len(rewrite) > self.MAX_RULE_CHARS:
+                notes.append(f"丢弃 {label}：match/rewrite 超过契约的 {self.MAX_RULE_CHARS} 字符上限")
+                continue
+            if match in seen:
+                notes.append(f"丢弃 {label}：同一条提案里重复的 match")
+                continue
+            seen.add(match)
+            out.append({"match": match, "rewrite": rewrite})
+            self._credit(cited)
+        return out
+
+    # -- 合并与契约校验 ---------------------------------------------------
+
+    def compile(
+        self, change: _ProposedChange
+    ) -> tuple[StrategyConfig | None, list[str], list[int]]:
+        """返回 (候选配置, 守卫记录, 被引用的 query_id)；无任何有效改动时配置为 None。
+
+        为什么无效时也把 `notes` 带回来，而不是直接返回 None：那些记录正是"这条提案为什么
+        没了"的唯一解释。丢掉它们，日志里就只剩"模型提了 3 条、留下 0 条"，无从分辨是模型
+        在捏造引用、还是它写了一堆永不触发的规则——而这两者对模型的评价完全不同。
+
+        每次调用都重置引用累加器：一个 `_Compiler` 会被同一轮的多条提案复用，
+        引用若跨提案累加，第二条提案就会声称自己针对第一条提案的查询。
+        """
+        notes: list[str] = []
+        self.cited = []
+        synonyms = self._synonyms(change.synonyms, notes)
+        rules = self._rewrite_rules(change.rewrite_rules, notes)
+        if not synonyms and not rules:
+            notes.append("本条提案没有留下任何有效改动，已整条丢弃")
+            return None, notes, []
+
+        cfg = self.current.model_copy(deep=True)
+        merged_syn = dict(cfg.synonyms)
+        merged_syn.update(synonyms)
+        if len(merged_syn) > self.MAX_SYNONYM_KEYS:
+            raise ValueError(
+                f"合并后同义词 {len(merged_syn)} 键超过契约上限 {self.MAX_SYNONYM_KEYS}"
+            )
+        merged_rules = list(cfg.rewrite_rules) + rules
+        if len(merged_rules) > self.MAX_REWRITE_RULES:
+            raise ValueError(
+                f"合并后改写规则 {len(merged_rules)} 条超过契约上限 {self.MAX_REWRITE_RULES}"
+            )
+        cfg.synonyms = merged_syn
+        cfg.rewrite_rules = merged_rules
+
+        return self.assert_contract(cfg), notes, sorted(self.cited)
+
+    @classmethod
+    def assert_contract(cls, cfg: StrategyConfig) -> StrategyConfig:
+        """按 platform 的 StrategyConfig 注解做一次上下界检查。
+
+        Python 侧的 pydantic 模型只声明了类型，没有 Java 侧的 @Size/@Min/@Max。不在这里查，
+        违约就要等到 POST /evaluations/candidate 返回 400 才发现——那时错误信息落在 HTTP 层，
+        跟"是哪条提案越界了"对不上号。模型够不着的字段（权重/加权）也一并查：它们是从线上
+        current 继承来的，继承一份非法配置同样会让整轮提案在服务端炸掉。
+        """
+        weights = cfg.field_weights or {}
+        if len(weights) > cls.MAX_FIELD_WEIGHTS:
+            raise ValueError(f"field_weights {len(weights)} 项超过契约上限 {cls.MAX_FIELD_WEIGHTS}")
+        lo, hi = cls.FIELD_WEIGHT_RANGE
+        for name, value in weights.items():
+            if not lo <= float(value) <= hi:
+                raise ValueError(f"field_weights[{name}]={value} 越界 [{lo}, {hi}]")
+        lo, hi = cls.BRAND_BOOST_RANGE
+        for name, value in (cfg.brand_boosts or {}).items():
+            if not lo <= float(value) <= hi:
+                raise ValueError(f"brand_boosts[{name}]={value} 越界 [{lo}, {hi}]")
+        for term, values in (cfg.synonyms or {}).items():
+            if not str(term).strip():
+                raise ValueError("同义词的 term 不得为空（Java 侧 @NotBlank）")
+            if len(values) > cls.MAX_SYNONYM_VALUES:
+                raise ValueError(
+                    f"同义词 {term!r} 的展开项 {len(values)} 条超过契约上限 {cls.MAX_SYNONYM_VALUES}"
+                )
+            if any(not str(v).strip() for v in values):
+                raise ValueError(f"同义词 {term!r} 含空展开项（Java 侧 @NotBlank）")
+        for rule in cfg.rewrite_rules:
+            if not str(rule.get("match", "")).strip() or not str(rule.get("rewrite", "")).strip():
+                raise ValueError(f"改写规则的 match/rewrite 不得为空：{rule}")
+        # 最后再走一次 pydantic：保证返回的确实是一个可序列化、可送上线的 StrategyConfig。
+        return StrategyConfig.model_validate(cfg.model_dump())
+
+
+# --- LLM 提案者 ---------------------------------------------------------------
+
+
+class LLMProposer:
+    """LangChain 提案者：`ChatOpenAI` + `with_structured_output`，走 OpenAI 兼容端点。
+
+    为什么是 LangChain 而不是自己发 HTTP：`with_structured_output` 把"模型必须吐出结构化
+    提案"下沉到 tool-calling 协议层，而不是靠正则去抠自然语言；换 provider（DeepSeek /
+    Anthropic / 本地 vLLM）时这一层不用重写。这与
+    `platform/services/ai-adapter/app/providers/langchain_rewrite.py` 是同一条链路、
+    同一套配置风格，两处对齐可以省掉一次"到底是谁的问题"的排查。
+
+    未配置 key 时构造即失败，绝不静默退化成规则提案——否则对照实验会被污染。
     """
 
     name = "llm"
 
-    def __init__(self, model: str = "claude-sonnet-5", temperature: float = 0.0) -> None:
-        from langchain.chat_models import init_chat_model  # 延迟导入：无 key 时也能跑规则基线
+    # ---- 默认档（本仓库实测跑通过的一套） ----------------------------------
+    _DEFAULT_MODEL: ClassVar[str] = "qwen3.7-flash-2026-07-15"
+    _DEFAULT_BASE_URL: ClassVar[str] = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    # DashScope 私有参数，必须在请求体**顶层**才生效（嵌套进去服务端静默忽略）。
+    # 思考模式下 qwen3.x-flash 的单次调用从约 1s 涨到 8-28s，且强制 tool_choice 会被直接
+    # 拒绝（"The tool_choice parameter does not support being set to required or object in
+    # thinking mode"）——而 with_structured_output(method="function_calling") 正是要强制
+    # tool_choice。所以这个开关不是调优项，是这条链路能不能跑通的前提。
+    # 只在模型与端点**都**走默认档时才带上：发给别家端点会 400。
+    _DEFAULT_EXTRA_BODY: ClassVar[dict[str, Any]] = {"enable_thinking": False}
 
-        self._llm = init_chat_model(model, temperature=temperature).with_structured_output(_ProposalSchema)
+    #: 允许的 structured-output 方法。`json_schema` 在部分兼容端点上 400，故不作默认值
+    #: （DashScope / DeepSeek 实测：`response_format={"type":"json_schema"}` 直接被拒，
+    #: 而 tool-calling 在两家都可用）。
+    _METHODS: ClassVar[frozenset[str]] = frozenset({"function_calling", "json_mode", "json_schema"})
+
+    def __init__(
+        self,
+        model: str | None = None,
+        *,
+        base_url: str | None = None,
+        temperature: float | None = None,
+        max_low: int = 40,
+        max_zero: int = 20,
+        max_proposals: int = MAX_PROPOSALS,
+    ) -> None:
+        # 延迟导入：`searchops_agent/__init__.py` 会导入本模块，而没装 llm 附加依赖的人
+        # 必须仍能跑 RuleProposer 与整套评测 CLI。导入失败时给出确切的安装命令。
+        try:
+            from langchain_core.messages import HumanMessage, SystemMessage
+            from langchain_openai import ChatOpenAI
+        except ImportError as exc:  # pragma: no cover - 取决于安装的附加依赖
+            raise RuntimeError(
+                "LLMProposer 需要 LangChain：pip install -e 'agent[llm]'（版本在 "
+                "agent/pyproject.toml 的 llm 组里精确锁定）。本提案器不会退化成规则提案。"
+            ) from exc
+        self._HumanMessage = HumanMessage
+        self._SystemMessage = SystemMessage
+
+        resolved_model, model_defaulted = self._setting("AGENT_LLM_MODEL", self._DEFAULT_MODEL, model)
+        resolved_base, base_defaulted = self._setting("AGENT_LLM_BASE_URL", self._DEFAULT_BASE_URL, base_url)
+
+        #: 实际交给 ChatOpenAI 的模型名。刻意记这个值而不是 `os.getenv("AGENT_LLM_MODEL")`：
+        #: 走默认档时后者是空串，于是产物会说"没有模型"，而真相是"跑了默认档的 qwen"。
+        #: `loop._proposer_model()` 读的就是这个属性，它必须在默认档下也说真话。
+        self.model = resolved_model
+        self.base_url = resolved_base
+        self.max_low = max_low
+        self.max_zero = max_zero
+        self.max_proposals = max_proposals
+
+        if model_defaulted or base_defaulted:
+            logger.warning(
+                json.dumps(
+                    {
+                        "event": "agent.llm.defaults_applied",
+                        "proposer": self.name,
+                        "model": resolved_model,
+                        "base_url": resolved_base,
+                        "defaulted": [
+                            n
+                            for n, used in (
+                                ("model", model_defaulted),
+                                ("base_url", base_defaulted),
+                            )
+                            if used
+                        ],
+                    },
+                    ensure_ascii=False,
+                )
+            )
+
+        llm = ChatOpenAI(
+            model=resolved_model,
+            base_url=resolved_base,
+            api_key=self._api_key(),
+            temperature=self._number("AGENT_LLM_TEMPERATURE", 0.0, float) if temperature is None else temperature,
+            # 提案比查询改写长得多：三条提案 × 若干条目 + 理由。这个值实测过：2048 时
+            # qwen3.7-flash 有相当比例的调用打满预算，finish_reason 变成 "length"，
+            # 而**被截断的 tool-call 参数在 LangChain 里既不抛异常也不填 parsing_error**，
+            # 只是把 parsed 置为 None（见 propose() 里的截断自检）。默认给 4096。
+            max_tokens=self._number("AGENT_LLM_MAX_TOKENS", 4096, int),
+            # 秒制。提案是离线批处理，没有 ai-adapter 那边 5s 读超时的约束，
+            # 但仍要有上界：挂住的调用会把整轮闭环卡死在第一步。
+            timeout=self._number("AGENT_LLM_TIMEOUT_MS", 60_000, int) / 1000.0,
+            # 默认 0：一次失败必须响亮且可归因。重试会把一次超时变成三次计费的超时，
+            # 并且掩盖"端点参数配错了"这类必然复现的错误。要重试请由调用方在更大的
+            # 时间预算里做，并显式设 AGENT_LLM_MAX_RETRIES。
+            max_retries=self._number("AGENT_LLM_MAX_RETRIES", 0, int),
+            extra_body=self._extra_body(model_defaulted and base_defaulted),
+        )
+        # include_raw=True 换来两样东西：usage（用于思考模式自检）与 parsing_error
+        # （把"模型没按 schema 输出"和"网络炸了"分开）。
+        self._chain = llm.with_structured_output(
+            _ProposalBatch, method=self._method(), include_raw=True
+        )
+
+    # ------------------------------------------------------------------ 配置读取
+
+    @staticmethod
+    def _setting(env_name: str, default: str, explicit: str | None) -> tuple[str, bool]:
+        """优先级：构造参数 > 环境变量 > 默认档。返回 (取值, 是否用上了默认档)。
+
+        空串按未设置处理——`.env` 里这些变量常常是空值占位，空串与未设置必须等价，
+        否则默认值永远轮不到生效。
+        """
+        if explicit and explicit.strip():
+            return explicit.strip(), False
+        value = os.getenv(env_name, "").strip()
+        return (value, False) if value else (default, True)
+
+    def _api_key(self) -> str:
+        """按 `AGENT_LLM_API_KEY_ENV` 指定的**变量名**去环境里取 key。key 本身没有默认值。
+
+        为什么多一层间接：不同厂商的变量名不同（DASHSCOPE_API_KEY / DEEPSEEK_API_KEY /
+        KIMI_API_KEY / MINIMAX_API_KEY），写死一个名字会逼人复制凭据。这层间接让"key 存在
+        哪个变量"成为配置，而 key 的值始终只经 `os.environ` 读取，不出现在配置项、日志、
+        异常文本与产物里的任何地方。
+        """
+        key_var = os.getenv("AGENT_LLM_API_KEY_ENV", "").strip() or "DASHSCOPE_API_KEY"
+        api_key = os.getenv(key_var, "").strip()
+        if not api_key:
+            raise RuntimeError(
+                f"LLMProposer: 缺少 API key，拒绝构造。AGENT_LLM_API_KEY_ENV 当前指向环境变量 "
+                f"{key_var!r}，但它未设置或为空（未设置 AGENT_LLM_API_KEY_ENV 时默认指向 "
+                f"DASHSCOPE_API_KEY）。key 通常写在 ~/.zshrc 里，只有交互式 shell 会加载它，"
+                f"因此请用 `zsh -ic '...'` 运行，或把 AGENT_LLM_API_KEY_ENV 改成实际持有 key "
+                f"的变量名。本提案器不会退化成 RuleProposer——那会把'模型压根没跑'伪装成"
+                f"'LLM 提案没有收益'，并写进对照结论。"
+            )
+        return api_key
+
+    def _method(self) -> str:
+        method = os.getenv("AGENT_LLM_STRUCTURED_OUTPUT_METHOD", "").strip() or "function_calling"
+        if method not in self._METHODS:
+            raise RuntimeError(
+                f"LLMProposer: AGENT_LLM_STRUCTURED_OUTPUT_METHOD={method!r} 不合法，"
+                f"只能是 {sorted(self._METHODS)} 之一。"
+            )
+        return method
+
+    @staticmethod
+    def _number(name: str, default: float, cast: type) -> Any:
+        value = os.getenv(name, "").strip()
+        if not value:
+            return default
+        try:
+            return cast(value)
+        except ValueError as exc:
+            raise RuntimeError(f"LLMProposer: {name}={value!r} 不是数值。") from exc
+
+    def _extra_body(self, profile_is_default: bool) -> dict[str, Any] | None:
+        """把 `AGENT_LLM_EXTRA_BODY`（一段 JSON）透传到请求体顶层。
+
+        典型取值（值里绝不含 key）::
+
+            AGENT_LLM_EXTRA_BODY={"enable_thinking": false}     # DashScope qwen3.x
+            AGENT_LLM_EXTRA_BODY={"reasoning_effort": "none"}   # DeepSeek v4
+            AGENT_LLM_EXTRA_BODY={}                             # 显式声明"什么都不透传"
+        """
+        value = os.getenv("AGENT_LLM_EXTRA_BODY", "").strip()
+        if not value:
+            return dict(self._DEFAULT_EXTRA_BODY) if profile_is_default else None
+        try:
+            parsed = json.loads(value)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"LLMProposer: AGENT_LLM_EXTRA_BODY 不是合法 JSON（{exc.msg}）。") from exc
+        if not isinstance(parsed, dict):
+            raise RuntimeError("LLMProposer: AGENT_LLM_EXTRA_BODY 必须是一个 JSON 对象。")
+        return parsed
+
+    # ------------------------------------------------------------------ 输出处理
+
+    @property
+    def origin(self) -> str:
+        """提案的来源标签，带上模型名。
+
+        `loop.py` 的逐提案产物字段是 name/origin/rationale/evidence/config，没有 model；
+        把模型名编进 origin，是让"这条提案是谁提的"跟着提案一起归档的唯一途径。
+        """
+        return f"{self.name}:{self.model}"
+
+    @staticmethod
+    def _unwrap(result: Any) -> tuple[Any, Any, Any]:
+        """返回 (raw_message, parsed, parsing_error)，兼容信封与"直接返回结构体"两种形状。"""
+        if isinstance(result, dict) and "parsed" in result:
+            return result.get("raw"), result.get("parsed"), result.get("parsing_error")
+        return result, result, None
+
+    @staticmethod
+    def _assert_not_truncated(raw: Any) -> None:
+        """输出被 max_tokens 截断时立刻报错，而不是让它伪装成"模型没有提案"。
+
+        实测（qwen3.7-flash-2026-07-15 + DashScope 兼容端点）：max_tokens 打满时
+        `finish_reason` 是 `"length"`，而 `with_structured_output(include_raw=True)` 的信封里
+        **`parsing_error` 仍是 None、`parsed` 直接是 None**——tool-call 的参数 JSON 被截断在
+        半途，LangChain 既没有抛异常也没有登记解析错误。若不显式查这一项，症状就是提案器
+        时不时返回空，看起来像"模型这轮没想法"，而真相是它的答案被砍掉了一半。这正是本项目
+        反复强调的那类"不报错、只是悄悄变错"的缺陷，所以由机器来发现。
+        """
+        meta = getattr(raw, "response_metadata", None)
+        if isinstance(meta, dict) and meta.get("finish_reason") == "length":
+            used = (meta.get("token_usage") or {}).get("completion_tokens")
+            raise RuntimeError(
+                f"LLMProposer: 模型输出被 max_tokens 截断（finish_reason=length，"
+                f"completion_tokens={used}），结构化输出不完整。请调大 AGENT_LLM_MAX_TOKENS。"
+                "不返回部分提案，也不返回空提案——两者都会被误读成模型的判断。"
+            )
+
+    def _warn_if_thinking(self, raw: Any) -> None:
+        """思考模式自检：看 usage 里的 reasoning token，而不是靠人眼盯延迟。"""
+        usage = getattr(raw, "usage_metadata", None)
+        if not isinstance(usage, dict):
+            return
+        reasoning = (usage.get("output_token_details") or {}).get("reasoning", 0)
+        if reasoning:
+            logger.warning(
+                json.dumps(
+                    {
+                        "event": "agent.llm.thinking_enabled",
+                        "proposer": self.name,
+                        "model": self.model,
+                        "reasoning_tokens": reasoning,
+                        "hint": (
+                            "模型仍在思考模式下运行，延迟会飙到 8-28s，且强制 tool_choice 会被"
+                            'DashScope 拒绝。请用 AGENT_LLM_EXTRA_BODY={"enable_thinking": false} '
+                            "关掉它。"
+                        ),
+                    },
+                    ensure_ascii=False,
+                )
+            )
+
+    # ------------------------------------------------------------------ Proposer 契约
 
     def propose(self, diagnosis: dict[str, Any], current: StrategyConfig) -> list[Proposal]:
-        from .prompts import PROPOSAL_PROMPT
+        """调用模型提案。调用失败一律向上抛，绝不返回一个"看起来正常"的空列表。
 
-        out = self._llm.invoke(
-            PROPOSAL_PROMPT.format(
-                current=current.model_dump_json(indent=2),
-                zero=_brief(diagnosis.get("zero_result_queries", [])),
-                low=_brief(diagnosis.get("low_quality_queries", [])),
+        空列表在这里有确切且唯一的含义：**模型跑了，但它提的东西没有一条通过守卫**
+        （或者它自己选择了弃权）。它绝不表示"模型没跑"——那种情况在构造期就已经抛异常了。
+        """
+        evidence = _Evidence.build(diagnosis, self.max_low, self.max_zero)
+        if not evidence.by_id:
+            raise ValueError(
+                "本轮诊断没有任何可引用的查询证据（zero-result 与 low-quality 都是空）；"
+                "拒绝在无证据的情况下向模型要提案。"
             )
-        )
-        return [
-            Proposal(
-                name=p.name,
-                config=StrategyConfig.model_validate(p.config),
-                rationale=p.rationale,
-                evidence=p.evidence,
-                origin=self.name,
-            )
-            for p in out.proposals
+
+        messages = [
+            self._SystemMessage(content=SYSTEM_PROMPT),
+            self._HumanMessage(
+                content=USER_TEMPLATE.format(
+                    current=current.model_dump_json(indent=2),
+                    low=evidence.rendered_low,
+                    zero=evidence.rendered_zero,
+                    max_proposals=self.max_proposals,
+                )
+            ),
         ]
 
+        try:
+            result = self._chain.invoke(messages)
+        except Exception as exc:
+            # 只记异常类型。异常文本可能带上游 URL 或请求体片段，而日志是长期留存的。
+            # 裸 raise 保留原始 traceback。
+            logger.warning(
+                json.dumps(
+                    {"event": "agent.llm.call_failed", "proposer": self.name,
+                     "model": self.model, "error_type": type(exc).__name__},
+                    ensure_ascii=False,
+                )
+            )
+            raise
 
-def _brief(items: list[dict], limit: int = 25) -> str:
-    return "\n".join(f"- {i.get('query', '')}" for i in items[:limit]) or "（无）"
+        raw, parsed, parsing_error = self._unwrap(result)
+        self._warn_if_thinking(raw)
+        self._assert_not_truncated(raw)
+        if parsing_error is not None:
+            raise RuntimeError(
+                f"LLMProposer: 模型输出不符合提案 schema（{type(parsing_error).__name__}）："
+                f"{str(parsing_error)[:600]}。"
+                "这是模型/端点问题，不是降级理由——不返回空提案，以免被读成'模型没有想法'。"
+            )
+        if parsed is None or not isinstance(parsed, _ProposalBatch):
+            raise RuntimeError(f"LLMProposer: 结构化输出为空或类型异常（{type(parsed).__name__}）。")
+
+        compiler = _Compiler(evidence, current)
+        proposals: list[Proposal] = []
+        for change in parsed.proposals[: self.max_proposals]:
+            config, notes, cited = compiler.compile(change)
+            if config is None:
+                # 整条提案被守卫清空。丢弃但必须留痕，连同逐条原因：否则"模型提了三条、
+                # 三条全是空转"会显示成"模型只提了零条"，两者对模型的评价完全不同。
+                logger.warning(
+                    json.dumps(
+                        {"event": "agent.llm.proposal_discarded", "proposer": self.name,
+                         "model": self.model, "name": change.name,
+                         "synonyms": len(change.synonyms),
+                         "rewrite_rules": len(change.rewrite_rules), "notes": notes},
+                        ensure_ascii=False,
+                    )
+                )
+                continue
+            evidence_lines = [
+                f"query_id={qid} {evidence.by_id[qid]!r}" for qid in cited
+            ]
+            proposals.append(
+                Proposal(
+                    name=change.name,
+                    config=config,
+                    rationale=change.rationale,
+                    evidence=evidence_lines,
+                    origin=self.origin,
+                    model=self.model,
+                    guard_notes=notes,
+                )
+            )
+            if notes:
+                logger.warning(
+                    json.dumps(
+                        {"event": "agent.llm.guard_notes", "proposer": self.name,
+                         "model": self.model, "name": change.name, "notes": notes},
+                        ensure_ascii=False,
+                    )
+                )
+        return proposals
 
 
-try:  # schema 仅在装了 pydantic 时定义，规则基线不依赖它
-    from pydantic import BaseModel, Field
-
-    class _OneProposal(BaseModel):
-        name: str = Field(description="简短的策略名")
-        rationale: str = Field(description="基于给定证据的理由，不得引入证据之外的事实")
-        evidence: list[str] = Field(default_factory=list, description="引用的具体查询或指标")
-        config: dict = Field(description="完整的 StrategyConfig")
-
-    class _ProposalSchema(BaseModel):
-        proposals: list[_OneProposal]
-
-except ImportError:  # pragma: no cover
-    _ProposalSchema = None  # type: ignore
+__all__ = ["Proposal", "Proposer", "RuleProposer", "LLMProposer"]

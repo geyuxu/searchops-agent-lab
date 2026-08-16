@@ -6,7 +6,24 @@ requires-python = ">=3.10"
 dependencies = ["httpx>=0.27", "pydantic>=2.7", "numpy>=1.26"]
 
 [project.optional-dependencies]
-llm = ["langchain>=0.3", "langchain-anthropic>=0.3"]
+# LLMProposer 走 OpenAI 兼容端点（ChatOpenAI + with_structured_output），与
+# platform/services/ai-adapter 是同一条链路，因此版本与 services/ai-adapter/requirements.txt
+# **逐位对齐**：两侧跑同一家端点、同一个模型，版本分叉时"到底是谁的问题"就无法归因。
+#
+# 全部精确锁定而不是 >=，理由是这四个包里有两个是行为承载方，不是实现细节：
+#   openai    —— extra_body 透传到请求体**顶层**是这个客户端的行为。整条
+#                enable_thinking=false 的关思考路径依赖它；一旦它改成嵌套或丢弃，症状不是
+#                报错而是 DashScope 直接 400（思考模式下不接受强制 tool_choice，而
+#                with_structured_output(method="function_calling") 正要强制它）。
+#   tiktoken  —— langchain-openai 用它做本地 token 计数，换版本会换编码表。
+# 另外两个（langchain-core / langchain-openai）决定 with_structured_output 的默认 method
+# 与 include_raw 的返回形状，同样属于换版本会静默改行为的一类。
+llm = [
+    "langchain-core==1.5.5",
+    "langchain-openai==1.5.1",
+    "openai==3.1.0",
+    "tiktoken==0.13.0",
+]
 dev = ["pytest>=8.0"]
 
 [project.scripts]

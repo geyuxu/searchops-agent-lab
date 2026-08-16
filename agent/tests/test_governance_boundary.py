@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from searchops_agent.client import SearchOpsClient
@@ -70,3 +72,36 @@ def test_candidate_evaluation_is_dry_run(registry):
     """
     assert "evaluate_candidate" in registry, "Agent 缺少自证能力，提案无法在提交前被验证"
     assert registry["evaluate_candidate"].safety_class is SafetyClass.DRY_RUN
+
+
+def test_diagnosis_evidence_never_includes_holdout_queries():
+    """诊断证据必须限定在 train 内——holdout 混进证据就是"用考题出题"。
+
+    实测发生过：分析表不按 split 过滤，模型拿到 holdout 查询当证据，
+    写出逐字钉死该查询的 rewrite_rule。本轮评测在 train 上做，所以门禁没被污染；
+    但这类提案一旦拿去 holdout 验收，那个数字就再也不能用了。
+
+    下面两条 query_id 是真实泄漏过的那两条，用它们做回归。
+    """
+    import json
+    import types
+
+    from searchops_agent.loop import ProposalLoop, TrainBench
+
+    bench = TrainBench.load(sample=50)
+    stub = types.SimpleNamespace(bench=bench, diagnosis_dropped=0)
+    manifest = json.loads(Path(bench.manifest_path).read_text())
+    holdout = set(manifest["holdout_query_ids"])
+
+    rows = [
+        {"query_id": 75, "query": "$13 bb guns without a yellow tube"},
+        {"query_id": 288, "query": "- w nest cam iq outdoor security camera without the magnet"},
+        {"query_id": bench.split_train_ids[0], "query": "a train query"},
+        {"query": "无法归属的查询"},
+    ]
+    kept = ProposalLoop._train_only(stub, rows)
+
+    assert not [r for r in kept if r.get("query_id") in holdout], "holdout 查询混进了诊断证据"
+    # 归属不明的行同样丢弃：宁可少给证据，也不给来历不明的证据。
+    assert all(r.get("query_id") is not None for r in kept)
+    assert stub.diagnosis_dropped == 3
