@@ -229,6 +229,13 @@ Answer as JSON with exactly the fields rewritten_query, confidence and explanati
         if model_defaulted or base_defaulted:
             self._warn_defaults(model, base_url, model_defaulted, base_defaulted)
 
+        # 回报给调用方的模型标识 (Provider.model → QueryRewriteResponse.model)。刻意记的是**实际
+        # 交给 ChatOpenAI 的那个值**, 而不是 os.getenv("AI_MODEL"): 走默认档时后者是空串, 于是
+        # 产物会说"没有模型", 而真相是"跑了默认档的 qwen3.7-flash-2026-07-15"。启动时的
+        # defaults_applied WARN 只留在适配器进程的终端里, 评测报告看不到 —— 这个字段是唯一能
+        # 跟着数字一起归档的证据, 它必须在默认档下也说真话。
+        self.model = model
+
         llm = ChatOpenAI(
             model=model,
             base_url=base_url,
@@ -542,6 +549,14 @@ Answer as JSON with exactly the fields rewritten_query, confidence and explanati
     # rerank / suggest 明确不在本增量范围内。逐字委托 MockProvider 保证: 把 AI_PROVIDER 切到本类
     # 时整个系统只有一处行为变化, 于是评测差异可以归因到"查询改写", 而不是"同时换了三样东西"。
     # 这一点与 echo_upper 一致, 是有意保持的。
+
+    def model_for(self, capability: str) -> str | None:
+        """只有 ``rewrite`` 是本 provider 自己跑的; 另外两条连模型身份一起委托给 MockProvider。
+
+        与 langchain_rerank 里那份是镜像的, 理由相同: 委托了能力却不委托模型身份, 产物就会
+        声称一次 mock 重排是某个真实模型排的, 而那比缺了标识更坏 —— 它看起来像证据。
+        """
+        return self.model if capability == "rewrite" else self._delegate.model_for(capability)
 
     def rerank(self, payload: RerankRequest) -> tuple[list[str], list[RerankScore], str]:
         """逐字委托 :class:`~app.provider.MockProvider` (本增量不做 AI 重排)。"""

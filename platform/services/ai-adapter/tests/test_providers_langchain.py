@@ -828,7 +828,7 @@ def test_filters_pass_through_without_mutating_the_request(configured_env: Any) 
 
 @requires_provider
 def test_http_surface_reports_this_provider(configured_env: Any) -> None:
-    """The seven-field body the Java client parses off the wire."""
+    """The body the Java client parses off the wire, field for field."""
     BEHAVIOUR.result = llm_answer("laptop bag shoulder")
     provider = build_provider()
     configured_env.setattr(main, "provider", provider)
@@ -853,6 +853,10 @@ def test_http_surface_reports_this_provider(configured_env: Any) -> None:
         "explanation",
         "provider",
         "latency_ms",
+        # `model` is new: `provider` names the provider class, `model` names the model that
+        # actually produced this answer. Listed explicitly so that a field appearing or
+        # disappearing on the wire is always a deliberate edit to this line.
+        "model",
     }
     assert body["provider"] == provider.name
     assert body["provider"] != "mock"

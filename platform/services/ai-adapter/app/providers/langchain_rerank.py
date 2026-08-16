@@ -258,6 +258,16 @@ Answer as JSON with exactly the fields order and explanation."""
         if model_defaulted or base_defaulted:
             self._warn_defaults(model, base_url, model_defaulted, base_defaulted)
 
+        # 回报给调用方的模型标识 (Provider.model → RerankResponse.model → Java 侧
+        # rerank_model → EvaluationResult.rerank_model)。记的是**实际交给 ChatOpenAI 的那个值**,
+        # 而不是 os.getenv("AI_MODEL") —— 走默认档时后者是空串, 产物会说"没有模型", 而真相是
+        # "跑了默认档的 qwen3.7-flash-2026-07-15"。
+        #
+        # 这条链路上这个字段最要紧: 留出集 +0.1349 (CI [+0.1133,+0.1570]) 全部由重排产生, 而
+        # 重排结果的形状 (一个候选集的排列) 对模型身份完全不敏感 —— 换个模型跑出别的数字, 从
+        # 产物里看不出任何差别。此前只能靠人手写进 experiments/*.json 的 ai 块, 那是注释, 不是证据。
+        self.model = model
+
         self._top_k = self._number("AI_RERANK_TOP_K", self._DEFAULT_TOP_K, int)
         # 0 或负数表示"不设上限, 候选发多少判多少"。截断本身不是错误, 但必须可见 —— 见 rerank()。
         self._max_candidates = max(0, self._number("AI_RERANK_MAX_CANDIDATES", 0, int))
@@ -831,6 +841,15 @@ Answer as JSON with exactly the fields order and explanation."""
     #
     # 注意这意味着 **本 provider 不做查询改写**: 想同时评测改写 + 重排, 必须先有一个把两者组合起来
     # 的 provider, 而那应该是一次独立的、有自己对照组的增量。
+
+    def model_for(self, capability: str) -> str | None:
+        """只有 ``rerank`` 是本 provider 自己跑的; 另外两条连模型身份一起委托给 MockProvider。
+
+        不这么做的话, 一个跑着本 provider 的适配器在 ``/ai/query-rewrite`` 上会回报
+        ``model=<配置的模型>``, 而那次改写其实是确定性 mock 做的 —— 一个比"没有模型标识"更坏的
+        结果: 它看起来像证据。
+        """
+        return self.model if capability == "rerank" else self._delegate.model_for(capability)
 
     def rewrite(self, payload: QueryRewriteRequest) -> tuple[str, dict, float, str]:
         """逐字委托 :class:`~app.provider.MockProvider` (本增量不做 AI 改写)。"""

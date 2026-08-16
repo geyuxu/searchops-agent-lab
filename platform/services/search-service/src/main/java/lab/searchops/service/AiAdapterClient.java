@@ -118,16 +118,17 @@ public class AiAdapterClient {
             // 只有大小写/空白差异的"改写"在编译后完全等价，对外声称改写过属于噪音。
             var changed = !normalize(rewritten).equals(normalize(options.query()));
             var status = changed ? AiRewriteStatus.APPLIED : AiRewriteStatus.NO_CHANGE;
-            log.debug("AI rewrite {} by provider {} (request_id={})", status, provider,
-                    options.requestId());
-            return new RewriteResult(rewritten, changed, provider, status);
+            var model = model(response);
+            log.debug("AI rewrite {} by provider {} model {} (request_id={})", status, provider,
+                    model, options.requestId());
+            return new RewriteResult(rewritten, changed, provider, status, model);
         } catch (RuntimeException exception) {
             // 原实现把所有 RuntimeException 折叠成一个 "fallback" 字符串，超时和协议错误
             // 无法分辨；真实 LLM 最常见的失败恰恰是超时，必须能单独统计。
             var status = classify(exception);
             log.warn("AI rewrite fell back to BM25 (status={}, request_id={}): {}",
                     status, options.requestId(), exception.toString());
-            return new RewriteResult(options.query(), false, null, status);
+            return new RewriteResult(options.query(), false, null, status, null);
         }
     }
 
@@ -192,7 +193,18 @@ public class AiAdapterClient {
         if (text.isBlank() || safeCandidates.isEmpty()) {
             return unchanged(safeCandidates, AiRerankStatus.NOT_APPLICABLE);
         }
-        var payloadCandidates = candidatePayload(safeCandidates);
+        // 请求体由本服务从自己的候选集装配，此刻还没联系过适配器，
+        // 所以这里抛出的任何异常都只可能是我们自己的缺陷（例如候选集里混进了 null）。
+        // 不兜住的后果是整个搜索请求 500——而重排是可选增强，绝不该让主链路陪葬；
+        // 兜住后若记成 INVALID_RESPONSE，又会把排查引向一个根本没被调用的适配器。
+        List<Map<String, Object>> payloadCandidates;
+        try {
+            payloadCandidates = candidatePayload(safeCandidates);
+        } catch (RuntimeException exception) {
+            log.error("Rerank payload assembly failed inside this service, "
+                    + "falling back to BM25 (request_id={})", requestId, exception);
+            return unchanged(safeCandidates, AiRerankStatus.INTERNAL_ERROR);
+        }
         if (payloadCandidates.isEmpty()) {
             return unchanged(safeCandidates, AiRerankStatus.NOT_APPLICABLE);
         }
@@ -228,9 +240,10 @@ public class AiAdapterClient {
             // 判定口径是"实际返回的那一页"，不是整个候选集：见 AiRerankStatus.NO_CHANGE 的注释。
             var changed = !window(reordered, plan.window()).equals(window(safeCandidates, plan.window()));
             var status = changed ? AiRerankStatus.APPLIED : AiRerankStatus.NO_CHANGE;
-            log.debug("Rerank {} by provider {} over {} candidates (request_id={})",
-                    status, provider, payloadCandidates.size(), requestId);
-            return new RerankResult(reordered, status, provider, payloadCandidates.size());
+            var model = model(response);
+            log.debug("Rerank {} by provider {} model {} over {} candidates (request_id={})",
+                    status, provider, model, payloadCandidates.size(), requestId);
+            return new RerankResult(reordered, status, provider, payloadCandidates.size(), model);
         } catch (IllegalStateException exception) {
             // 排列不变量被破坏 —— 这是本服务自己的缺陷，不是模型的锅，因此不能记成
             // INVALID_RESPONSE（会把排查引向适配器）。结果强制退回 BM25 顺序：
@@ -254,7 +267,25 @@ public class AiAdapterClient {
 
     /** 候选集原样返回（顺序即 BM25 顺序），只带上本次的状态。 */
     private RerankResult unchanged(List<Product> candidates, AiRerankStatus status) {
-        return new RerankResult(candidates, status, null, null);
+        return new RerankResult(candidates, status, null, null, null);
+    }
+
+    /**
+     * 适配器回报的模型标识；没回报就是 null。
+     *
+     * <p>与 provider 名的处理**刻意不同**：provider 缺失时会兜底成 {@link #UNKNOWN_PROVIDER}，
+     * 因为那只是一个观测占位；模型标识缺失时必须保持 null。理由是这个字段唯一的用途就是充当
+     * 证据——它会被写进 experiments/ 下的评测产物，用来回答"这组数字是哪个模型跑出来的"。
+     * 一个编造的占位值（"unknown"）在产物里与真实模型名长得一模一样，读的人无从分辨，
+     * 于是"没有证据"被伪装成"有证据"。缺了就让键消失，问题会在需要它的时候暴露，而不是被填平。
+     *
+     * <p>同样不打 WARN：模型标识是可选契约（适配器侧 model 字段可为空，第三方 provider 完全
+     * 可以不声明），每次搜索都告警只会训练运维忽略日志。
+     */
+    private String model(JsonNode response) {
+        if (response == null) return null;
+        var model = response.path("model").asText("").trim();
+        return model.isEmpty() ? null : model;
     }
 
     private List<Map<String, Object>> candidatePayload(List<Product> candidates) {
@@ -295,7 +326,7 @@ public class AiAdapterClient {
     }
 
     private RewriteResult notCalled(SearchOptions options, AiRewriteStatus status) {
-        return new RewriteResult(options.query(), false, null, status);
+        return new RewriteResult(options.query(), false, null, status, null);
     }
 
     private AiRewriteStatus classify(RuntimeException exception) {
@@ -365,9 +396,11 @@ public class AiAdapterClient {
      * @param applied  查询是否真的被 AI 改写（归一化后不等于原始查询）
      * @param provider 适配器回报的 provider 名；未真正调用或调用失败时为 null
      * @param status   本次调用的确定性结果，降级时即降级原因
+     * @param model    适配器回报的模型标识；未调用、调用失败或适配器没声明时为 null。
+     *                 null 与 provider 的 "unknown" 兜底不同，理由见 {@link #model(JsonNode)}
      */
     public record RewriteResult(String query, boolean applied, String provider,
-            AiRewriteStatus status) {}
+            AiRewriteStatus status, String model) {}
 
     /**
      * 本次请求的重排计划：要不要调用、取多深的候选、这一页多大。
@@ -389,9 +422,12 @@ public class AiAdapterClient {
      * @param status         本次重排的确定性结果，降级时即降级原因，永不为 null
      * @param provider       适配器回报的 provider 名；未调用或调用失败时为 null
      * @param candidateCount 实际发给适配器的候选条数；未发起调用时为 null
+     * @param model          适配器回报的模型标识；未调用、调用失败或适配器没声明时为 null。
+     *                       这条链路上它最要紧：重排的收益整个建立在"哪个模型"上，
+     *                       而重排结果的形状（候选集的一个排列）对模型身份完全不敏感
      */
     public record RerankResult(List<Product> products, AiRerankStatus status, String provider,
-            Integer candidateCount) {
+            Integer candidateCount, String model) {
 
         /** 顺序是否真的变了（等价于 status == APPLIED），给响应里的 rerank_applied 用。 */
         public boolean applied() {

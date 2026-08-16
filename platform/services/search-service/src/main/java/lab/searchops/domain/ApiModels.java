@@ -55,6 +55,16 @@ public final class ApiModels {
             // 实际生效的 provider 名（mock / langchain / …）。未调用或调用失败时为 null，
             // 受 spring.jackson.default-property-inclusion=non_null 影响该字段会被整体省略。
             @JsonProperty("ai_provider") String aiProvider,
+            // 实际跑出这次改写的**模型**标识（qwen3.7-flash-… / deterministic-mock / …）。
+            //
+            // 为什么 ai_provider 不够：provider 是类名，一个 provider 类换个 AI_MODEL 就是完全
+            // 不同的一次运行，而响应与指标里看不出任何区别。要复现一个结论，缺的正是这一半。
+            //
+            // 适配器没回报时为 null，键整体消失。**刻意不像 ai_provider 那样兜底成 "unknown"**：
+            // provider 缺失只影响观测，而一个编造出来的模型标识会被当成证据读——宁可没有这一行，
+            // 也不能有一行说不清来源的。类型是 String（对象类型），不受 Jackson 3 的
+            // FAIL_ON_NULL_FOR_PRIMITIVES 影响，缺省即 null。
+            @JsonProperty("ai_model") String aiModel,
             // 候选集重排是否真的改变了本页顺序。与 ai_applied 一样，只有"确实产生了差异"
             // 才是 true；调用成功但顺序没变是 false + rerank_status=NO_CHANGE。
             @JsonProperty("rerank_applied") boolean rerankApplied,
@@ -63,23 +73,29 @@ public final class ApiModels {
             @JsonProperty("rerank_status") AiRerankStatus rerankStatus,
             // 重排实际生效的 provider 名；未调用或调用失败时为 null（该键被整体省略）。
             @JsonProperty("rerank_provider") String rerankProvider,
+            // 实际跑出这次重排的模型标识。理由同 ai_model，而这一条更要紧：留出集上
+            // ΔNDCG@10 +0.1349（CI [+0.1133,+0.1570]）全部由重排产生，而重排的输出形状
+            // （候选集的一个排列）对模型身份完全不敏感——换个模型跑出别的数字，产物里看不出差别。
+            // 与 rerank_provider 一样，未调用或失败时为 null，键整体消失。
+            @JsonProperty("rerank_model") String rerankModel,
             // 实际送去重排的候选条数（BM25 取回的 N，可能少于配置的深度）。未调用时省略。
             // 没有它就无法从响应侧确认 rerank_depth 到底生效了没有。
             @JsonProperty("rerank_candidates") Integer rerankCandidates,
             @JsonProperty("data_notice") String dataNotice) {
 
         /**
-         * 兼容构造器：不带任何重排信息 == 本次请求没有走重排链路。
+         * 兼容构造器：不带任何重排信息 == 本次请求没有走重排链路；不带模型标识 == 适配器没回报。
          *
-         * <p>保留它是为了让既有构造点源码不变；重排字段填成"未请求"的中性值。
+         * <p>保留它是为了让既有构造点源码不变；重排字段填成"未请求"的中性值，
+         * 两个模型标识填 null（等价于"适配器没有声明模型"，键在响应里整体消失）。
          */
         public SearchResponse(String requestId, String originalQuery, String effectiveQuery,
                 long total, int page, int size, long latencyMs, int strategyVersion,
                 List<Product> products, Map<String, List<FacetBucket>> facets, boolean aiApplied,
                 AiRewriteStatus aiStatus, String aiProvider, String dataNotice) {
             this(requestId, originalQuery, effectiveQuery, total, page, size, latencyMs,
-                    strategyVersion, products, facets, aiApplied, aiStatus, aiProvider,
-                    false, AiRerankStatus.NOT_REQUESTED, null, null, dataNotice);
+                    strategyVersion, products, facets, aiApplied, aiStatus, aiProvider, null,
+                    false, AiRerankStatus.NOT_REQUESTED, null, null, null, dataNotice);
         }
     }
 
@@ -287,6 +303,26 @@ public final class ApiModels {
             // 与新增这两个字段之前逐字节一致，新旧结果仍可直接 diff。
             @JsonProperty("use_rerank") Boolean useRerank,
             @JsonProperty("rerank_depth") Integer rerankDepth,
+            // 本轮评测里**实际跑出这些数字**的模型标识，由每条查询的 SearchResponse 观测汇总
+            // 而来（见 EvaluationService.run），不是回显请求参数。
+            //
+            // 为什么这两个键必须存在：use_ai / use_rerank / rerank_depth 已经能让产物自证
+            // "开了哪条链路、取了多深"，但仍然无法自证"是哪个模型跑的"。而重排那一组结论
+            // （Δ+0.0968 / +0.1207 / +0.1349）完全依赖模型，换个模型就是另一组数字。
+            // 此前唯一的记录是人手写进 experiments/*.json 的 ai 块——那是注释，不是证据：
+            // 没有任何机制保证它与真正跑过的进程一致。
+            //
+            // 为什么是观测而不是回显：请求里根本没有模型参数（模型由适配器进程的环境决定），
+            // 回显只能回显一个 Java 侧压根不知道的值。观测的另一个好处是它会如实反映降级——
+            // 全程降级时这里是 null，与 use_ai=true 并列，一眼看出"要求了 AI 但一次都没跑成"。
+            //
+            // 为什么是 String（对象类型）而不是 primitive：Jackson 3 的
+            // FAIL_ON_NULL_FOR_PRIMITIVES 默认为 true，缺省的 primitive 会抛
+            // MismatchedInputException 变成 400（见 EvaluationRequest.useAi 的注释）。
+            // null 时受 non_null inclusion 影响整键消失，因此既有产物
+            // （baselines/、experiments/ 下的归档）的 JSON 形状逐字节不变。
+            @JsonProperty("ai_model") String aiModel,
+            @JsonProperty("rerank_model") String rerankModel,
             @JsonProperty("generated_at") OffsetDateTime generatedAt) {}
 
     public record ErrorResponse(

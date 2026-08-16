@@ -84,7 +84,16 @@ def metrics() -> Response:
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
-@app.post("/ai/query-rewrite", response_model=QueryRewriteResponse)
+# 三条 AI 路由都带 response_model_exclude_none=True。
+#
+# 唯一可能为 None 的字段就是新增的 model (其余字段全部必填), 所以它的作用面精确等于一件事:
+# provider 没有声明模型标识时, 让 "model" 这个键整体消失, 而不是序列化成 "model": null。
+#
+# 为什么要这样: 一是与 Java 侧 spring.jackson.default-property-inclusion=non_null 的行为对齐,
+# 两侧对"没有值"的线格式表示因此完全一致; 二是既有响应的键集合逐字节不变, 按精确键集断言的
+# 既有契约测试 (tests/test_providers_echo.py 的七字段断言) 不需要改一个字符就仍然通过。
+@app.post("/ai/query-rewrite", response_model=QueryRewriteResponse,
+          response_model_exclude_none=True)
 def query_rewrite(payload: QueryRewriteRequest) -> QueryRewriteResponse:
     started = time.perf_counter()
     rewritten, filters, confidence, explanation = provider.rewrite(payload)
@@ -96,10 +105,13 @@ def query_rewrite(payload: QueryRewriteRequest) -> QueryRewriteResponse:
         explanation=explanation,
         provider=provider.name,
         latency_ms=max(0, round((time.perf_counter() - started) * 1000)),
+        # provider.name 只说得出"哪个 provider 类跑的", provider.model 才说得出"哪个模型跑的"。
+        # 见 app.provider.Provider.model: 既有第三方 provider 继承默认 None, 键随之消失。
+        model=provider.model_for("rewrite"),
     )
 
 
-@app.post("/ai/rerank", response_model=RerankResponse)
+@app.post("/ai/rerank", response_model=RerankResponse, response_model_exclude_none=True)
 def rerank(payload: RerankRequest) -> RerankResponse:
     started = time.perf_counter()
     ids, scores, explanation = provider.rerank(payload)
@@ -109,10 +121,12 @@ def rerank(payload: RerankRequest) -> RerankResponse:
         explanation=explanation,
         provider=provider.name,
         latency_ms=max(0, round((time.perf_counter() - started) * 1000)),
+        model=provider.model_for("rerank"),
     )
 
 
-@app.post("/ai/strategy-suggest", response_model=StrategySuggestResponse)
+@app.post("/ai/strategy-suggest", response_model=StrategySuggestResponse,
+          response_model_exclude_none=True)
 def strategy_suggest(payload: StrategySuggestRequest) -> StrategySuggestResponse:
     started = time.perf_counter()
     changes, impact, refs, confidence, risk = provider.suggest(payload)
@@ -125,5 +139,6 @@ def strategy_suggest(payload: StrategySuggestRequest) -> StrategySuggestResponse
         requires_approval=True,
         provider=provider.name,
         latency_ms=max(0, round((time.perf_counter() - started) * 1000)),
+        model=provider.model_for("suggest"),
     )
 

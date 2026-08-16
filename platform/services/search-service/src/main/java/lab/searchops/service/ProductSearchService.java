@@ -70,11 +70,14 @@ public class ProductSearchService {
         var version = override == null ? active.version() : -1;
         // rewrite.applied() 现在只在"改写结果 != 原始查询"时为 true；
         // AI 调用成功但没动查询会是 false + status=NO_CHANGE，调用失败则是 false + 具体降级原因。
+        // 两个 *_model 与各自的 *_provider 并排透传：provider 说得出"哪个 provider 类跑的"，
+        // model 才说得出"哪个模型跑的"。适配器没声明时它们是 null，键在响应里整体消失，
+        // 因此不带 AI 的响应形状与新增这两个字段之前逐字节一致。
         var response = new SearchResponse(options.requestId(), options.query(), compiled.effectiveQuery(),
                 total, options.page(), options.size(), latency, version, products, facets(raw),
-                rewrite.applied(), rewrite.status(), rewrite.provider(),
-                rerank.applied(), rerank.status(), rerank.provider(), rerank.candidateCount(),
-                DATA_NOTICE);
+                rewrite.applied(), rewrite.status(), rewrite.provider(), rewrite.model(),
+                rerank.applied(), rerank.status(), rerank.provider(), rerank.model(),
+                rerank.candidateCount(), DATA_NOTICE);
         if (options.logRequest() && override == null) {
             analytics.record(options, compiled.effectiveQuery(), total, latency,
                     products.stream().map(Product::productId).limit(10).toList(), version);

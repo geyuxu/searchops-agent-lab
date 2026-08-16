@@ -535,6 +535,61 @@ def test_configuration_defaults(configured_env: Any, recorder: Recorder) -> None
     assert kwargs["max_tokens"] >= 256
 
 
+def test_the_provider_reports_the_model_it_was_configured_with(
+    configured_env: Any, recorder: Recorder
+) -> None:
+    """The reranker must be able to say *which model* produced an ordering.
+
+    ``provider`` only ever says "a LangChain reranker ran". Swap ``AI_MODEL`` and every artifact
+    stays byte-identical in shape while the numbers underneath it change — which is exactly how a
+    +0.1349 NDCG@10 result becomes unreproducible six months later.
+    """
+    provider = build()
+
+    assert provider.model == REQUIRED_CONFIG["AI_MODEL"]
+    assert provider.model_for("rerank") == REQUIRED_CONFIG["AI_MODEL"]
+    # The value handed to the chat model and the value reported to callers must be the same
+    # string. If they can drift, the field is decoration rather than evidence.
+    assert provider.model == recorder.factory_kwargs["model"]
+
+
+def test_the_reported_model_is_the_default_profile_when_ai_model_is_unset(
+    configured_env: Any, recorder: Recorder
+) -> None:
+    """Running the shipped default profile must report that model, not "no model".
+
+    ``_setting`` treats an empty ``AI_MODEL`` as unset and falls back to the default profile, and
+    ``platform/.env`` ships ``AI_MODEL=`` as an empty placeholder — so the default path is the
+    likely one, not an exotic one. Reporting ``None`` there would put "this run used no model"
+    into an artifact produced by a real model.
+    """
+    configured_env.setenv("AI_MODEL", "")
+    provider = build()
+
+    assert provider.model == PROVIDER_CLASS._DEFAULT_MODEL
+    assert provider.model == recorder.factory_kwargs["model"]
+
+
+def test_delegated_capabilities_report_the_delegate_and_never_this_model(
+    configured_env: Any, recorder: Recorder
+) -> None:
+    """Rewrite and suggest are delegated verbatim to MockProvider, so the identity must be too.
+
+    A flat "this provider's model" field would make ``/ai/query-rewrite`` on a rerank-configured
+    adapter claim the LLM rewrote the query, when the answer came from the deterministic mock.
+    That is worse than an absent field: it looks like evidence.
+    """
+    provider = build()
+    delegate_model = MockProvider().model
+
+    assert provider.model_for("rewrite") == delegate_model
+    assert provider.model_for("suggest") == delegate_model
+    assert provider.model_for("rewrite") != provider.model
+    # An explicit non-model identity, not None: "no model ran" and "someone forgot to record the
+    # model" must not be the same value in an archived artifact.
+    assert delegate_model == "deterministic-mock"
+
+
 def test_max_tokens_grows_with_top_k(configured_env: Any, recorder: Recorder) -> None:
     build()
     small = recorder.factory_kwargs["max_tokens"]
@@ -1076,8 +1131,15 @@ def test_http_surface_reports_this_provider(configured_env: Any, recorder: Recor
         "explanation",
         "provider",
         "latency_ms",
+        # `model` is new. It is listed here rather than tolerated, because this assertion is the
+        # wire-shape lock for the Java client: a field appearing or disappearing must be a
+        # deliberate edit to this line, never a silent consequence of a provider change.
+        "model",
     }
     assert body["provider"] == provider.name != "mock"
+    # The wire half of "an artifact can prove which model ran": this is the key the Java client
+    # reads and threads through SearchResponse.rerank_model into the evaluation result.
+    assert body["model"] == REQUIRED_CONFIG["AI_MODEL"]
     assert_is_permutation(body["ranked_product_ids"], FENCE_IDS)
     assert FAKE_KEY not in json.dumps(body)
 

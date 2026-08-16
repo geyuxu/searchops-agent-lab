@@ -3,8 +3,10 @@ package lab.searchops.service;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import lab.searchops.config.RerankProperties;
 import lab.searchops.domain.ApiModels.EvaluationQuery;
@@ -78,6 +80,15 @@ public class EvaluationService {
         var persist = request.persist() && candidate == null;
 
         var metrics = new ArrayList<QueryMetric>(request.queries().size());
+        // 本轮真正跑过的模型标识，逐条查询从 SearchResponse 上观测。
+        //
+        // 为什么用 LinkedHashSet 而不是"取第一个非空值"：正常情况下整轮只会有一个模型，
+        // 但适配器是一个可以被重启/改配置的独立进程，一轮 600 条查询要跑几分钟。中途换了模型
+        // 而产物只记第一个，正是这次要修的缺陷（产物声称的模型不是跑出数字的模型）的另一种形态。
+        // 出现多个就把它们全都记上，让产物自己说"这轮不干净"，而不是替它挑一个。
+        // 保持插入顺序是为了让同一轮跑出来的产物可逐字节比对，不受 HashSet 迭代顺序影响。
+        var rewriteModels = new LinkedHashSet<String>();
+        var rerankModels = new LinkedHashSet<String>();
         for (var query : request.queries()) {
             // 第 11 个实参是 SearchOptions.useAi。原来这里写死 false，配合 AiAdapterClient
             // 里的 `!aiEnabled() || !useAi()` 短路，导致 AI_ENABLED=true 也测不到 AI。
@@ -95,6 +106,8 @@ public class EvaluationService {
             // 不另起一套编译逻辑，preview 与离线评测因此不可能对同一份配置得出不同的查询。
             // 已发布策略仍走单参重载，调用形状与改动前逐字节一致。
             var response = candidate == null ? search.search(options) : search.search(options, candidate);
+            collect(rewriteModels, response.aiModel());
+            collect(rerankModels, response.rerankModel());
             var ranked = response.products().stream().map(product -> product.productId()).toList();
             var metric = metric(query, ranked);
             metrics.add(metric);
@@ -121,6 +134,9 @@ public class EvaluationService {
                 request.useRerank()
                         ? rerankProperties.effectiveDepth(request.rerankDepth(), EVALUATION_PAGE_SIZE)
                         : null,
+                // 观测到的模型标识。一次都没观测到就是 null（键整体消失）——无 AI 的基线跑
+                // 因此与新增这两个字段之前逐字节一致，baselines/ 与 experiments/ 下的既有归档仍可直接 diff。
+                observed(rewriteModels), observed(rerankModels),
                 OffsetDateTime.now());
         if (persist) {
             jdbc.update("""
@@ -180,6 +196,24 @@ public class EvaluationService {
                             + "omit this endpoint to evaluate the published strategy");
         }
         return run(request);
+    }
+
+    /** 把一条查询观测到的模型标识收进集合；没有标识（未调用/降级/适配器没声明）就什么都不记。 */
+    private void collect(Set<String> models, String model) {
+        if (model != null && !model.isBlank()) models.add(model);
+    }
+
+    /**
+     * 本轮观测到的模型标识，写进 EvaluationResult。
+     *
+     * <p>一个都没有 → null，键在响应里整体消失。**刻意不填 "unknown" 之类的占位值**：
+     * 这个字段是给"这组数字是谁跑出来的"当证据用的，一个编造的值在归档里与真实模型名无法区分。
+     *
+     * <p>多于一个 → 逗号连接全部列出。这只在一轮评测中途适配器换了模型时才可能发生，
+     * 是产物不干净的信号，必须原样暴露而不是替读者挑一个。
+     */
+    private String observed(Set<String> models) {
+        return models.isEmpty() ? null : String.join(",", models);
     }
 
     private QueryMetric metric(EvaluationQuery query, List<String> ranked) {
