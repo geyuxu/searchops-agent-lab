@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-.PHONY: help doctor bootstrap data up down seed test test-unit test-integration test-e2e evaluate logs clean-local \
+.PHONY: help doctor bootstrap data up down seed test test-unit test-integration test-e2e evaluate evaluate-ai logs clean-local \
         infra-up infra-down dev-info dev-search dev-ai dev-store dev-console dev-commerce
 
 # 只有这三个是真正的基础设施：有状态、版本敏感、装在本机很麻烦。
@@ -57,7 +57,7 @@ infra-down: ## Stop infrastructure containers, keep volumes
 dev-info: ## Show how to run each application locally
 	@echo ""
 	@echo "在各自的终端里启动应用（改代码即时生效，无需重建镜像）："
-	@echo "  make dev-search     搜索服务   :8080  (Spring Boot devtools 热重启)"
+	@echo "  make dev-search     搜索服务   :8080  (改 Java 后需 Ctrl-C 重跑；未装 devtools)"
 	@echo "  make dev-ai         AI 适配器  :8000  (uvicorn --reload)"
 	@echo "  make dev-commerce   商城服务   :9000"
 	@echo "  make dev-store      商城前台   :3000  (Next.js HMR)"
@@ -97,8 +97,15 @@ test-integration: ## Run service contract and governed policy workflow tests
 test-e2e: ## Run storefront journey and operations-console Playwright smoke tests
 	@cd tests/e2e && npm ci && npx playwright install chromium && npm test
 
+# 两个独立目标而不是 make evaluate USE_AI=1：本 Makefile 通篇是"一个动作一个目标"，
+# 且 help 的 awk 只扫 `目标: ## 说明`，变量开关在 make help 里根本看不见。
+# 两个目标写两个文件（evaluation-latest.json / evaluation-ai-latest.json），
+# 谁也不会覆盖谁，A/B 两份结果可以直接对比。
 evaluate: ## Run reproducible ESCI offline evaluation and save real output
 	@./data/scripts/evaluate.sh
+
+evaluate-ai: ## Run the same offline evaluation with AI query rewriting enabled
+	@./data/scripts/evaluate.sh --use-ai
 
 logs: ## Follow core-service logs
 	docker compose logs -f --tail=150 storefront operations-console commerce search-service ai-adapter

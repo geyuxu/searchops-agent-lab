@@ -63,7 +63,8 @@ flowchart LR
 
 ## Failure behaviour
 
-- Search never requires AI. Adapter timeouts or failures are logged and the BM25 query continues unchanged.
+- Search never requires AI. Adapter timeouts or failures are logged and the BM25 query continues unchanged. The fallback is not silent: every search response carries `ai_status` — `APPLIED` or `NO_CHANGE` when the adapter answered, and `NOT_REQUESTED` / `DISABLED` / `TIMEOUT` / `TRANSPORT_ERROR` / `INVALID_RESPONSE` otherwise — plus `ai_provider` when a provider actually answered. `ai_applied` reports whether the query text was really rewritten, not merely whether the call succeeded.
+- The search service admits an adapter response on one condition only: a usable `rewritten_query`. The provider name is recorded and forwarded, never validated, so a real provider replaces the mock without any change to the storefront, console or Java contracts.
 - The storefront gives actionable errors for search and commerce failures and retains a device-local cart ID.
 - Index rebuild creates a new physical index and moves the read alias only after a successful refresh and document-count check.
 - Policy publish and audit insertion share a database transaction; Elasticsearch is affected only at query compilation time, so no distributed commit is required.
