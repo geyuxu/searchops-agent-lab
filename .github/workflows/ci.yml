@@ -425,7 +425,26 @@ jobs:
 
       - name: Install · commerce
         working-directory: platform/services/commerce
-        run: npm ci
+        run: |
+          set -euo pipefail
+          # Medusa 的依赖树很大，实测这一步在 runner 上连续两轮失败：
+          # 第一轮 network read ETIMEDOUT，第二轮 network read ECONNRESET。
+          # 两次都在网络层、都不是安装内容本身的问题，所以做有界重试。
+          #
+          # 刻意只重试三次然后让 job 红：真正的依赖冲突或 lockfile 损坏会稳定失败，
+          # 重试改变不了它——这里要遮住的只是瞬时抖动，不是任何真实错误。
+          npm config set fetch-retries 5
+          npm config set fetch-retry-maxtimeout 120000
+          npm config set fetch-timeout 600000
+          for attempt in 1 2 3; do
+            if npm ci; then
+              exit 0
+            fi
+            echo "::warning::npm ci 第 ${attempt} 次失败，等待后重试"
+            sleep $(( attempt * 15 ))
+          done
+          echo "::error::npm ci 连续三次失败——这已不像瞬时抖动，请查 lockfile 或 registry 状态"
+          exit 1
 
       # `node --experimental-strip-types --test tests/*.test.ts` — pure domain assertions
       # (cart invariants, integer-cent subtotals, checkout preconditions). No Postgres,
