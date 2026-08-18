@@ -75,13 +75,33 @@ dev-ai: ## Run the AI adapter as a local process with hot reload
 		.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 
 dev-commerce: ## Run the commerce service as a local process
-	@$(DEV_ENV) cd services/commerce && npm run dev
+	@$(DEV_ENV) DATABASE_URL="$$COMMERCE_DATABASE_URL" cd services/commerce && npm run dev
 
 dev-store: ## Run the storefront with hot module reload
 	@$(DEV_ENV) cd apps/storefront && npm run dev
 
 dev-console: ## Run the operations console with hot module reload
 	@$(DEV_ENV) cd apps/operations-console && npm run dev
+
+# ---------------------------------------------------------------------------
+# 开发形态演示环境的一键启停
+#
+# infra-up + 五个 dev-* 目标的手工做法需要开五个终端，而且没人替你确认"起没起来"。
+# demo-up 把这套流程收成一条命令：起基础设施 → 等健康 → 按依赖顺序后台拉起五个应用
+# → 逐个探健康端点 → 打印服务/地址/状态表。pid 与日志落在 .runtime/（已 gitignore）。
+# demo-down 是它的对手戏：按 pid 文件优雅停进程 → docker compose stop → 残留检查。
+# 两者都幂等，重复执行安全。demo-down 只 stop 不删卷；要清空数据请显式用 clean-local。
+#
+# 单独调某个服务时仍然用 dev-*：把该服务从 demo 环境里停掉，再在自己的终端里跑，
+# 这样它的日志和调试器都在你眼前。
+# ---------------------------------------------------------------------------
+.PHONY: demo-up demo-down
+
+demo-up: ## Start the full dev-mode demo environment with one command
+	@./scripts/demo-up.sh
+
+demo-down: ## Stop demo application processes and containers, keeping volumes
+	@./scripts/demo-down.sh
 
 seed: ## Idempotently load commerce data and rebuild the search index
 	@./data/scripts/seed.sh

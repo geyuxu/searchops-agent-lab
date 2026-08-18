@@ -1,0 +1,534 @@
+# CI for searchops-agent-lab
+
+# Design notes live in docs/ci.md. Two rules govern every job here:
+#
+#   1. No secret, ever. `secrets:` appears nowhere in this file and no step reads one.
+#      Everything that would need a model credential (make evaluate-ai, the DashScope
+#      rerank/rewrite path) is deliberately out of scope — see docs/ci.md.
+#   2. A skipped test is a failed test. This repo has already shipped a contract test
+#      suite that was green because every case in it was skipped. The ai-adapter job
+#      therefore asserts, from the JUnit report, that the LangChain contract tests were
+#      collected AND actually ran.
+
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+# A new push to the same ref makes the in-flight run pointless; stop paying for it.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # 3.10 matches services/ai-adapter/.venv (3.10.10) and the `requires-python = ">=3.10"`
+  # in agent/pyproject.toml, and it is what `[tool.ruff] target-version = "py310"` lints for.
+  PYTHON_VERSION: "3.10"
+  # The three application packages that actually run Node — storefront, operations-console
+  # and services/commerce — declare `"node": ">=22 <=24"`, so CI takes the top of that range.
+  # (api-contracts/typescript, packages/ui and tests/e2e declare no engines field at all;
+  # they are build-time or test-only and inherit whatever the job provides.)
+  # Medusa is the version-sensitive one, which is why we honour the declared ceiling rather
+  # than the local machine's v25. See docs/ci.md.
+  NODE_VERSION: "24"
+  JAVA_VERSION: "21"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Tier 1 — cheap, fails in well under a minute.
+  # Deliberately NOT a gate on the test jobs: a lint nit must never hide a real
+  # test failure. GitHub runs these in parallel with the tests, so "fast fails
+  # first" is achieved by them finishing first, not by blocking anything.
+  # ---------------------------------------------------------------------------
+
+  lint-python:
+    name: Lint · ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            platform/services/ai-adapter/requirements-dev.txt
+            platform/data/requirements-dev.txt
+
+      # Both dev requirement files pin ruff. Installing "whatever ruff is newest"
+      # would make CI disagree with `make test-unit` the day ruff adds a rule, so the
+      # version is read out of the requirements file rather than written here.
+      - name: Install the pinned ruff
+        run: |
+          set -euo pipefail
+          ai_pin="$(grep -m1 -E '^ruff==' platform/services/ai-adapter/requirements-dev.txt)"
+          data_pin="$(grep -m1 -E '^ruff==' platform/data/requirements-dev.txt)"
+          if [ "$ai_pin" != "$data_pin" ]; then
+            echo "::error::ruff pins disagree — ai-adapter has '$ai_pin', data has '$data_pin'."
+            echo "Two linters means two verdicts; pin them together." >&2
+            exit 1
+          fi
+          python -m pip install --disable-pip-version-check "$ai_pin"
+          ruff --version
+
+      # Same arguments as scripts/test-unit.sh, so a green CI means a green `make test-unit`.
+      - name: ruff · ai-adapter
+        working-directory: platform/services/ai-adapter
+        run: ruff check app tests
+
+      - name: ruff · data pipeline
+        working-directory: platform/data
+        run: ruff check scripts tests
+
+  typecheck-ts:
+    name: Typecheck · TypeScript (strict)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            platform/packages/api-contracts/typescript/package-lock.json
+            platform/apps/storefront/package-lock.json
+            platform/apps/operations-console/package-lock.json
+
+      # `npm ci` (never `npm install`) — it installs exactly the lockfile and fails if
+      # package.json and package-lock.json have drifted apart.
+      - name: Install · api-contracts client
+        working-directory: platform/packages/api-contracts/typescript
+        run: npm ci
+
+      - name: Typecheck · api-contracts client
+        working-directory: platform/packages/api-contracts/typescript
+        run: npm run typecheck
+
+      - name: Install · storefront
+        working-directory: platform/apps/storefront
+        run: npm ci
+
+      - name: Typecheck · storefront
+        working-directory: platform/apps/storefront
+        run: npm run typecheck
+
+      - name: Install · operations console
+        working-directory: platform/apps/operations-console
+        run: npm ci
+
+      - name: Typecheck · operations console
+        working-directory: platform/apps/operations-console
+        run: npm run typecheck
+
+  # ---------------------------------------------------------------------------
+  # Tier 2 — unit tests. No Docker, no network to any model, no secret.
+  # ---------------------------------------------------------------------------
+
+  test-ai-adapter:
+    name: Unit · ai-adapter (coverage + LangChain guards)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            platform/services/ai-adapter/requirements.txt
+            platform/services/ai-adapter/requirements-dev.txt
+
+      # requirements-dev.txt starts with `-r requirements.txt`, so this one command
+      # installs the runtime pins and the test pins together.
+      - name: Install pinned dependencies
+        working-directory: platform/services/ai-adapter
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
+      # GUARD 1 — "is it actually installed, at the version we claim?"
+      #
+      # This is the direct check for the accident this repo already had: langchain missing
+      # from the venv. `pip install` succeeding is not evidence — a resolver backtrack or a
+      # stale cache can leave a different version behind. openai and tiktoken are checked
+      # for the same reason they are pinned in requirements.txt: openai decides whether
+      # extra_body reaches the request body's top level (the enable_thinking=false path)
+      # and tiktoken carries the encoding table.
+      - name: Guard · installed versions match the pins exactly
+        working-directory: platform/services/ai-adapter
+        run: |
+          set -euo pipefail
+          python - requirements.txt requirements-dev.txt <<'PY'
+          import re
+          import sys
+          from importlib.metadata import PackageNotFoundError, version
+
+          problems, checked = [], 0
+          for path in sys.argv[1:]:
+              for raw in open(path, encoding="utf-8"):
+                  line = raw.split("#", 1)[0].strip()
+                  if not line or line.startswith("-"):
+                      continue
+                  m = re.fullmatch(r"([A-Za-z0-9._-]+)(?:\[[^\]]+\])?==([^\s;]+)", line)
+                  if not m:
+                      problems.append(f"{path}: not an exact pin: {line!r}")
+                      continue
+                  name, want = m.group(1), m.group(2)
+                  checked += 1
+                  try:
+                      got = version(name)
+                  except PackageNotFoundError:
+                      problems.append(f"{name}: NOT INSTALLED (pinned {want})")
+                      continue
+                  if got != want:
+                      problems.append(f"{name}: installed {got}, pinned {want}")
+                  else:
+                      print(f"  ok  {name}=={got}")
+          print(f"checked {checked} pinned distributions")
+          if problems:
+              print("::error::dependency pin check failed")
+              for p in problems:
+                  print("  " + p)
+              sys.exit(1)
+          PY
+
+      # GUARD 2 — pre-flight collection count.
+      #
+      # Fails in seconds, before the full suite runs. pytest is pinned to 9.1.1, whose
+      # `--collect-only` prints one `path::name` node id per line, so counting '::' is
+      # exact rather than a guess at a summary format. `--no-cov` because collection
+      # executes no code and would otherwise trip --cov-fail-under=85 from addopts.
+      - name: Guard · LangChain contract tests are collected (> 0)
+        working-directory: platform/services/ai-adapter
+        run: |
+          set -euo pipefail
+          python -m pytest --collect-only --no-cov \
+            tests/test_providers_langchain.py \
+            tests/test_providers_langchain_rerank.py | tee /tmp/collected.txt
+          count="$(grep -c '::' /tmp/collected.txt || true)"
+          echo "collected LangChain contract tests: ${count}"
+          if [ "${count:-0}" -lt 1 ]; then
+            echo "::error::0 LangChain contract tests collected."
+            echo "Collection is the floor: these tests stub LangChain via sys.modules and need" >&2
+            echo "no credential, so anything other than 'they ran' is a defect." >&2
+            exit 1
+          fi
+
+      # The real run. --strict-markers turns a typo'd marker into an error instead of a
+      # silently unregistered one; the suite only uses parametrize and skipif, so it is
+      # free today and load-bearing the first time someone invents a marker.
+      # Coverage settings (--cov=app --cov-fail-under=85) come from pyproject addopts.
+      - name: pytest · ai-adapter
+        working-directory: platform/services/ai-adapter
+        run: python -m pytest --strict-markers -rs --junitxml=junit-ai-adapter.xml
+
+      # GUARD 3 — the important one: prove nothing was skipped.
+      #
+      # Guard 2 proves the tests were *collected*; a skip happens after collection, so
+      # only the JUnit report can tell the two apart. requires_provider in
+      # test_providers_langchain.py turns "provider not importable" into 27 skips and a
+      # green-looking run, which is exactly the failure mode being outlawed here.
+      #
+      # ALLOWED_SKIPS is an allowlist, not a filter: any *new* skip anywhere in the suite
+      # fails this step and has to be justified by adding it here on purpose.
+      - name: Guard · no LangChain test was skipped
+        if: always()
+        working-directory: platform/services/ai-adapter
+        run: |
+          set -euo pipefail
+          test -f junit-ai-adapter.xml || {
+            echo "::error::junit-ai-adapter.xml is missing — pytest did not get far enough to write it."
+            exit 1
+          }
+          python - junit-ai-adapter.xml <<'PY'
+          import sys
+          import xml.etree.ElementTree as ET
+
+          LANGCHAIN_MODULES = (
+              "tests.test_providers_langchain",
+              "tests.test_providers_langchain_rerank",
+          )
+          # The only skip this repo is allowed to have in CI: the corpus-marker assertion
+          # reads data/processed/products.jsonl, which is gitignored and rebuilt by
+          # `make data` from the 1.1GB ESCI parquet. See docs/ci.md.
+          ALLOWED_SKIPS = {
+              ("tests.test_providers_echo",
+               "test_marker_token_is_present_in_the_indexed_corpus"),
+          }
+
+          cases = list(ET.parse(sys.argv[1]).getroot().iter("testcase"))
+          if not cases:
+              sys.exit("::error::JUnit report contains no testcases at all.")
+
+          problems = []
+          for module in LANGCHAIN_MODULES:
+              mine = [c for c in cases if c.get("classname") == module]
+              skipped = [c for c in mine if c.find("skipped") is not None]
+              print(f"{module}: collected={len(mine)} ran={len(mine) - len(skipped)} "
+                    f"skipped={len(skipped)}")
+              if not mine:
+                  problems.append(f"{module}: collected 0 tests (expected > 0)")
+              if skipped:
+                  names = ", ".join(c.get("name", "?") for c in skipped[:5])
+                  problems.append(f"{module}: {len(skipped)} skipped ({names})")
+
+          for c in cases:
+              key = (c.get("classname"), c.get("name"))
+              if c.find("skipped") is not None and key not in ALLOWED_SKIPS:
+                  problems.append(f"unexpected skip: {key[0]}::{key[1]}")
+
+          if problems:
+              print("::error::LangChain coverage guard failed — a green run that skipped "
+                    "its contract tests is the exact defect this guard exists to catch.")
+              for p in problems:
+                  print("  " + p)
+              sys.exit(1)
+          print("guard OK — LangChain contract tests were collected and ran")
+          PY
+
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-ai-adapter
+          path: platform/services/ai-adapter/junit-ai-adapter.xml
+          if-no-files-found: warn
+
+  test-agent:
+    name: Unit · agent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: agent/pyproject.toml
+
+      # The LLM stack is intentionally NOT installed here. agent/tests never imports
+      # LangChain (LLMProposer imports it lazily, inside the call), so installing the
+      # `llm` extra would add ~100MB of wheels and change nothing about what is asserted.
+      - name: Install agent (test extra only)
+        working-directory: agent
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install --disable-pip-version-check -e ".[dev]"
+
+      # agent/pyproject.toml states that the `llm` extra is aligned "逐位" (digit for
+      # digit) with services/ai-adapter/requirements.txt, because both drive the same
+      # OpenAI-compatible endpoint and a version fork makes "whose bug is it?"
+      # unanswerable. A comment cannot enforce that; this step can.
+      - name: Guard · agent[llm] pins match ai-adapter
+        env:
+          AGENT_PYPROJECT: agent/pyproject.toml
+          AI_REQUIREMENTS: platform/services/ai-adapter/requirements.txt
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          import re
+          import sys
+
+          SHARED = ("langchain-core", "langchain-openai", "openai", "tiktoken")
+
+          def from_requirements(path):
+              pins = {}
+              for raw in open(path, encoding="utf-8"):
+                  line = raw.split("#", 1)[0].strip()
+                  m = re.fullmatch(r"([A-Za-z0-9._-]+)(?:\[[^\]]+\])?==([^\s;]+)", line)
+                  if m:
+                      pins[m.group(1).lower()] = m.group(2)
+              return pins
+
+          def from_llm_extra(path):
+              text = open(path, encoding="utf-8").read()
+              block = re.search(r"^llm\s*=\s*\[(.*?)\]", text, re.S | re.M)
+              if not block:
+                  sys.exit(f"::error::no `llm` extra array found in {path}")
+              return {n.lower(): v for n, v in
+                      re.findall(r"\"([A-Za-z0-9._-]+)==([^\"]+)\"", block.group(1))}
+
+          agent = from_llm_extra(os.environ["AGENT_PYPROJECT"])
+          adapter = from_requirements(os.environ["AI_REQUIREMENTS"])
+
+          problems = []
+          for pkg in SHARED:
+              a, b = agent.get(pkg), adapter.get(pkg)
+              print(f"  {pkg:18} agent[llm]={a or '-':10} ai-adapter={b or '-':10}")
+              if a is None:
+                  problems.append(f"{pkg}: missing from agent[llm]")
+              elif b is None:
+                  problems.append(f"{pkg}: missing from ai-adapter/requirements.txt")
+              elif a != b:
+                  problems.append(f"{pkg}: agent[llm] pins {a}, ai-adapter pins {b}")
+
+          if problems:
+              print("::error::the two LangChain call sites have forked")
+              for p in problems:
+                  print("  " + p)
+              sys.exit(1)
+          print("agent[llm] and ai-adapter pin the same LangChain stack")
+          PY
+
+      - name: pytest · agent
+        working-directory: agent
+        run: python -m pytest --strict-markers -rs
+
+  test-data:
+    name: Unit · data pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            platform/data/requirements.txt
+            platform/data/requirements-dev.txt
+
+      - name: Install pinned dependencies
+        working-directory: platform/data
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
+      # These tests cover the pipeline's pure logic only. Anything that needs the
+      # 1.1GB ESCI parquet, DuckDB extraction or a live Postgres is `make data` /
+      # `make seed` territory and is not run here — see docs/ci.md.
+      - name: pytest · data pipeline
+        working-directory: platform/data
+        run: python -m pytest --strict-markers -rs tests
+
+  test-node:
+    name: Unit · commerce + JSON contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: platform/services/commerce/package-lock.json
+
+      - name: Install · commerce
+        working-directory: platform/services/commerce
+        run: npm ci
+
+      # `node --experimental-strip-types --test tests/*.test.ts` — pure domain assertions
+      # (cart invariants, integer-cent subtotals, checkout preconditions). No Postgres,
+      # no Medusa boot. `npm run build` (medusa build) is NOT run here: it wants a
+      # database URL, which would mean configuration this workflow refuses to fake.
+      - name: node --test · commerce domain
+        working-directory: platform/services/commerce
+        run: npm test
+
+      # scripts/test-unit.sh validates these three by hand with json.tool. Same check,
+      # same three files: a contract document that does not parse breaks the Java client,
+      # the TypeScript client and the MCP tool gateway at once.
+      - name: Validate contract documents parse
+        working-directory: platform/packages/api-contracts
+        run: |
+          set -euo pipefail
+          for doc in \
+            openapi/ai-adapter.openapi.json \
+            openapi/searchops-tools.openapi.json \
+            json-schema/ai-contracts.schema.json
+          do
+            python3 -m json.tool "$doc" > /dev/null
+            echo "  ok  $doc"
+          done
+
+  test-java-unit:
+    name: Unit · Java (pure JVM)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # cache: maven keys on hashFiles('**/pom.xml'), which is this repo's dependency
+      # manifest — there is no separate Maven lockfile.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      # StrategyWorkflowIntegrationTest is the only class annotated @Testcontainers; it
+      # boots a real postgres:17.6-alpine and belongs to the Docker job below. Everything
+      # else in src/test is pure JVM — several of those files say so in their own javadoc.
+      - name: mvn test · search-service (excluding Testcontainers)
+        working-directory: platform/services/search-service
+        run: |
+          mvn -B -ntp test \
+            -Dtest='!StrategyWorkflowIntegrationTest' \
+            -Dsurefire.failIfNoSpecifiedTests=false
+
+      # This module has no src/test — `test` is really a compile check that the shared
+      # Jackson 3 client still builds under JDK 21. It is cheap and it catches the
+      # Jackson 3 / Spring Boot 4.1 wire-contract drift early.
+      - name: mvn test · api-contracts java client
+        working-directory: platform/packages/api-contracts/java
+        run: mvn -B -ntp test
+
+      - name: Upload surefire reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-java-unit
+          path: platform/services/search-service/target/surefire-reports/
+          if-no-files-found: warn
+
+  # ---------------------------------------------------------------------------
+  # Tier 3 — needs a Docker daemon, so it is slower and kept on its own.
+  # Gated behind the pure-JVM job: if the plain unit tests are broken there is no
+  # point pulling a Postgres image to find out again.
+  # ---------------------------------------------------------------------------
+
+  test-java-integration:
+    name: Integration · Testcontainers (Docker)
+    runs-on: ubuntu-latest
+    needs: test-java-unit
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      # ubuntu-latest ships a running Docker daemon, so Testcontainers needs no setup
+      # action — only proof that the daemon is actually there before we blame the test.
+      - name: Show Docker daemon
+        run: docker version
+
+      # Boots postgres:17.6-alpine and exercises the governed strategy workflow against
+      # a real database. Elasticsearch is pointed at http://127.0.0.1:1 by the test's own
+      # @SpringBootTest properties, so no ES container is needed.
+      - name: mvn test · StrategyWorkflowIntegrationTest
+        working-directory: platform/services/search-service
+        run: |
+          mvn -B -ntp test \
+            -Dtest=StrategyWorkflowIntegrationTest \
+            -Dsurefire.failIfNoSpecifiedTests=false
+
+      - name: Upload surefire reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-java-integration
+          path: platform/services/search-service/target/surefire-reports/
+          if-no-files-found: warn
