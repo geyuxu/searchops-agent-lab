@@ -77,31 +77,38 @@ def test_candidate_evaluation_is_dry_run(registry):
 def test_diagnosis_evidence_never_includes_holdout_queries():
     """诊断证据必须限定在 train 内——holdout 混进证据就是"用考题出题"。
 
-    实测发生过：分析表不按 split 过滤，模型拿到 holdout 查询当证据，
-    写出逐字钉死该查询的 rewrite_rule。本轮评测在 train 上做，所以门禁没被污染；
+    实测发生过：线上分析表不按 split 过滤，模型拿到 holdout 查询当证据，
+    写出逐字钉死该查询的 rewrite_rule。那一轮评测在 train 上做，所以门禁判定没被污染；
     但这类提案一旦拿去 holdout 验收，那个数字就再也不能用了。
 
-    下面两条 query_id 是真实泄漏过的那两条，用它们做回归。
+    query_id 75 与 288 是真实泄漏过的那两条，保留它们作为回归锚点。
+
+    本用例刻意**不加载真实语料**：TrainBench.load() 要读
+    platform/data/processed/queries.jsonl，而那是 gitignored 的派生产物，
+    全新检出（例如 CI）里根本不存在。被测性质只依赖 bench 的两个集合，
+    用合成的 bench 就足够——测试要守的是过滤逻辑，不是语料是否在场。
     """
-    import json
     import types
 
-    from searchops_agent.loop import ProposalLoop, TrainBench
+    from searchops_agent.loop import ProposalLoop
 
-    bench = TrainBench.load(sample=50)
+    # 合成一个最小 bench：只提供 _train_only 真正读的那两个字段。
+    train_ids = [11, 12, 13]
+    train_texts = frozenset({"a train query", "another train query"})
+    bench = types.SimpleNamespace(split_train_ids=train_ids, train_query_texts=train_texts)
     stub = types.SimpleNamespace(bench=bench, diagnosis_dropped=0)
-    manifest = json.loads(Path(bench.manifest_path).read_text())
-    holdout = set(manifest["holdout_query_ids"])
 
+    holdout_ids = {75, 288}  # 真实泄漏过的两条，此处不在 train 集合内
     rows = [
         {"query_id": 75, "query": "$13 bb guns without a yellow tube"},
         {"query_id": 288, "query": "- w nest cam iq outdoor security camera without the magnet"},
-        {"query_id": bench.split_train_ids[0], "query": "a train query"},
-        {"query": "无法归属的查询"},
+        {"query_id": 11, "query": "a train query"},          # 按 id 命中
+        {"query": "another train query"},                    # 按文本命中（分析表可能不带 id）
+        {"query": "来历不明的查询"},                          # 两路都不命中
     ]
     kept = ProposalLoop._train_only(stub, rows)
 
-    assert not [r for r in kept if r.get("query_id") in holdout], "holdout 查询混进了诊断证据"
-    # 归属不明的行同样丢弃：宁可少给证据，也不给来历不明的证据。
-    assert all(r.get("query_id") is not None for r in kept)
+    assert not [r for r in kept if r.get("query_id") in holdout_ids], "holdout 查询混进了诊断证据"
+    assert {r.get("query_id") for r in kept} == {11, None}, "train 侧的两条都该保留（id 与文本各一条）"
+    # 归属不明的行一并丢弃：宁可少给证据，也不给来历不明的证据（失败关闭）。
     assert stub.diagnosis_dropped == 3
